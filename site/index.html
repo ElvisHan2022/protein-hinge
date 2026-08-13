@@ -502,7 +502,14 @@ document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
   document.querySelectorAll('section').forEach(x=>x.classList.remove('on'));
   b.classList.add('on'); $('#s-'+b.dataset.t).classList.add('on');
+  history.replaceState(null, '', '#'+b.dataset.t);
 });
+// deep-link: #omics opens the HealthOmics tab directly, etc.
+{
+  const want = (location.hash||'').slice(1);
+  const btn = want && document.querySelector(`nav button[data-t="${CSS.escape(want)}"]`);
+  if(btn) btn.click();
+}
 document.addEventListener('click', e=>{
   const t=e.target.closest('.hash.click');
   if(t){ document.querySelector('nav button[data-t=verify]').click(); lookup(t.dataset.id); }

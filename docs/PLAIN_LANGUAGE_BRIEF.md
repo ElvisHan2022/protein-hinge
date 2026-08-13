@@ -1,5 +1,44 @@
 # Protein Hinge: Plain-Language Brief
 
+## The Thought Process, Start to Finish
+
+**The pain point we address:** over 90% of rare diseases have no approved
+treatment, while existing drugs that might help sit untried — and when AI
+tools do propose a match, nobody can check their work, so trials get
+duplicated and leads get ignored.
+
+**What people in the field are doing:** machine-learning platforms (TxGNN,
+Every Cure's MATRIX, Healx) score millions of drug–disease pairs, and
+subscription databases sell the landscape. Powerful rankings; black boxes.
+
+**What we do:** grade drug–disease pairings with simple readable rules over
+five public evidence sources, and fingerprint every piece of evidence so the
+answer can be verified by anyone, on their own machine. The AI presents; it
+never decides.
+
+**Our workflow is broken into a GATHER, a GRADE, and a PROVE phase.**
+The input is a rare disease name. The output is a graded table of existing
+drugs with a verifiable receipt on every row.
+
+- **GATHER:** ask five public sources one question each — Open Targets (what
+  biology is broken?), ClinVar loaded toward an AWS HealthOmics annotation
+  store (do patients carry pathogenic variants in these genes?),
+  ClinicalTrials.gov (has this pairing been tried?), openFDA (is the drug
+  approved?), JUMP Cell Painting (does any compound push sick-looking cells
+  back toward healthy?). Every response is hashed the moment it arrives.
+  *Tech: Python, public REST/GraphQL APIs, boto3 + S3 + IAM + HealthOmics.*
+- **GRADE:** nine plain-Python rules decide GAP, NOT_A_GAP, or ABSTAIN for
+  each pairing. "We cannot say" is shown as loudly as any result. No machine
+  learning makes any decision. *Tech: plain Python.*
+- **PROVE:** every record is content-addressed under one Merkle root, and the
+  dashboard re-verifies the whole chain inside the reader's browser — with a
+  live demonstration that changing one byte of evidence gets caught.
+  *Tech: SHA-256 / RFC 6962, SQLite, sql.js in WebAssembly.*
+
+AWS status, honestly: the ClinVar subset and the HealthOmics store pipeline
+are built; no data has been generated in AWS yet, and the dashboard abstains
+in writing until it has.
+
 ## One-Sentence Version
 
 Protein Hinge shows a disease-first repurposing idea, the cell-perturbation

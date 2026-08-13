@@ -1,0 +1,110 @@
+<svg viewBox="0 0 1280 760" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arw" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L9,3 L0,6 z" fill="#3f4a55"/>
+    </marker>
+    <marker id="arwGray" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L9,3 L0,6 z" fill="#9aa5b1"/>
+    </marker>
+  </defs>
+
+  <rect width="1280" height="760" fill="#ffffff"/>
+
+  <text x="40" y="46" font-size="23" font-weight="700" fill="#1c2530">Protein Hinge — workflow, input to output</text>
+  <text x="40" y="70" font-size="14" fill="#68747f">Every edge is a recorded step. Solid boxes are wired and receipted; dashed boxes are listed, not incorporated.</text>
+
+  <!-- INPUT -->
+  <rect x="40" y="330" width="150" height="88" rx="8" fill="#eef1f4" stroke="#c6ced6"/>
+  <text x="115" y="364" font-size="13" font-weight="700" fill="#1c2530" text-anchor="middle">INPUT</text>
+  <text x="115" y="386" font-size="12" fill="#4a5560" text-anchor="middle">a rare disease</text>
+  <text x="115" y="402" font-size="12" fill="#4a5560" text-anchor="middle">name</text>
+
+  <!-- fan-out lines from input to five evidence lanes -->
+  <line x1="196" y1="360" x2="300" y2="140" stroke="#3f4a55" stroke-width="1.6" marker-end="url(#arw)"/>
+  <line x1="196" y1="368" x2="300" y2="260" stroke="#3f4a55" stroke-width="1.6" marker-end="url(#arw)"/>
+  <line x1="196" y1="374" x2="300" y2="374" stroke="#3f4a55" stroke-width="1.6" marker-end="url(#arw)"/>
+  <line x1="196" y1="382" x2="300" y2="490" stroke="#3f4a55" stroke-width="1.6" marker-end="url(#arw)"/>
+  <line x1="196" y1="390" x2="300" y2="608" stroke="#9aa5b1" stroke-width="1.6" stroke-dasharray="5,4" marker-end="url(#arwGray)"/>
+
+  <!-- EVIDENCE LANES -->
+  <text x="306" y="80" font-size="11" font-weight="700" fill="#9aa5b1" letter-spacing="1.5">EVIDENCE CAPTURE — each response hashed at origin</text>
+
+  <!-- Open Targets -->
+  <rect x="306" y="96" width="250" height="84" rx="8" fill="#e7eef6" stroke="#93b4d4"/>
+  <text x="431" y="120" font-size="13" font-weight="700" fill="#1c4e80" text-anchor="middle">OPEN TARGETS</text>
+  <text x="431" y="140" font-size="11.5" fill="#4a5560" text-anchor="middle">disease biology → tractability</text>
+  <text x="431" y="156" font-size="11" fill="#68747f" text-anchor="middle">8 consensus genes: zero chemistry</text>
+  <text x="431" y="171" font-size="10.5" font-weight="600" fill="#2f7a52" text-anchor="middle">wired · captured receipts</text>
+
+  <!-- ClinVar / HealthOmics -->
+  <rect x="306" y="216" width="250" height="84" rx="8" fill="#e7f2ea" stroke="#7cb494"/>
+  <text x="431" y="240" font-size="13" font-weight="700" fill="#1e6b45" text-anchor="middle">CLINVAR → AWS HEALTHOMICS</text>
+  <text x="431" y="260" font-size="11.5" fill="#4a5560" text-anchor="middle">pathogenic variants per gene,</text>
+  <text x="431" y="276" font-size="11.5" fill="#4a5560" text-anchor="middle">loaded into an annotation store</text>
+  <text x="431" y="291" font-size="10.5" font-weight="600" fill="#2f7a52" text-anchor="middle">wired · 642 records · digests recorded</text>
+
+  <!-- ClinicalTrials.gov -->
+  <rect x="306" y="336" width="250" height="84" rx="8" fill="#f4eee6" stroke="#d0b58c"/>
+  <text x="431" y="360" font-size="13" font-weight="700" fill="#8a5f1c" text-anchor="middle">CLINICALTRIALS.GOV</text>
+  <text x="431" y="380" font-size="11.5" fill="#4a5560" text-anchor="middle">has this pairing been tried?</text>
+  <text x="431" y="396" font-size="11" fill="#68747f" text-anchor="middle">status and phase kept, not just existence</text>
+  <text x="431" y="411" font-size="10.5" font-weight="600" fill="#2f7a52" text-anchor="middle">wired · captured + live probe</text>
+
+  <!-- openFDA -->
+  <rect x="306" y="456" width="250" height="84" rx="8" fill="#fdf3e3" stroke="#e0b768"/>
+  <text x="431" y="480" font-size="13" font-weight="700" fill="#8a5f1c" text-anchor="middle">OPENFDA</text>
+  <text x="431" y="500" font-size="11.5" fill="#4a5560" text-anchor="middle">label + NDC: is the drug approved,</text>
+  <text x="431" y="516" font-size="11.5" fill="#4a5560" text-anchor="middle">and for what?</text>
+  <text x="431" y="531" font-size="10.5" font-weight="600" fill="#2f7a52" text-anchor="middle">wired · captured receipts</text>
+
+  <!-- Convoke -->
+  <rect x="306" y="576" width="250" height="72" rx="8" fill="#fbfbfc" stroke="#c6ced6" stroke-dasharray="5,4"/>
+  <text x="431" y="600" font-size="13" font-weight="700" fill="#68747f" text-anchor="middle">CONVOKE</text>
+  <text x="431" y="620" font-size="11.5" fill="#68747f" text-anchor="middle">industry program catalog</text>
+  <text x="431" y="636" font-size="10.5" font-weight="600" fill="#9aa5b1" text-anchor="middle">listed, not wired — said out loud</text>
+
+  <!-- arrows lanes -> rules -->
+  <line x1="562" y1="138" x2="676" y2="340" stroke="#3f4a55" stroke-width="1.6" marker-end="url(#arw)"/>
+  <line x1="562" y1="258" x2="676" y2="360" stroke="#3f4a55" stroke-width="1.6" marker-end="url(#arw)"/>
+  <line x1="562" y1="378" x2="676" y2="380" stroke="#3f4a55" stroke-width="1.6" marker-end="url(#arw)"/>
+  <line x1="562" y1="498" x2="676" y2="400" stroke="#3f4a55" stroke-width="1.6" marker-end="url(#arw)"/>
+  <line x1="562" y1="612" x2="676" y2="420" stroke="#9aa5b1" stroke-width="1.6" stroke-dasharray="5,4" marker-end="url(#arwGray)"/>
+
+  <!-- CELL EVIDENCE side lane -->
+  <rect x="306" y="676" width="250" height="60" rx="8" fill="#eae8f6" stroke="#a49ed4"/>
+  <text x="431" y="700" font-size="12.5" font-weight="700" fill="#453a8c" text-anchor="middle">JUMP CELL PAINTING</text>
+  <text x="431" y="718" font-size="10.5" fill="#4a5560" text-anchor="middle">phenotype axis · candidate restoration ranking</text>
+  <line x1="562" y1="704" x2="740" y2="704" stroke="#3f4a55" stroke-width="1.6"/>
+  <line x1="740" y1="704" x2="740" y2="448" stroke="#3f4a55" stroke-width="1.6" marker-end="url(#arw)"/>
+
+  <!-- RULES -->
+  <rect x="682" y="330" width="216" height="112" rx="8" fill="#1c2530"/>
+  <text x="790" y="358" font-size="13" font-weight="700" fill="#ffffff" text-anchor="middle">DETERMINISTIC RULES</text>
+  <text x="790" y="378" font-size="11.5" fill="#b8c2cc" text-anchor="middle">plain Python, G000–G008</text>
+  <text x="790" y="398" font-size="12" font-weight="600" fill="#ffffff" text-anchor="middle">GAP / NOT_A_GAP / ABSTAIN</text>
+  <text x="790" y="416" font-size="11" fill="#8f9aa5" text-anchor="middle">abstention shown at equal weight</text>
+  <text x="790" y="432" font-size="11" fill="#8f9aa5" text-anchor="middle">code decides, never the model</text>
+
+  <!-- CUSTODY -->
+  <line x1="904" y1="386" x2="960" y2="386" stroke="#3f4a55" stroke-width="2" marker-end="url(#arw)"/>
+  <rect x="966" y="322" width="274" height="128" rx="8" fill="#f7ecec" stroke="#d09a9a"/>
+  <text x="1103" y="350" font-size="13" font-weight="700" fill="#8c3d3d" text-anchor="middle">FRACTAL CUSTODY GRAPH</text>
+  <text x="1103" y="370" font-size="11.5" fill="#4a5560" text-anchor="middle">every record content-addressed,</text>
+  <text x="1103" y="386" font-size="11.5" fill="#4a5560" text-anchor="middle">one RFC 6962 Merkle root over all lanes</text>
+  <text x="1103" y="408" font-size="12" font-weight="600" fill="#1c2530" text-anchor="middle">admit iff recomputes</text>
+  <text x="1103" y="426" font-size="11" fill="#68747f" text-anchor="middle">change one byte → the root catches it,</text>
+  <text x="1103" y="441" font-size="11" fill="#68747f" text-anchor="middle">live, in the browser</text>
+
+  <!-- OUTPUT -->
+  <line x1="1103" y1="450" x2="1103" y2="520" stroke="#3f4a55" stroke-width="2" marker-end="url(#arw)"/>
+  <rect x="856" y="526" width="384" height="120" rx="8" fill="#1c2530"/>
+  <text x="1048" y="556" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">OUTPUT — the dashboard</text>
+  <text x="1048" y="580" font-size="12" fill="#d5dbe1" text-anchor="middle">A graded disease–program table with the rule that fired,</text>
+  <text x="1048" y="598" font-size="12" fill="#d5dbe1" text-anchor="middle">abstention counts beside results, and a receipt on every row</text>
+  <text x="1048" y="622" font-size="12" font-weight="600" fill="#8fc9a8" text-anchor="middle">any reviewer can rebuild the root — no trust in us required</text>
+
+  <!-- footer -->
+  <line x1="40" y1="700" x2="290" y2="700" stroke="#e3e7eb"/>
+  <text x="40" y="726" font-size="11.5" fill="#68747f">Claim ceiling enforced in code:</text>
+  <text x="40" y="742" font-size="11.5" font-weight="600" fill="#4a5560">REPURPOSING_HYPOTHESIS — never treatment advice.</text>
+</svg>

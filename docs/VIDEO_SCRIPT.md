@@ -1,79 +1,133 @@
 # Protein Hinge Video Script
 
-Target length: 90 seconds.
+Target length: ~3.5 minutes. Two acts: the workflow slide, then the live demo.
+Tabs deep-link (`#elvis`, `#omics`, `#figure`, `#verify`, `#prove`) so shots
+can be pre-staged as bookmarks.
 
-## Shot List
+## Act 1 — The workflow (~50s, over figures/workflow_dag.svg)
 
-1. Open `http://127.0.0.1:8787/`.
-2. Use Disease Search and show the prescripted Barth syndrome validation row.
-3. Click the live ClinicalTrials probe as the optional live path.
-4. Switch to Figure and show the cell-perturbation restoration figure.
-5. Switch to Agent Trail and show the model, agent, and integration receipts.
-6. Switch to Model Trace and show the null comparison.
-7. Show the Evidence Receipt tab with `phase_1_axis_claim`.
-8. Switch to Tamper Check and click `RE-VERIFY THE ROOT`.
-9. Click `TAMPER WITH ONE NODE, THEN RE-VERIFY`.
-10. End on the mismatch and first divergent node.
+> One input: the name of a rare disease. One output: a graded table of
+> drug–disease pairings, each row carrying the rule that graded it and a
+> receipt you can verify yourself. In between — five questions, a rulebook,
+> and a ledger.
+>
+> Five evidence lanes, one question each, all hitting real public APIs. Open
+> Targets GraphQL: what biology is broken? NCBI ClinVar, pulled through
+> E-utilities and loaded into an AWS HealthOmics annotation store — via boto3,
+> S3, and IAM: do patients really carry pathogenic variants in these genes?
+> 642 records say yes. ClinicalTrials.gov's REST API: has this pairing been
+> tried? openFDA: is the drug approved? Convoke is dashed out — listed,
+> deliberately not wired, and we say so.
+>
+> All five feed a rulebook of plain Python — no framework, no model in the
+> loop: GAP, NOT-A-GAP, or ABSTAIN, with abstentions displayed at equal
+> weight. The AI never decides; code decides.
+>
+> Underneath sits the ledger: every record SHA-256 content-addressed into an
+> RFC 6962 Merkle tree, projected into SQLite, and verified client-side — the
+> dashboard is a single HTML page running sql.js in WebAssembly, so the tamper
+> check happens in your browser, not on our server. Change one byte of
+> evidence and the root moves in front of you.
+>
+> So the output isn't a ranking asking to be believed — it's a table where
+> every cell can defend itself.
 
-## Narration
+## Act 2 — The demo
 
-Protein Hinge is a compact evidence ledger for a disease-first repurposing
-hypothesis. The point is not just to show a ranking; it is to show exactly what
-evidence the ranking rests on and whether another scientist can reproduce the
-custody chain.
+### Beat 1 — Disease Search (~40s) — `#elvis`
 
-The first tab is the disease search. The internal teammate handoff was called
-Elvis, but the product view is plain: start with a rare disease and ask whether
-there is a repurposing gap. For Barth syndrome, elamipretide appears as an
-already tried program, so the deterministic grade is NOT_A_GAP. The live button
-probes ClinicalTrials.gov, but it abstains from full gap grading because the
-full Open Targets and Convoke joins are not claimed wired in this demo.
+DO: type "Barth syndrome", click **Show Known Case**, hover row 1; then click
+**Check Live Trials**.
 
-The scientific figure is the morphology result. ADA is the selected shifted
-perturbation. The q95 reference threshold is shown, then 50 candidate profiles
-are ranked by how much closer they sit to the reference phenotype than the ADA
-perturbation. This is a processed morphology distance benchmark, not a claim of
-measured rescue.
+> Start where a clinician or a BD team starts: a disease name. Barth
+> syndrome. Four rows come back — and look at row one. Elamipretide, graded
+> NOT-A-GAP by rule G004: a trial already pairs this drug with this disease.
+> That's the validation case. A naive repurposing tool would "discover"
+> elamipretide and present the incumbent as a breakthrough. Ours refuses —
+> and shows the three NCT trial IDs proving why. Notice the abstention
+> counter beside the results: always on screen. When this system doesn't
+> know, it says so at the same volume.
+>
+> And this button is live — querying ClinicalTrials.gov right now, and
+> honestly labeling itself a trial probe, not a full gap grading.
 
-The Agents tab shows the OpenAI fan-out. Each subagent response is a Fractal
-Custody Object, the model is an object, and the integration record is an object.
-Those objects are also projected into the local SQLite database.
+### Beat 2 — AWS HealthOmics (~25s) — `#omics`
 
-The Model Trace tab separates model work from scientific evidence. OpenAI ran
-the bounded helper agents. Local models are inventoried by size, but are marked
-as available runtimes rather than scientific data sources. The null comparison
-is intentionally conservative: the known pair did not beat the shuffle null in
-the tiny cached run.
+DO: open the HealthOmics tab, point to the evidence table, click
+**CHECK LIVE STORE STATE**.
 
-Here the dashboard opens on a specific claim. The claim has a node id, a content
-digest, a stated ceiling, and a list of upstream records. Some sources are
-recomputed because the bytes are present; larger public records are committed by
-origin digest, which is shown explicitly rather than hidden.
+> The genetic second opinion. We pulled every pathogenic variant ClinVar
+> reports for our eight genes — 642 records, every query digest-recorded.
+> Look at TAFAZZIN: 337 pathogenic records, top condition
+> 3-Methylglutaconic aciduria type 2 — that *is* Barth syndrome. The genetics
+> independently agrees with the disease biology.
+>
+> The AWS HealthOmics lane is built to hold exactly this subset as an
+> annotation store — the ingest pipeline is written and one command away —
+> but no data has been generated in AWS yet, and the dashboard says so
+> itself: watch it probe our account and abstain, in writing, instead of
+> faking a green light. In this system, "not wired yet" is a first-class
+> answer.
 
-The Browse tab shows the whole package: 62 nodes across sources, derivations,
-and claims. The SQL tab lets us query the local database directly. This example
-shows the tractability check: EGFR is the positive control with chemistry, while
-the consensus genes are recorded as undrugged in this search.
+(If the store is live by recording time, replace the last two sentences with:
+"and there's the store — ACTIVE, import COMPLETED, under our account.")
 
-Now the important part: the Prove tab rebuilds the Merkle root in the browser.
-It hashes every stored node record, rebuilds the RFC 6962 tree, and compares it
-with the published root. The result matches.
+### Beat 3 — Cell Evidence (~25s) — `#figure`
 
-Finally, we tamper with one record in memory. The rebuilt root moves, the
-published root no longer matches, and the dashboard names the first divergent
-node. That is the demo: a phenotype-first hypothesis with an auditable evidence
-chain and visible tamper failure, without claiming treatment, efficacy, or a
-legal FTO opinion.
+> The science lane: Cell Painting morphology from the public JUMP dataset. A
+> genetic perturbation pushes cells away from the reference state; fifty
+> candidate compounds are ranked by how far back toward reference they move
+> the phenotype. This is a distance benchmark on real processed profiles —
+> and the label says exactly what it is: predicted counter-perturbation, not
+> measured rescue.
+
+### Beat 4 — Evidence Receipt (~25s) — `#verify`
+
+DO: search `phase_1_axis_claim`.
+
+> Now the part no other team has. Pick any claim — here's the core scientific
+> one. It has a node ID, a content digest, a claim ceiling, and its full
+> upstream chain: every source marked RECOMPUTED — we hold the bytes — or
+> COMMITTED — we hold a digest captured at origin. That distinction is the
+> honesty of this system. Most demos hide it. We render it.
+
+### Beat 5 — Tamper Check (~35s) — `#prove`
+
+DO: click **RE-VERIFY THE ROOT**; after the pass, click
+**TAMPER WITH ONE NODE, THEN RE-VERIFY**.
+
+> Finale. This button doesn't trust our published root — it re-hashes all 62
+> records in your browser, rebuilds the Merkle tree, and compares. It
+> matches.
+>
+> Now we cheat. One byte of one record, changed in memory... re-verify... and
+> the root moves. The dashboard names the first divergent node. That's the
+> whole thesis in one click: anyone can join four databases and rank drug
+> pairings. What nobody else hands you is evidence that can't be quietly
+> edited — verified on your machine, not ours.
+
+### Close (~10s)
+
+> Rare disease is the wedge, but any disease ID runs the same pipeline.
+> Patients get trials worth asking about, providers get receipts, payers and
+> policymakers get audit trails. Same table, same evidence, four audiences.
+
+## Fallbacks
+
+- Conference wifi: the Known Case path is fully offline — skip the live
+  clicks and say "the live probe also runs against ClinicalTrials.gov, but
+  everything you're seeing is reproducible offline."
+- HealthOmics credentials not wired: the abstention display **is** the
+  feature; present it as scripted above.
 
 ## Exact Local Commands
 
 ```bash
 python3 db/build_db.py
 node site/verify_test.js
-python3 scripts/make_cell_perturbation_figure.py
-python3 scripts/run_openai_fanout.py --env-file .env --model gpt-4.1-nano --run-id 20260813Tfanout-elvis --max-workers 4
-python3 scripts/build_agent_fanout_graph.py
-python3 scripts/build_model_trace.py
+python3 scripts/build_clinvar_evidence.py
+python3 scripts/healthomics_preflight.py
+python3 scripts/setup_healthomics.py        # needs `aws configure` (elvish.an)
 python3 db/serve.py 8787
 ```
 
@@ -81,12 +135,13 @@ Open `http://127.0.0.1:8787/`.
 
 ## Screenshot Assets
 
+- Workflow DAG: `../figures/workflow_dag.svg`
 - Scientific figure: `../figures/cell_perturbation_restoration.png`
 - Agent FCO graph: `../figures/agent_fanout_fco_graph.png`
 - Null comparison: `../figures/null_hypothesis_comparison.png`
 - Claim receipt: `../output/playwright/01-verify-claim-receipt.png`
 - Evidence table: `../output/playwright/02-browse-evidence-posture.png`
-- SQL setup: `../output/playwright/03-sql-tractability-query.png`
 - SQL result: `../output/playwright/03-sql-tractability-results.png`
 - Root proof: `../output/playwright/04-prove-root-pass.png`
 - Tamper failure: `../output/playwright/05-tamper-root-fail.png`
+- HealthOmics tab: `../output/playwright/07-healthomics-tab.png`
