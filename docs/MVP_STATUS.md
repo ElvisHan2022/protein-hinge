@@ -21,6 +21,9 @@ Date: 2026-08-13
   the OpenAI model that actually ran, links SeedGraph/FCO/gettingsciencedone
   local reference paths, and renders the known-pair benchmark versus the shuffle
   null.
+- Deferred writeback candidates are saved as local JSON/JSONL before any future
+  SeedGraph/FCO/Watchtower writeback. No live graph writeback has been
+  performed.
 - Current inclusion route replays to the current Merkle root.
 - Superseded science-only route is shown as stale rather than falsely checked
   against the FTO-extended root.
@@ -122,6 +125,7 @@ the figure is rendered.
 - `../docs/FCO_FCG_DESIGN_CITATIONS.md`
 - `../docs/ELVIS_COMPONENT.md`
 - `../docs/GAP_LANE_SPEC.md`
+- `../docs/deferred_writeback_candidates.jsonl`
 
 ## Regulatory Data Coverage
 

@@ -75,6 +75,10 @@ The dashboard now has two additional recording surfaces:
 - `MODEL TRACE`: OpenAI and local-model trace surface. OpenAI ran the bounded
   subagent fan-out. Local Ollama models are inventoried by size and explicitly
   marked as available runtimes, not scientific data generators.
+- `LOCAL JSON BEFORE WRITEBACK`: SeedGraph/FCO/Watchtower writeback candidates
+  are saved locally in `docs/deferred_writeback_candidates.jsonl` and
+  `model_trace/deferred_writeback_packet.json`. No live KG writeback is
+  performed by this repo update.
 - `@strands-agents/sdk` is installed and locked for the requested agent stack,
   though the verified fan-out path currently uses the OpenAI Responses API
   directly so it can write simple FCO receipts without extra runtime coupling.

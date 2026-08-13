@@ -246,6 +246,7 @@
         <div class="card scroll"><h3>AWS hackathon context</h3><div id="awsContext"></div></div>
         <div class="card"><h3>AWS preflight</h3><div id="awsPreflight"></div></div>
       </div>
+      <div class="card scroll"><h3>Local JSON before writeback</h3><div id="writebackPacket"></div></div>
     </section>
 
     <!-- ------------------------------------------------------- BROWSE -->
@@ -657,12 +658,26 @@ async function initModelTrace(){
     }catch(e){
       $('#awsPreflight').innerHTML = `<p class="dim">AWS preflight not generated yet.</p>`;
     }
+    try{
+      const wb = await (await fetch('assets/deferred_writeback_packet.json')).json();
+      $('#writebackPacket').innerHTML = `<p class="callout">Live KG writeback performed:
+        <b>${wb.live_writeback_performed ? 'yes' : 'no'}</b>. These records are local JSON
+        candidates only.</p>` + tbl((wb.candidates || []).map(x=>({
+          'Candidate': x.key,
+          'Target graph': x.target_graph,
+          'Status': x.writeback_status,
+          'Source': x.source_path,
+        })));
+    }catch(e){
+      $('#writebackPacket').innerHTML = `<p class="dim">No local writeback packet found.</p>`;
+    }
   }catch(e){
     $('#modelTraceSummary').innerHTML = `<p class="dim">Model trace not generated yet: ${esc(e.message)}</p>`;
     $('#modelTraceRows').innerHTML = '';
     $('#modelTraceSources').innerHTML = '';
     $('#awsContext').innerHTML = '';
     $('#awsPreflight').innerHTML = '';
+    $('#writebackPacket').innerHTML = '';
   }
 }
 
