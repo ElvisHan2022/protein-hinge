@@ -128,6 +128,7 @@
     <button data-t="agents">Agent Trail</button>
     <button data-t="modeltrace">Model Trace</button>
     <button data-t="regulatory">Regulatory Map</button>
+    <button data-t="omics">HealthOmics</button>
     <button data-t="verify">Evidence Receipt</button>
     <button data-t="browse">All Records</button>
     <button data-t="sql">Data Table</button>
@@ -262,6 +263,35 @@
         <div class="card scroll"><h3>Coverage by source</h3><div id="regulatoryRows"></div></div>
         <div class="card scroll"><h3>Captured query receipts</h3><div id="regulatoryQueries"></div></div>
       </div>
+    </section>
+
+    <!-- ------------------------------------------------------ OMICS -->
+    <section id="s-omics">
+      <div class="intro-panel" style="margin-bottom:18px">
+        <h2>Genomic evidence, held in AWS HealthOmics.</h2>
+        <p>The eight consensus genes get an independent second opinion from
+          ClinVar: which of them carry variants classified pathogenic in
+          patients? The subset is loaded into an AWS HealthOmics annotation
+          store, and this view shows exactly what is wired and what is not.</p>
+      </div>
+      <p class="note">HealthOmics stores what we load into it — a ClinVar subset
+        for the eight genes, fetched from recorded query URLs with response
+        digests. Classifications are submitter assertions:
+        <b>pathogenic-variant-reported evidence, not measured rescue and not
+        diagnosis</b>. Athena SQL over the store is listed, not wired.</p>
+      <div class="grid2">
+        <div class="card"><h3>AWS preflight</h3><div id="omicsPreflight"></div></div>
+        <div class="card"><h3>Annotation store, live</h3>
+          <div class="row" style="margin-bottom:10px">
+            <button class="go" id="omicsProbe">CHECK LIVE STORE STATE</button>
+          </div>
+          <div id="omicsLive"><p class="dim">Not probed yet. The button asks the
+            local server to list HealthOmics annotation stores with the
+            credentials on this machine.</p></div>
+        </div>
+      </div>
+      <div class="card scroll"><h3>ClinVar pathogenic-variant evidence, by consensus gene</h3>
+        <div id="omicsEvidence"></div></div>
     </section>
 
     <!-- ------------------------------------------------------- BROWSE -->
@@ -449,7 +479,7 @@ async function boot(bytes){
     `one root over both lanes &nbsp; <b class="hash">${esc(m.merkle_root)}</b><br>` +
     `${n} nodes · ${esc(m.merkle_convention)} · corpus pinned ${esc(m.generated_at)} · ` +
     `science ceiling <b>${esc(m.claim_ceiling_science)}</b> · FTO ceiling <b>${esc(m.claim_ceiling_fto)}</b>`;
-  initBrowse(); initAbout(); initSamples(); initElvis(); initAgents(); initModelTrace(); initRegulatory();
+  initBrowse(); initAbout(); initSamples(); initElvis(); initAgents(); initModelTrace(); initRegulatory(); initOmics();
   lookup('phase_1_axis_claim');
 }
 
@@ -694,6 +724,67 @@ async function initModelTrace(){
     $('#awsPreflight').innerHTML = '';
     $('#writebackPacket').innerHTML = '';
   }
+}
+
+// -------------------------------------------------------------- omics
+async function initOmics(){
+  try{
+    const pf = await (await fetch('assets/healthomics_status.json')).json();
+    const abst = (pf.abstentions||[]).map(a=>`<tr><td class="k">abstained</td><td>${esc(a.stage)}: ${esc(a.reason)}</td></tr>`).join('');
+    $('#omicsPreflight').innerHTML = `<table>
+      <tr><td class="k">status</td><td>${esc(pf.status)}</td></tr>
+      <tr><td class="k">region</td><td>${esc(pf.region||'')}</td></tr>
+      <tr><td class="k">expected user</td><td>${esc(pf.expected_username||'')}</td></tr>
+      <tr><td class="k">identity</td><td>${pf.identity?esc(pf.identity.arn_suffix):'not checked'}</td></tr>
+      <tr><td class="k">store</td><td>${esc(pf.store_name||'')}</td></tr>
+      <tr><td class="k">secret policy</td><td>${pf.credentials_committed===false?'not committed':'check required'}</td></tr>
+      ${abst}</table>`;
+  }catch(e){
+    $('#omicsPreflight').innerHTML = `<p class="dim">HealthOmics preflight not generated yet.
+      Run <code>py scripts/healthomics_preflight.py</code>.</p>`;
+  }
+  try{
+    const ev = await (await fetch('assets/clinvar_evidence.json')).json();
+    $('#omicsEvidence').innerHTML = `<div class="callout">${esc(ev.note)}</div>` +
+      tbl((ev.genes||[]).map(g=>({
+        'Gene': g.gene,
+        'Pathogenic / likely pathogenic records': g.pathogenic_or_likely,
+        'Top reported conditions': (g.top_conditions||[]).map(c=>c.condition).slice(0,3).join('; ') || '— none reported',
+      }))) +
+      `<p class="dim" style="margin-top:8px">Subset TSV sha256
+        <span class="hash">${esc((ev.tsv_sha256||'').slice(0,32))}…</span> — the exact
+        object the HealthOmics import consumes. Query URLs and response digests:
+        <code>data/healthomics/clinvar_provenance.json</code>.</p>`;
+  }catch(e){
+    $('#omicsEvidence').innerHTML = `<p class="dim">ClinVar evidence not generated yet.
+      Run <code>py scripts/build_clinvar_evidence.py</code>.</p>`;
+  }
+  $('#omicsProbe').onclick = async ()=>{
+    $('#omicsLive').innerHTML = '<p class="dim">probing…</p>';
+    try{
+      const live = await (await fetch('/api/healthomics')).json();
+      const stores = (live.annotation_stores||[]);
+      const jobs = (live.import_jobs||[]);
+      const abst = (live.abstentions||[]);
+      $('#omicsLive').innerHTML =
+        `<table>
+          <tr><td class="k">status</td><td>${esc(live.status)}</td></tr>
+          <tr><td class="k">identity</td><td>${live.identity?esc(live.identity.arn_suffix)+(live.identity.matches_expected?' (matches elvish.an)':' (does not match elvish.an)'):'not resolved'}</td></tr>
+        </table>` +
+        (stores.length ? '<h3 style="margin-top:10px">Stores</h3>'+tbl(stores.map(s=>({
+            'Name': s.name, 'Status': s.status, 'Format': s.format,
+            'Size': s.size_bytes==null?'':s.size_bytes,
+          }))) : '<p class="dim">No annotation stores visible.</p>') +
+        (jobs.length ? '<h3 style="margin-top:10px">Import jobs</h3>'+tbl(jobs.map(j=>({
+            'Job': j.id, 'Store': j.destination, 'Status': j.status, 'Created': j.created,
+          }))) : '') +
+        (abst.length ? '<h3 style="margin-top:10px">Abstentions</h3>'+tbl(abst.map(a=>({
+            'Stage': a.stage, 'Reason': a.reason,
+          }))) : '');
+    }catch(e){
+      $('#omicsLive').innerHTML = `<p class="bad">live probe failed: ${esc(e.message)}</p>`;
+    }
+  };
 }
 
 // ---------------------------------------------------------- regulatory

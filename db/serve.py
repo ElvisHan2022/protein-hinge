@@ -32,6 +32,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if parsed.path == "/api/elvis":
             self.serve_elvis_api(parsed.query)
             return
+        if parsed.path == "/api/healthomics":
+            self.serve_healthomics_api()
+            return
         super().do_GET()
 
     def send_json(self, payload, status=200):
@@ -99,6 +102,66 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 "stage": "clinicaltrials_probe",
                 "reason": "No studies returned for condition query.",
             })
+        self.send_json(payload)
+
+    def serve_healthomics_api(self):
+        """Live AWS HealthOmics store state, redacted. Abstains without creds."""
+        payload = {
+            "schema": "protein_hinge.healthomics.live.v1",
+            "mode": "live_healthomics_probe",
+            "store_name": "protein_hinge_clinvar",
+            "expected_username": "elvish.an",
+            "identity": None,
+            "annotation_stores": [],
+            "import_jobs": [],
+            "abstentions": [],
+            "note": ("Live probe lists annotation stores and import jobs only. "
+                     "Athena SQL over the store is listed, not wired."),
+        }
+        try:
+            import boto3
+        except ImportError:
+            payload["abstentions"].append({"stage": "boto3", "reason": "boto3 not installed"})
+            payload["status"] = "abstain_boto3_missing"
+            self.send_json(payload)
+            return
+        region = os.environ.get("AWS_DEFAULT_REGION") or os.environ.get("AWS_REGION") or "us-east-1"
+        payload["region"] = region
+        session = boto3.session.Session(region_name=region)
+        if session.get_credentials() is None:
+            payload["abstentions"].append({
+                "stage": "credentials",
+                "reason": "No AWS credentials found. Run `aws configure` as elvish.an.",
+            })
+            payload["status"] = "abstain_missing_credentials"
+            self.send_json(payload)
+            return
+        try:
+            ident = session.client("sts").get_caller_identity()
+            arn = str(ident.get("Arn", ""))
+            payload["identity"] = {
+                "account": ident.get("Account"),
+                "arn_suffix": arn[-32:],
+                "matches_expected": "elvish.an" in arn,
+            }
+            omics = session.client("omics")
+            for s in omics.list_annotation_stores(maxResults=50).get("annotationStores", []):
+                payload["annotation_stores"].append({
+                    "name": s.get("name"), "status": s.get("status"),
+                    "format": s.get("storeFormat"), "size_bytes": s.get("storeSizeBytes"),
+                })
+            for j in omics.list_annotation_import_jobs(maxResults=20).get("annotationImportJobs", []):
+                payload["import_jobs"].append({
+                    "id": j.get("id"), "status": j.get("status"),
+                    "destination": j.get("destinationName"),
+                    "created": str(j.get("creationTime", "")),
+                })
+            payload["status"] = "ok"
+        except Exception as exc:
+            payload["abstentions"].append({
+                "stage": "omics", "reason": f"{type(exc).__name__}: {exc}",
+            })
+            payload["status"] = "abstain_omics_error"
         self.send_json(payload)
 
     def end_headers(self):

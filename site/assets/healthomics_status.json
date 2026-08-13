@@ -1,0 +1,18 @@
+{
+  "abstentions": [
+    {
+      "reason": "No AWS credentials found in the environment or ~/.aws. Run `aws configure` as elvish.an and re-run this script.",
+      "stage": "credentials"
+    }
+  ],
+  "annotation_stores": [],
+  "checked_at": "2026-08-13T22:15:30+00:00",
+  "credentials_committed": false,
+  "expected_username": "elvish.an",
+  "identity": null,
+  "identity_matches_expected": null,
+  "region": "us-east-1",
+  "schema": "protein_hinge.healthomics_preflight.v1",
+  "status": "missing_credentials",
+  "store_name": "protein_hinge_clinvar"
+}

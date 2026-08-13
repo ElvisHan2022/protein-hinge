@@ -1,0 +1,184 @@
+{
+  "captured_at": "2026-08-13T22:07:25+00:00",
+  "claim_boundary": "PATHOGENIC_VARIANT_REPORTED",
+  "genes": [
+    {
+      "gene": "TAFAZZIN",
+      "pathogenic_or_likely": 337,
+      "records_fetched": 337,
+      "top_conditions": [
+        {
+          "condition": "3-Methylglutaconic aciduria type 2",
+          "records": 85
+        },
+        {
+          "condition": "See cases",
+          "records": 60
+        },
+        {
+          "condition": "Syndromic X-linked intellectual disability Lubs type",
+          "records": 4
+        },
+        {
+          "condition": "X-linked Emery-Dreifuss muscular dystrophy",
+          "records": 3
+        },
+        {
+          "condition": "Adrenoleukodystrophy",
+          "records": 3
+        }
+      ]
+    },
+    {
+      "gene": "CRLS1",
+      "pathogenic_or_likely": 33,
+      "records_fetched": 33,
+      "top_conditions": [
+        {
+          "condition": "See cases",
+          "records": 18
+        },
+        {
+          "condition": "Combined oxidative phosphorylation deficiency 57",
+          "records": 3
+        },
+        {
+          "condition": "Congenital myasthenic syndrome 18",
+          "records": 1
+        },
+        {
+          "condition": "Inosine triphosphatase deficiency",
+          "records": 1
+        },
+        {
+          "condition": "Renal agenesis",
+          "records": 1
+        }
+      ]
+    },
+    {
+      "gene": "PGS1",
+      "pathogenic_or_likely": 14,
+      "records_fetched": 14,
+      "top_conditions": [
+        {
+          "condition": "See cases",
+          "records": 9
+        }
+      ]
+    },
+    {
+      "gene": "PTPMT1",
+      "pathogenic_or_likely": 13,
+      "records_fetched": 13,
+      "top_conditions": [
+        {
+          "condition": "See cases",
+          "records": 7
+        },
+        {
+          "condition": "Aniridia 1",
+          "records": 1
+        },
+        {
+          "condition": "Neurodevelopmental disorder with ataxia and brain abnormalities",
+          "records": 1
+        },
+        {
+          "condition": "Agammaglobulinemia",
+          "records": 1
+        },
+        {
+          "condition": "Leukocyte adhesion deficiency type II",
+          "records": 1
+        }
+      ]
+    },
+    {
+      "gene": "HADHA",
+      "pathogenic_or_likely": 267,
+      "records_fetched": 267,
+      "top_conditions": [
+        {
+          "condition": "Long chain 3-hydroxyacyl-CoA dehydrogenase deficiency",
+          "records": 319
+        },
+        {
+          "condition": "Mitochondrial trifunctional protein deficiency",
+          "records": 158
+        },
+        {
+          "condition": "Mitochondrial trifunctional protein deficiency 1",
+          "records": 36
+        },
+        {
+          "condition": "See cases",
+          "records": 12
+        },
+        {
+          "condition": "HADHA-related disorder",
+          "records": 2
+        }
+      ]
+    },
+    {
+      "gene": "PHB",
+      "pathogenic_or_likely": 0,
+      "records_fetched": 0,
+      "top_conditions": []
+    },
+    {
+      "gene": "PHB2",
+      "pathogenic_or_likely": 46,
+      "records_fetched": 46,
+      "top_conditions": [
+        {
+          "condition": "See cases",
+          "records": 21
+        },
+        {
+          "condition": "Chromosome 4q21 deletion syndrome",
+          "records": 1
+        },
+        {
+          "condition": "Peroxisome biogenesis disorder 2B",
+          "records": 1
+        },
+        {
+          "condition": "Developmental and epileptic encephalopathy, 21",
+          "records": 1
+        },
+        {
+          "condition": "Pallister-Killian syndrome",
+          "records": 1
+        }
+      ]
+    },
+    {
+      "gene": "CHCHD3",
+      "pathogenic_or_likely": 32,
+      "records_fetched": 32,
+      "top_conditions": [
+        {
+          "condition": "See cases",
+          "records": 17
+        },
+        {
+          "condition": "Ring chromosome 7",
+          "records": 1
+        },
+        {
+          "condition": "Renal transitional cell carcinoma",
+          "records": 1
+        },
+        {
+          "condition": "Pleomorphic xanthoastrocytoma",
+          "records": 1
+        }
+      ]
+    }
+  ],
+  "note": "Counts are ClinVar submitter classifications (pathogenic or likely pathogenic), fetched live from NCBI and re-fetchable from the recorded query URLs. They are genetic association evidence, not measured rescue and not diagnosis.",
+  "schema": "protein_hinge.clinvar_evidence.v1",
+  "tsv_sha256": "b676ebb7369507ade7c4e08224ff08378b4f2a596cd76cadcd4f23c857f72413"
+}
