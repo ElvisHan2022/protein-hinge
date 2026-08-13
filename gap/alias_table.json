@@ -1,0 +1,14 @@
+{
+  "schema": "protein_hinge.gap.alias_table.v1",
+  "policy": "closed_mapping_no_fuzzy_matching",
+  "aliases": {
+    "PD-1": "PDCD1",
+    "PD1": "PDCD1",
+    "Factor B": "CFB",
+    "CFB": "CFB",
+    "PARP1": "PARP1",
+    "SMN1": "SMN1",
+    "TAZ": "TAZ",
+    "TTR": "TTR"
+  }
+}

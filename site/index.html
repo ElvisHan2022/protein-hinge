@@ -83,6 +83,17 @@
   .bar { height:5px; background:var(--line); border-radius:3px; overflow:hidden; margin:10px 0; }
   .bar div { height:100%; background:var(--acc); width:0; transition:width .12s; }
   .figure-img { display:block; width:100%; max-width:1100px; border:1px solid var(--line); border-radius:6px; background:#fff; }
+  .metric {
+    min-width:150px; border:1px solid var(--line); border-radius:6px;
+    padding:10px 12px; background:#111720;
+  }
+  .metric b { display:block; font-size:18px; color:var(--fg); line-height:1.2; }
+  .metric span { color:var(--dim); font-size:11px; text-transform:uppercase; letter-spacing:.06em; }
+  .grid2 { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr); gap:14px; }
+  .selectable tr { cursor:pointer; }
+  .selectable tr:hover td { background:#1a222d; }
+  #agentGraph { height:430px; border:1px solid var(--line); border-radius:6px; background:#0b0f14; }
+  @media (max-width: 860px) { .grid2 { grid-template-columns:1fr; } }
   #drop { border:1px dashed var(--line); padding:36px; text-align:center;
           border-radius:6px; color:var(--dim); }
 </style>
@@ -92,7 +103,9 @@
   <div class="rootline" id="rootline">loading database…</div>
   <nav>
     <button data-t="verify" class="on">VERIFY</button>
+    <button data-t="elvis">ELVIS</button>
     <button data-t="figure">FIGURE</button>
+    <button data-t="agents">AGENTS</button>
     <button data-t="browse">BROWSE</button>
     <button data-t="sql">SQL</button>
     <button data-t="prove">PROVE</button>
@@ -122,6 +135,24 @@
       <div id="vout"></div>
     </section>
 
+    <!-- -------------------------------------------------------- ELVIS -->
+    <section id="s-elvis">
+      <p class="note">Disease-first rare disease repurposing finder from the Elvis
+        handoff and GAP lane spec. Prescripted mode is the offline Barth/elamipretide validation case.
+        Live mode probes ClinicalTrials.gov only and abstains from the full
+        target/program gap claim until Open Targets and Convoke are wired.</p>
+      <div class="row">
+        <input type="text" id="elvisQ" value="Barth syndrome" placeholder="rare disease or target">
+        <button class="go" id="elvisPrescripted">PRESCRIPTED DEMO</button>
+        <button class="ghost" id="elvisLive">LIVE CLINICALTRIALS PROBE</button>
+      </div>
+      <div class="row" id="elvisMetrics"></div>
+      <div class="grid2">
+        <div class="card scroll"><h3>ranked programs</h3><div id="elvisRows"></div></div>
+        <div class="card"><h3>custody and claim ceiling</h3><div id="elvisDetail"></div></div>
+      </div>
+    </section>
+
     <!-- ------------------------------------------------------- FIGURE -->
     <section id="s-figure">
       <p class="note">Distance-domain scientific figure from the processed CPJUMP1
@@ -132,6 +163,17 @@
         <h3>CPJUMP1 cell perturbation restoration figure</h3>
         <img class="figure-img" src="assets/cell_perturbation_restoration.png"
              alt="Scientific figure showing ADA perturbation distance, top candidate restoration scores, candidate distance scatter, and provenance.">
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------- AGENTS -->
+    <section id="s-agents">
+      <p class="note">OpenAI subagents ran from the project <code>.env</code> and
+        wrote one FCO receipt per bounded role. The API key itself is not stored,
+        hashed, committed, or rendered here.</p>
+      <div class="grid2">
+        <div class="card"><h3>agent fan-out graph</h3><div id="agentGraph"></div></div>
+        <div class="card"><h3>fan-out manifest</h3><div id="agentManifest"></div></div>
       </div>
     </section>
 
@@ -212,6 +254,7 @@ FROM v_tractability;</textarea>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+<script src="https://unpkg.com/cytoscape@3.30.4/dist/cytoscape.min.js"></script>
 <script>
 // ---------------------------------------------------------------- sha256
 // crypto.subtle is used when available. The fallback exists because a file://
@@ -319,7 +362,7 @@ async function boot(bytes){
     `one root over both lanes &nbsp; <b class="hash">${esc(m.merkle_root)}</b><br>` +
     `${n} nodes · ${esc(m.merkle_convention)} · corpus pinned ${esc(m.generated_at)} · ` +
     `science ceiling <b>${esc(m.claim_ceiling_science)}</b> · FTO ceiling <b>${esc(m.claim_ceiling_fto)}</b>`;
-  initBrowse(); initAbout(); initSamples();
+  initBrowse(); initAbout(); initSamples(); initElvis(); initAgents();
   lookup('phase_1_axis_claim');
 }
 
@@ -347,6 +390,114 @@ document.addEventListener('click', e=>{
   const t=e.target.closest('.hash.click');
   if(t){ document.querySelector('nav button[data-t=verify]').click(); lookup(t.dataset.id); }
 });
+
+// ---------------------------------------------------------------- elvis
+const metric = (label, value) => `<div class="metric"><b>${esc(value)}</b><span>${esc(label)}</span></div>`;
+
+function renderElvis(payload){
+  const rows = payload.rows || [];
+  const rawAbst = payload.abstentions || [];
+  const abst = Array.isArray(rawAbst) ? rawAbst : Object.entries(rawAbst).map(([reason, count])=>({reason, count}));
+  const mode = payload.mode || 'prescripted';
+  const ceiling = payload.claim_ceiling || 'REPURPOSING_HYPOTHESIS';
+  $('#elvisMetrics').innerHTML = [
+    metric('mode', mode),
+    metric('rows', rows.length),
+    metric('abstentions', abst.length),
+    metric('claim ceiling', ceiling),
+  ].join('');
+
+  const tableRows = rows.map((r,i)=>({
+    row: i + 1,
+    disease: r.disease,
+    target: r.target || r.target_symbol || '—',
+    program: r.drug || r.drug_program || r.program || r.interventions || '—',
+    stage: r.stage || r.phase || r.status || '—',
+    grade: r.grade || 'ABSTAIN',
+    rule: r.rule || r.rule_fired || r.nct_id || '—',
+  }));
+  $('#elvisRows').innerHTML = tbl(tableRows);
+  const tbody = $('#elvisRows tbody');
+  if(tbody){
+    tbody.classList.add('selectable');
+    [...tbody.querySelectorAll('tr')].forEach((tr,i)=>tr.onclick=()=>renderElvisDetail(rows[i], payload));
+  }
+  renderElvisDetail(rows[0], payload);
+}
+
+function renderElvisDetail(row, payload){
+  if(!row){
+    $('#elvisDetail').innerHTML = `<p class="dim">${esc(payload.note || 'No rows returned.')}</p>`;
+    return;
+  }
+  const sourceNodes = row.custody_source_nodes || [];
+  const nestedCustody = row.custody && typeof row.custody === 'object' ? row.custody : {};
+  const nestedSources = nestedCustody.source_nodes || [];
+  const trials = row.trials || (row.prior_trials ? String(row.prior_trials).split(';').map(s=>s.trim()) : null) || (row.nct_id ? [row.nct_id] : []);
+  $('#elvisDetail').innerHTML = `<table>
+    <tr><td class="k">query</td><td>${esc(payload.query || payload.default_query || '')}</td></tr>
+    <tr><td class="k">disease</td><td>${esc(row.disease)}</td></tr>
+    <tr><td class="k">target</td><td>${esc(row.target || row.target_symbol || 'not joined in live mode')}</td></tr>
+    <tr><td class="k">program</td><td>${esc(row.drug || row.drug_program || row.program || row.interventions || 'not joined')}</td></tr>
+    <tr><td class="k">grade</td><td class="${String(row.grade).includes('NOT_A_GAP')?'warn':''}">${esc(row.grade || 'ABSTAIN')}</td></tr>
+    <tr><td class="k">rule</td><td>${esc(row.rule || row.rule_fired || 'live probe abstains from deterministic gap grading')}</td></tr>
+    <tr><td class="k">trials</td><td>${esc(trials.join('; ') || '—')}</td></tr>
+    <tr><td class="k">custody</td><td>${esc(sourceNodes.join('; ') || nestedSources.join('; ') || row.custody || 'prescripted local JSON')}</td></tr>
+    <tr><td class="k">ceiling</td><td>${esc(payload.claim_ceiling || nestedCustody.claim_ceiling || 'REPURPOSING_HYPOTHESIS')}</td></tr>
+    </table>
+    <p class="note" style="margin-top:12px">${esc(row.why_plausible || payload.note || 'Prescripted validation data from Elvis handoff; not a treatment recommendation.')}</p>`;
+}
+
+async function initElvis(){
+  async function loadPrescripted(){
+    const r = await fetch('assets/elvis_prescripted_demo.json');
+    renderElvis(await r.json());
+  }
+  $('#elvisPrescripted').onclick = loadPrescripted;
+  $('#elvisLive').onclick = async ()=>{
+    const q = $('#elvisQ').value || 'Barth syndrome';
+    $('#elvisDetail').innerHTML = '<p class="dim">running live ClinicalTrials.gov probe…</p>';
+    try{
+      const r = await fetch('/api/elvis?q=' + encodeURIComponent(q));
+      renderElvis(await r.json());
+    }catch(e){
+      renderElvis({mode:'live_error', query:q, claim_ceiling:'REPURPOSING_HYPOTHESIS',
+        rows:[], abstentions:[{reason:e.message}], note:'Live probe failed; prescripted demo remains available offline.'});
+    }
+  };
+  await loadPrescripted();
+}
+
+// ---------------------------------------------------------------- agents
+async function initAgents(){
+  const rows = all("SELECT fco_type, label, role, model, fco_id, object_sha256 FROM fco_object ORDER BY fco_type, label");
+  let html = `<p class="dim">${rows.length} FCO object${rows.length===1?'':'s'} projected into SQLite.</p>`;
+  html += tbl(rows);
+  try{
+    const manifest = await (await fetch('assets/agent_fanout_latest.json')).json();
+    html += `<p class="note" style="margin-top:12px">fan-out Merkle root <span class="hash">${esc(manifest.merkle_root)}</span>; integration object <span class="hash">${esc(manifest.integration_fco_id || '')}</span></p>`;
+  }catch(e){ /* graph-only/offline fallback */ }
+  $('#agentManifest').innerHTML = html;
+
+  try{
+    const graph = await (await fetch('assets/agent_fanout_graph.cyjs')).json();
+    if(!window.cytoscape) throw new Error('cytoscape unavailable');
+    cytoscape({
+      container: $('#agentGraph'),
+      elements: graph.elements,
+      style: [
+        { selector:'node', style:{ 'background-color':'#2f7f75', 'label':'data(label)', 'color':'#c9d3de', 'font-size':9, 'text-wrap':'wrap', 'text-max-width':110, 'text-valign':'center', 'text-halign':'center', 'width':86, 'height':50, 'shape':'round-rectangle', 'border-color':'#263238', 'border-width':1 } },
+        { selector:'node[kind="model_fco"]', style:{ 'background-color':'#527aa3' } },
+        { selector:'node[kind="integration_fco"]', style:{ 'background-color':'#c55a3d' } },
+        { selector:'node[kind="root"]', style:{ 'background-color':'#b98b2f' } },
+        { selector:'edge', style:{ 'curve-style':'bezier', 'target-arrow-shape':'triangle', 'line-color':'#83909c', 'target-arrow-color':'#83909c', 'label':'data(label)', 'font-size':7, 'color':'#8d99a6' } },
+      ],
+      layout: { name:'breadthfirst', directed:true, padding:22, spacingFactor:1.15 },
+    });
+  }catch(e){
+    $('#agentGraph').innerHTML = `<p class="dim" style="padding:16px">Graph unavailable: ${esc(e.message)}</p>`;
+  }
+}
 
 // ---------------------------------------------------------------- verify
 function lookup(q){
@@ -477,6 +628,10 @@ const SAMPLES = [
    "SELECT depth, kind, ancestor_label, evidence_level\nFROM v_custody_chain\nWHERE root_label='phase_1_axis_claim'\nORDER BY depth, ancestor_label;"],
   ['the 8 consensus genes', 'SELECT * FROM consensus_gene ORDER BY tier, symbol;'],
   ['registries: wired or not', 'SELECT * FROM registry_status;'],
+  ['agent/model FCO objects', 'SELECT fco_type, label, role, model, fco_id FROM fco_object ORDER BY fco_type, label;'],
+  ['agent integration edges', 'SELECT * FROM fco_edge ORDER BY relation, source_id;'],
+  ['GAP lane candidates', 'SELECT * FROM v_gap_candidates;'],
+  ['GAP lane receipt', 'SELECT * FROM gap_receipt;'],
   ['tamper suite results', 'SELECT * FROM tamper_assertion;'],
 ];
 function initSamples(){

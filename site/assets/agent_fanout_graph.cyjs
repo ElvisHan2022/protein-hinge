@@ -1,0 +1,322 @@
+{
+  "elements": {
+    "edges": [
+      {
+        "data": {
+          "id": "objective-inputs",
+          "label": "scopes",
+          "source": "objective",
+          "target": "inputs"
+        }
+      },
+      {
+        "data": {
+          "id": "inputs-elvis_integrator",
+          "label": "read",
+          "source": "inputs",
+          "target": "elvis_integrator"
+        }
+      },
+      {
+        "data": {
+          "id": "elvis_integrator-dashboard",
+          "label": "proposes",
+          "source": "elvis_integrator",
+          "target": "dashboard"
+        }
+      },
+      {
+        "data": {
+          "id": "inputs-environment_packager",
+          "label": "read",
+          "source": "inputs",
+          "target": "environment_packager"
+        }
+      },
+      {
+        "data": {
+          "id": "environment_packager-docs",
+          "label": "proposes",
+          "source": "environment_packager",
+          "target": "docs"
+        }
+      },
+      {
+        "data": {
+          "id": "inputs-fco_mapper",
+          "label": "read",
+          "source": "inputs",
+          "target": "fco_mapper"
+        }
+      },
+      {
+        "data": {
+          "id": "fco_mapper-dashboard",
+          "label": "proposes",
+          "source": "fco_mapper",
+          "target": "dashboard"
+        }
+      },
+      {
+        "data": {
+          "id": "inputs-figure_auditor",
+          "label": "read",
+          "source": "inputs",
+          "target": "figure_auditor"
+        }
+      },
+      {
+        "data": {
+          "id": "figure_auditor-docs",
+          "label": "proposes",
+          "source": "figure_auditor",
+          "target": "docs"
+        }
+      },
+      {
+        "data": {
+          "id": "inputs-navigator",
+          "label": "read",
+          "source": "inputs",
+          "target": "navigator"
+        }
+      },
+      {
+        "data": {
+          "id": "navigator-dashboard",
+          "label": "proposes",
+          "source": "navigator",
+          "target": "dashboard"
+        }
+      },
+      {
+        "data": {
+          "id": "inputs-integration",
+          "label": "binds",
+          "source": "inputs",
+          "target": "integration"
+        }
+      },
+      {
+        "data": {
+          "id": "model-integration",
+          "label": "uses",
+          "source": "model",
+          "target": "integration"
+        }
+      },
+      {
+        "data": {
+          "id": "elvis_integrator-integration",
+          "label": "integrates",
+          "source": "elvis_integrator",
+          "target": "integration"
+        }
+      },
+      {
+        "data": {
+          "id": "environment_packager-integration",
+          "label": "integrates",
+          "source": "environment_packager",
+          "target": "integration"
+        }
+      },
+      {
+        "data": {
+          "id": "fco_mapper-integration",
+          "label": "integrates",
+          "source": "fco_mapper",
+          "target": "integration"
+        }
+      },
+      {
+        "data": {
+          "id": "figure_auditor-integration",
+          "label": "integrates",
+          "source": "figure_auditor",
+          "target": "integration"
+        }
+      },
+      {
+        "data": {
+          "id": "navigator-integration",
+          "label": "integrates",
+          "source": "navigator",
+          "target": "integration"
+        }
+      },
+      {
+        "data": {
+          "id": "integration-root",
+          "label": "rooted",
+          "source": "integration",
+          "target": "root"
+        }
+      }
+    ],
+    "nodes": [
+      {
+        "data": {
+          "id": "objective",
+          "kind": "objective",
+          "label": "objective"
+        }
+      },
+      {
+        "data": {
+          "id": "inputs",
+          "kind": "input",
+          "label": "hashed inputs"
+        }
+      },
+      {
+        "data": {
+          "id": "root",
+          "kind": "root",
+          "label": "fan-out root\\n287daba53f15"
+        }
+      },
+      {
+        "data": {
+          "id": "dashboard",
+          "kind": "update",
+          "label": "dashboard update"
+        }
+      },
+      {
+        "data": {
+          "id": "docs",
+          "kind": "update",
+          "label": "docs/script update"
+        }
+      },
+      {
+        "data": {
+          "fco_id": "sha256:f1535011dce34aa87eec459f4e5003d72f608d31fa42d287b3b863ec2438e412",
+          "id": "elvis_integrator",
+          "kind": "agent_fco",
+          "label": "elvis_integrator\\nf1535011dce3",
+          "proposed_update": "Integrate a step in the demo to visualize the data lineage and provenance of the repurposed drug candidates within the dashboard.",
+          "role": "Elvis component integrator",
+          "summary": "The demo will include a traceability feature for drug candidates to enhance transparency."
+        }
+      },
+      {
+        "data": {
+          "fco_id": "sha256:acff71954fc49bbfbffc4baf745686d7ed0a8721340aba5b68fca9af593ee88c",
+          "id": "environment_packager",
+          "kind": "agent_fco",
+          "label": "environment_packager\\nacff71954fc4",
+          "proposed_update": "Add a requirements.txt and package.json file detailing necessary Python and npm packages for local demo reproduction.",
+          "role": "Environment packager",
+          "summary": "The demo requires specific Python and npm packages documented in requirements.txt and package.json for reproducibility."
+        }
+      },
+      {
+        "data": {
+          "fco_id": "sha256:cd6c929527f26b73e003b89122ba318775dce0433556a04c7cc696494eea17cf",
+          "id": "fco_mapper",
+          "kind": "agent_fco",
+          "label": "fco_mapper\\ncd6c929527f2",
+          "proposed_update": "Create an FCO node capturing the fan-out event, linking to individual content updates such as the processed cell-perturbation figure, hash-pinned ledger entries, and UI state changes.",
+          "role": "FCO graph mapper",
+          "summary": "This agent maps the fan-out as an FCO node linked to its content updates, enhancing provenance traceability."
+        }
+      },
+      {
+        "data": {
+          "fco_id": "sha256:7e7c08bbaa85700113a5e376faa9c130f342fad7654d1806d8dcd86d6a7b62a9",
+          "id": "figure_auditor",
+          "kind": "agent_fco",
+          "label": "figure_auditor\\n7e7c08bbaa85",
+          "proposed_update": "Add detailed metadata and data provenance info to the figure hover or caption to clarify data sources and processing steps.",
+          "role": "Scientific figure auditor",
+          "summary": "The figure's honesty about data and claims can be improved by transparent metadata and provenance, but direct verification remains limited."
+        }
+      },
+      {
+        "data": {
+          "fco_id": "sha256:8349200fffae6c520ed525ac78b6210fd43fef7260329833e5487e5c7d92387c",
+          "id": "integration",
+          "kind": "integration_fco",
+          "label": "integration\\n8349200fffae",
+          "role": "Fan-out integration object",
+          "summary": "Links model, agent objects, dashboard, database projection, and claim ceiling."
+        }
+      },
+      {
+        "data": {
+          "fco_id": "sha256:5c9766dfc6826489de80b65d50e1acee80da027c423402fde102062864949a40",
+          "id": "model",
+          "kind": "model_fco",
+          "label": "model\\n5c9766dfc682",
+          "role": "gpt-4.1-nano",
+          "summary": "OpenAI model object used by the run."
+        }
+      },
+      {
+        "data": {
+          "fco_id": "sha256:840b5a529e9efa7620dd25e6625e2fb2980c22685e2dbf382c0c749a8f8ec6ee",
+          "id": "navigator",
+          "kind": "agent_fco",
+          "label": "navigator\\n840b5a529e9e",
+          "proposed_update": "Add an interactive tooltip on the dashboard figure that, when clicked, displays the linked FCO receipt details with a 'View Custody Record' button.",
+          "role": "Evidence navigator",
+          "summary": "Guide users from viewing the scientific result to accessing the hash-pinned custody receipt via integrated dashboard links and interactive elements."
+        }
+      }
+    ]
+  },
+  "manifest": {
+    "agent_fco_count": 5,
+    "agent_fco_ids": [
+      "sha256:7e7c08bbaa85700113a5e376faa9c130f342fad7654d1806d8dcd86d6a7b62a9",
+      "sha256:840b5a529e9efa7620dd25e6625e2fb2980c22685e2dbf382c0c749a8f8ec6ee",
+      "sha256:acff71954fc49bbfbffc4baf745686d7ed0a8721340aba5b68fca9af593ee88c",
+      "sha256:cd6c929527f26b73e003b89122ba318775dce0433556a04c7cc696494eea17cf",
+      "sha256:f1535011dce34aa87eec459f4e5003d72f608d31fa42d287b3b863ec2438e412"
+    ],
+    "api_key_committed": false,
+    "created_at": "2026-08-13T21:16:13+00:00",
+    "duration_seconds": 2.807,
+    "env_source": ".env",
+    "errors": [],
+    "fco_ids": [
+      "sha256:7e7c08bbaa85700113a5e376faa9c130f342fad7654d1806d8dcd86d6a7b62a9",
+      "sha256:840b5a529e9efa7620dd25e6625e2fb2980c22685e2dbf382c0c749a8f8ec6ee",
+      "sha256:acff71954fc49bbfbffc4baf745686d7ed0a8721340aba5b68fca9af593ee88c",
+      "sha256:cd6c929527f26b73e003b89122ba318775dce0433556a04c7cc696494eea17cf",
+      "sha256:f1535011dce34aa87eec459f4e5003d72f608d31fa42d287b3b863ec2438e412"
+    ],
+    "input_hashes": {
+      "ai_brief": "sha256:0c9ae885df8d9ee754107ecfcc209600db3ead2e92e6f58d8b29d73b47e43f38",
+      "candidate_ranking": "sha256:e93d3ce7526049c8904e36e6e1aeefc2558c38b3032c8c348342390d8cf30b51",
+      "cell_perturbation_figure": "sha256:b99adc349a72d578351e1858e4dc0a2597de8ec244d42ecec5fd4f402209d71b",
+      "dashboard": "sha256:bb288112b630bc25ce6442f23ffef88645e780a4e86012b0c76121784549a404",
+      "design_citations": "sha256:ba9565d24dffb1fa30bfb5c418d39612ab258f9f4a6cf39ae190456d9bc2e97f",
+      "elvis_component_doc": "sha256:e44abbb0ad5ee2a496429764f76c6809e0783b44042c7c698b6c3f8f6b2953f3",
+      "elvis_prescripted_demo": "sha256:c0106602a3fe29d3b5ff3119572b5ffc092b493bd5308a5a126f8291696a85f7",
+      "gap_lane_receipt": "sha256:f28aa567f0590e24156662276f10e433f8dceb599eb5a35d0c3c05088a5859e3",
+      "gap_lane_spec": "sha256:03daf3cefea902ceaa93d8a38c073d0e3cc3d80796e7369c11bb17ee3adae9d3",
+      "mvp_status": "sha256:5f77071e93841481e4d234fbaeb73bd36d5adce8f1505ecc13c93d5d85716e84",
+      "package_metadata": "sha256:d4f655e902db6e4e97f08aab55861a7d398d8d2ebb25b90acb50aa889440dcdf",
+      "plain_language_brief": "sha256:ab681f1501919354f722de3557f9158b37ea91e05007df6de22dda999b21761e"
+    },
+    "integration_fco_id": "sha256:8349200fffae6c520ed525ac78b6210fd43fef7260329833e5487e5c7d92387c",
+    "merkle_root": "sha256:287daba53f151c2de4fd341176aa074fd72396325c7abc642cb357506bd9be6e",
+    "model": "gpt-4.1-nano",
+    "model_fco_id": "sha256:5c9766dfc6826489de80b65d50e1acee80da027c423402fde102062864949a40",
+    "object_count": 7,
+    "object_ids": [
+      "sha256:5c9766dfc6826489de80b65d50e1acee80da027c423402fde102062864949a40",
+      "sha256:7e7c08bbaa85700113a5e376faa9c130f342fad7654d1806d8dcd86d6a7b62a9",
+      "sha256:8349200fffae6c520ed525ac78b6210fd43fef7260329833e5487e5c7d92387c",
+      "sha256:840b5a529e9efa7620dd25e6625e2fb2980c22685e2dbf382c0c749a8f8ec6ee",
+      "sha256:acff71954fc49bbfbffc4baf745686d7ed0a8721340aba5b68fca9af593ee88c",
+      "sha256:cd6c929527f26b73e003b89122ba318775dce0433556a04c7cc696494eea17cf",
+      "sha256:f1535011dce34aa87eec459f4e5003d72f608d31fa42d287b3b863ec2438e412"
+    ],
+    "run_id": "20260813Tfanout-elvis",
+    "schema": "protein_hinge.fco.agent_fanout_manifest.v1"
+  }
+}

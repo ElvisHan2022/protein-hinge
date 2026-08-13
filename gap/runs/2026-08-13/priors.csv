@@ -1,0 +1,2 @@
+disease_id,disease,drug,nct_ids,n_trials,caveat
+MONDO:0010526,Barth syndrome,elamipretide,NCT03098797;NCT07531251;NCT04689360,3,"ClinicalTrials.gov registers trials rather than programs, so absence of a registered competitor is weak evidence of no competitor."

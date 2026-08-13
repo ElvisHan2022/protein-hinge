@@ -1,0 +1,2 @@
+disease_id,disease,ensembl_id,symbol,score,tractability_buckets,source
+MONDO:0010526,Barth syndrome,ENSG00000102125,TAZ,0.89,0,prescripted_validation_case

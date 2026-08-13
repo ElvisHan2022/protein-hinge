@@ -1,0 +1,23 @@
+{
+  "claim_ceiling": "REPURPOSING_HYPOTHESIS",
+  "files": {
+    "abstentions.json": "sha256:ed1a0a955e05a08be12f69a62c9b66bc887aae7606b8c85f0b422691721020f9",
+    "candidates.csv": "sha256:d197113efa30f0425de3368b9a5e7ba325340b9511fbfa7b7c6e9abea6e727e6",
+    "priors.csv": "sha256:bd825ce82f613df1a4ffc049aa7a35714dbfce73b46eb6518a897d12d912e978",
+    "programs.csv": "sha256:40baac0949f52f8548faa3e5096b6c5b9be694d6eafe03b60a33fd7a6d913cd8",
+    "targets.csv": "sha256:87a62659b732d9c4a1b6ca14bac4ce598241a8c1c88a95f6e5d194fec4f7083b"
+  },
+  "lane": "gap",
+  "merkle_convention": "duplicate-last/sha256-over-file-digests",
+  "merkle_root": "sha256:9224eedfff0f2a681545c42d03f341e14a497be9d6789bd2766ca9d5db1b9f90",
+  "note": "Prescripted validation lane. Live Convoke/Open Targets joins remain explicit unblocks.",
+  "run_date": "2026-08-13",
+  "schema": "protein_hinge.gap.receipt.v1",
+  "source_spec": "docs/GAP_LANE_SPEC.md",
+  "source_spec_sha256": "sha256:03daf3cefea902ceaa93d8a38c073d0e3cc3d80796e7369c11bb17ee3adae9d3",
+  "therapeutic_recommendation_refusal": {
+    "emitted": false,
+    "highest_level_available": "REPURPOSING_HYPOTHESIS",
+    "reason": "THERAPEUTIC_RECOMMENDATION cannot be emitted by this system."
+  }
+}

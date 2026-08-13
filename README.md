@@ -47,8 +47,44 @@ Recording-ready materials:
 - [MVP status](docs/MVP_STATUS.md)
 - [Pitch deck document](docs/PITCH_DECK.md)
 - [Video script](docs/VIDEO_SCRIPT.md)
+- [Plain-language brief](docs/PLAIN_LANGUAGE_BRIEF.md)
+- [AI presentation brief](docs/AI_PRESENTATION_BRIEF.json)
+- [Elvis component](docs/ELVIS_COMPONENT.md)
+- [FCO/FCG design citations](docs/FCO_FCG_DESIGN_CITATIONS.md)
 - [Cell perturbation scientific figure](figures/cell_perturbation_restoration.png)
+- [OpenAI fan-out FCO graph](figures/agent_fanout_fco_graph.png)
 - [Screenshots](output/playwright/)
+
+## Elvis + Agent FCO Demo
+
+The dashboard now has two additional recording surfaces:
+
+- `ELVIS`: disease-first rare disease repurposing finder. Prescripted Barth
+  syndrome data works offline. The live option probes ClinicalTrials.gov and
+  abstains from full gap grading until Open Targets and Convoke joins are
+  wired.
+- `GAP`: deterministic rare-disease gap grading lane under
+  [GAP_LANE_SPEC.md](docs/GAP_LANE_SPEC.md). The current prescripted run emits
+  `targets.csv`, `programs.csv`, `priors.csv`, `candidates.csv`,
+  `abstentions.json`, and `receipt.json`.
+- `AGENTS`: OpenAI fan-out receipts. Each subagent response is an FCO, the
+  OpenAI model is an FCO, and the integration record tying those outputs into
+  Protein Hinge is an FCO. These objects are projected into `fco_object` and
+  `fco_edge` tables in the local SQLite database.
+- `@strands-agents/sdk` is installed and locked for the requested agent stack,
+  though the verified fan-out path currently uses the OpenAI Responses API
+  directly so it can write simple FCO receipts without extra runtime coupling.
+
+Run the bounded fan-out only from a local ignored `.env`:
+
+```bash
+python3 scripts/run_openai_fanout.py --env-file .env --model gpt-4.1-nano --run-id 20260813Tfanout-elvis --max-workers 4
+python3 scripts/build_agent_fanout_graph.py
+python3 gap/ingest_gap.py
+python3 db/build_db.py
+```
+
+The key and key hash are not written to the repo.
 
 The received zip includes source builders (`fcg/ingest.py`,
 `fcg/tamper_test.py`, and `fto/ingest_fto.py`), but those scripts reference a

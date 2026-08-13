@@ -228,6 +228,51 @@ CREATE TABLE tamper_assertion (
   passed  INTEGER NOT NULL
 );
 
+-- ---------------------------------------------------------------- FCO
+-- First-class projection of generated Fractal Custody Objects. The JSON files
+-- remain the objects of record; this table makes them queryable in the demo DB.
+CREATE TABLE fco_object (
+  fco_id          TEXT PRIMARY KEY,
+  run_id          TEXT NOT NULL,
+  fco_type        TEXT NOT NULL,
+  schema          TEXT NOT NULL,
+  label           TEXT NOT NULL,
+  role            TEXT,
+  model           TEXT,
+  content_digest  TEXT NOT NULL,
+  object_sha256   TEXT NOT NULL,
+  record_json     TEXT NOT NULL
+);
+
+CREATE TABLE fco_edge (
+  source_id TEXT NOT NULL,
+  target_id TEXT NOT NULL,
+  relation  TEXT NOT NULL,
+  PRIMARY KEY (source_id, target_id, relation)
+);
+
+-- ---------------------------------------------------------------- GAP
+CREATE TABLE gap_candidate (
+  disease           TEXT NOT NULL,
+  target_symbol     TEXT NOT NULL,
+  target_reconcile  TEXT NOT NULL,
+  alias_used        TEXT,
+  association_score REAL,
+  drug_program      TEXT NOT NULL,
+  company           TEXT,
+  modality          TEXT,
+  stage             TEXT,
+  prior_trials      TEXT,
+  n_trials          INTEGER NOT NULL,
+  rule_fired        TEXT NOT NULL,
+  grade             TEXT NOT NULL
+);
+
+CREATE TABLE gap_receipt (
+  key   TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+
 -- ================================================================ views
 -- The questions the file store could not answer.
 
@@ -310,6 +355,22 @@ FROM v_custody_chain
 WHERE root_id IN (SELECT node_id FROM claim)
 GROUP BY root_id, root_label
 ORDER BY root_label;
+
+CREATE VIEW v_fco_objects AS
+SELECT fco_type, label, role, model, fco_id, object_sha256
+FROM fco_object
+ORDER BY fco_type, label;
+
+CREATE VIEW v_gap_candidates AS
+SELECT disease, target_symbol, drug_program, company, stage, n_trials,
+       rule_fired, grade
+FROM gap_candidate
+ORDER BY CASE grade
+  WHEN 'GAP_HIGH' THEN 1
+  WHEN 'GAP_MEDIUM' THEN 2
+  WHEN 'GAP_LOW' THEN 3
+  WHEN 'NOT_A_GAP' THEN 4
+  ELSE 5 END, disease, drug_program;
 """
 
 
@@ -506,6 +567,91 @@ def main():
             sorted((k, 1 if v else 0) for k, v in t["assertions"].items()),
         )
 
+    # -------------------------------------------------------------- FCO
+    fco_dir = os.path.join(REPO, "fco", "agent_fanout")
+    fco_rows, fco_edges = [], []
+    latest_path = os.path.join(fco_dir, "latest.json")
+    if os.path.exists(latest_path):
+        latest = jload(latest_path)
+        run_dir = os.path.join(REPO, latest["path"])
+        if os.path.isdir(run_dir):
+            for fn in sorted(os.listdir(run_dir)):
+                if not fn.endswith(".fco.json") or fn == "manifest.fco.json":
+                    continue
+                with open(os.path.join(run_dir, fn), "rb") as fh:
+                    raw = fh.read()
+                rec = json.loads(raw.decode("utf-8"))
+                fco_id = rec.get("fco_id") or sha256_file(os.path.join(run_dir, fn))[0]
+                fco_type = rec.get("fco_type", "unknown")
+                agent = rec.get("agent") or {}
+                model_info = rec.get("model") or rec.get("api") or {}
+                label = (
+                    agent.get("agent_id")
+                    or ("openai_model" if fco_type == "openai_model" else None)
+                    or ("fanout_integration" if fco_type == "fanout_integration" else fn)
+                )
+                fco_rows.append((
+                    fco_id,
+                    rec.get("run_id", latest.get("run_id", "")),
+                    fco_type,
+                    rec.get("schema", ""),
+                    label,
+                    agent.get("role"),
+                    model_info.get("model_requested") or rec.get("api", {}).get("model_requested"),
+                    rec.get("content_digest", fco_id),
+                    sha256_file(os.path.join(run_dir, fn))[0],
+                    raw.decode("utf-8"),
+                ))
+
+                if fco_type == "openai_subagent_fanout":
+                    fco_edges.append(("hashed_inputs", fco_id, "read_by_agent"))
+                    fco_edges.append((fco_id, "dashboard_or_docs", "proposes_update"))
+                elif fco_type == "openai_model":
+                    fco_edges.append((fco_id, "openai_responses_api", "model_runtime"))
+                elif fco_type == "fanout_integration":
+                    model_id = rec.get("model_object")
+                    if model_id:
+                        fco_edges.append((model_id, fco_id, "used_by_integration"))
+                    for aid in rec.get("agent_objects", []) or []:
+                        fco_edges.append((aid, fco_id, "integrated_by"))
+                    fco_edges.append((fco_id, "protein_hinge_dashboard", "updates"))
+                    fco_edges.append((fco_id, "biocustody_sql_projection", "projected_into"))
+            if fco_rows:
+                con.executemany(
+                    "INSERT INTO fco_object VALUES (" + ",".join("?" * 10) + ")",
+                    sorted(fco_rows),
+                )
+                con.executemany("INSERT INTO fco_edge VALUES (?,?,?)", sorted(set(fco_edges)))
+
+    # -------------------------------------------------------------- GAP
+    gap_run = os.path.join(REPO, "gap", "runs", "2026-08-13")
+    candidates_csv = os.path.join(gap_run, "candidates.csv")
+    if os.path.exists(candidates_csv):
+        import csv
+        with open(candidates_csv, newline="") as fh:
+            rows = list(csv.DictReader(fh))
+        con.executemany(
+            "INSERT INTO gap_candidate VALUES (" + ",".join("?" * 13) + ")",
+            sorted(
+                (
+                    r["disease"], r["target_symbol"], r["target_reconcile"],
+                    r.get("alias_used"), float(r.get("association_score") or 0),
+                    r["drug_program"], r.get("company"), r.get("modality"),
+                    r.get("stage"), r.get("prior_trials"), int(r.get("n_trials") or 0),
+                    r["rule_fired"], r["grade"],
+                )
+                for r in rows
+            ),
+        )
+        receipt_path = os.path.join(gap_run, "receipt.json")
+        if os.path.exists(receipt_path):
+            receipt_gap = jload(receipt_path)
+            con.executemany(
+                "INSERT INTO gap_receipt VALUES (?,?)",
+                sorted((k, json.dumps(v, sort_keys=True) if isinstance(v, (dict, list)) else str(v))
+                       for k, v in receipt_gap.items()),
+            )
+
     con.commit()
     con.execute("VACUUM")
     con.commit()
@@ -594,7 +740,8 @@ def main():
     con = sqlite3.connect(OUT)
     for tbl in ("node", "edge", "source", "derivation", "claim", "atom",
                 "merkle_leaf", "merkle_route", "consensus_gene",
-                "registry_query", "registry_status", "tamper_assertion"):
+                "registry_query", "registry_status", "tamper_assertion",
+                "fco_object", "fco_edge", "gap_candidate", "gap_receipt"):
         n = con.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()[0]
         print(f"  {tbl:<18} {n:>5} rows")
     print()

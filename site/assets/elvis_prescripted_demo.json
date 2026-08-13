@@ -1,0 +1,100 @@
+{
+  "schema": "protein_hinge.elvis.prescripted_demo.v1",
+  "component": "Rare Disease Repurposing Finder",
+  "source_handoff": [
+    "/Users/byron/Downloads/HANDOFF_TO_BYRON.md",
+    "/Users/byron/Downloads/HANDOFF_TO_BYRON(1).md"
+  ],
+  "default_query": "Barth syndrome",
+  "claim_ceiling": "REPURPOSING_HYPOTHESIS",
+  "mode": "prescripted_validation_case",
+  "abstentions": {
+    "no_target_above_threshold": 0,
+    "target_name_unresolved": 0,
+    "lookup_failed": 0
+  },
+  "rows": [
+    {
+      "disease": "Barth syndrome",
+      "target_symbol": "TAZ",
+      "association_score": 0.89,
+      "drug_program": "elamipretide",
+      "company": "Stealth BioTherapeutics",
+      "modality": "peptide",
+      "stage": "Approved",
+      "prior_trials": "NCT03098797; NCT07531251; NCT04689360",
+      "rule_fired": "G004_ALREADY_TRIED",
+      "grade": "NOT_A_GAP",
+      "why_plausible": "Elamipretide is already positioned in Barth syndrome, so the row validates the prior-trial filter rather than representing a new gap. A naive repurposing tool would rediscover the incumbent; Elvis marks it as already tried and points to the NCT evidence.",
+      "custody": {
+        "source_nodes": [
+          "fto/clinicaltrials_gov/ct_barth_syndrome",
+          "fto/openfda_drug/openfda_label_elamipretide",
+          "phase_1_axis_claim"
+        ],
+        "route_label": "Barth validation row -> hashed ClinicalTrials/openFDA/FCG evidence",
+        "claim_ceiling": "REPURPOSING_HYPOTHESIS"
+      }
+    },
+    {
+      "disease": "Primary mitochondrial myopathy",
+      "target_symbol": "mitochondrial disease program",
+      "association_score": null,
+      "drug_program": "elamipretide",
+      "company": "Stealth BioTherapeutics",
+      "modality": "peptide",
+      "stage": "Phase 3",
+      "prior_trials": "NCT02367014; NCT02805790; NCT02976038; NCT03323749",
+      "rule_fired": "G001_NO_TARGET",
+      "grade": "ABSTAIN",
+      "why_plausible": "This is retained as disease-landscape context from the Elvis handoff, but the GAP lane abstains because the prescripted row does not include a disease-resolved target above threshold.",
+      "custody": {
+        "source_nodes": ["handoff_appendix_a"],
+        "route_label": "Appendix A validation row",
+        "claim_ceiling": "REPURPOSING_HYPOTHESIS"
+      }
+    },
+    {
+      "disease": "Leber's hereditary optic neuropathy",
+      "target_symbol": "mitochondrial disease program",
+      "association_score": null,
+      "drug_program": "elamipretide",
+      "company": "Stealth BioTherapeutics",
+      "modality": "peptide",
+      "stage": "Phase 2",
+      "prior_trials": "NCT02693119",
+      "rule_fired": "G001_NO_TARGET",
+      "grade": "ABSTAIN",
+      "why_plausible": "This is retained as disease-landscape context from the Elvis handoff, but the GAP lane abstains because the prescripted row does not include a disease-resolved target above threshold.",
+      "custody": {
+        "source_nodes": ["handoff_appendix_a"],
+        "route_label": "Appendix A validation row",
+        "claim_ceiling": "REPURPOSING_HYPOTHESIS"
+      }
+    },
+    {
+      "disease": "Friedreich ataxia",
+      "target_symbol": "mitochondrial disease program",
+      "association_score": null,
+      "drug_program": "elamipretide",
+      "company": "Children's Hospital of Philadelphia",
+      "modality": "peptide",
+      "stage": "Phase 1/2",
+      "prior_trials": "NCT05168774",
+      "rule_fired": "G001_NO_TARGET",
+      "grade": "ABSTAIN",
+      "why_plausible": "This is retained as disease-landscape context from the Elvis handoff, but the GAP lane abstains because the prescripted row does not include a disease-resolved target above threshold.",
+      "custody": {
+        "source_nodes": ["handoff_appendix_a"],
+        "route_label": "Appendix A validation row",
+        "claim_ceiling": "REPURPOSING_HYPOTHESIS"
+      }
+    }
+  ],
+  "prohibited_claims": [
+    "THERAPEUTIC_RECOMMENDATION",
+    "treatment suggestion",
+    "measured rescue",
+    "clinical efficacy"
+  ]
+}

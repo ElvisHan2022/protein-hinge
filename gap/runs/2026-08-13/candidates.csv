@@ -1,0 +1,5 @@
+disease,target_symbol,target_reconcile,alias_used,association_score,drug_program,company,modality,stage,prior_trials,n_trials,lookup_failed,rule_fired,grade
+Barth syndrome,TAZ,EXACT,,0.89,elamipretide,Stealth BioTherapeutics,peptide,Approved,NCT03098797;NCT07531251;NCT04689360,3,False,G004_ALREADY_TRIED,NOT_A_GAP
+Primary mitochondrial myopathy,mitochondrial disease program,EXACT,,0,elamipretide,Stealth BioTherapeutics,peptide,Phase 3,NCT02367014;NCT02805790;NCT02976038;NCT03323749,4,False,G001_NO_TARGET,ABSTAIN
+Leber's hereditary optic neuropathy,mitochondrial disease program,EXACT,,0,elamipretide,Stealth BioTherapeutics,peptide,Phase 2,NCT02693119,1,False,G001_NO_TARGET,ABSTAIN
+Friedreich ataxia,mitochondrial disease program,EXACT,,0,elamipretide,Children's Hospital of Philadelphia,peptide,Phase 1/2,NCT05168774,1,False,G001_NO_TARGET,ABSTAIN
