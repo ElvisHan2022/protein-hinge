@@ -47,6 +47,7 @@ Recording-ready materials:
 - [MVP status](docs/MVP_STATUS.md)
 - [Pitch deck document](docs/PITCH_DECK.md)
 - [Video script](docs/VIDEO_SCRIPT.md)
+- [Cell perturbation scientific figure](figures/cell_perturbation_restoration.png)
 - [Screenshots](output/playwright/)
 
 The received zip includes source builders (`fcg/ingest.py`,

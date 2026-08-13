@@ -1,0 +1,40 @@
+{
+  "claim_ceiling": "REPURPOSING_HYPOTHESIS",
+  "model": "median/MAD scaling -> PCA -> Ledoit-Wolf covariance -> empirical q95 threshold",
+  "phenotypic_opposition_kept_separate_from_reference_distance": true,
+  "reference_state": {
+    "mean_first_10_features": {
+      "Cells_AreaShape_Area": 4209.107728938629,
+      "Cells_AreaShape_BoundingBoxArea": 7299.901940343286,
+      "Cells_AreaShape_BoundingBoxMaximum_X": 581.5664003707774,
+      "Cells_AreaShape_BoundingBoxMaximum_Y": 588.0381743271045,
+      "Cells_AreaShape_BoundingBoxMinimum_X": 498.7566554720948,
+      "Cells_AreaShape_BoundingBoxMinimum_Y": 504.2504452055234,
+      "Cells_AreaShape_Center_X": 539.6341959283116,
+      "Cells_AreaShape_Center_Y": 545.6465859129441,
+      "Cells_AreaShape_Compactness": 1.8905917465872297,
+      "Cells_AreaShape_Eccentricity": 0.7047852841399519
+    },
+    "replicate_count": 124,
+    "variance_first_10_features": {
+      "Cells_AreaShape_Area": 253278.78385610014,
+      "Cells_AreaShape_BoundingBoxArea": 608414.2388438388,
+      "Cells_AreaShape_BoundingBoxMaximum_X": 652.66407720141,
+      "Cells_AreaShape_BoundingBoxMaximum_Y": 597.0736931788645,
+      "Cells_AreaShape_BoundingBoxMinimum_X": 666.6860298214895,
+      "Cells_AreaShape_BoundingBoxMinimum_Y": 641.2228118327631,
+      "Cells_AreaShape_Center_X": 655.3313128640367,
+      "Cells_AreaShape_Center_Y": 614.0875032612917,
+      "Cells_AreaShape_Compactness": 0.001587187959794477,
+      "Cells_AreaShape_Eccentricity": 0.00011017507244187706
+    }
+  },
+  "schema": "biocustody.magicstudiobox.state_model.v1",
+  "source_result": "runs/kaggle_output/cpjump1_best_result.json",
+  "state_decision": {
+    "decision": "TRANSITION",
+    "distance2": 37.10773532415706,
+    "quantile": 0.95,
+    "threshold2": 21.275494504478107
+  }
+}

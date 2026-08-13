@@ -1,0 +1,18 @@
+{
+  "candidate_count": 50,
+  "claim_ceiling": "REPURPOSING_HYPOTHESIS",
+  "hits_at_1": false,
+  "hits_at_10": false,
+  "hits_at_5": false,
+  "known_pair_rank": 28,
+  "reciprocal_rank": 0.03571428571428571,
+  "reciprocal_rank_enrichment_vs_shuffle": 0.24638253360287107,
+  "replicate_similarity": "not_available_in_cached_kaggle_output",
+  "schema": "biocustody.magicstudiobox.evaluation.v1",
+  "shuffle_iterations": 1000,
+  "shuffle_seed": 260813,
+  "shuffled_hits_at_10_rate": 0.346,
+  "shuffled_mean_reciprocal_rank": 0.1449546166768923,
+  "top_opposition_score": 0.5004939964057833,
+  "ts_utc": "2026-08-13T15:18:33Z"
+}

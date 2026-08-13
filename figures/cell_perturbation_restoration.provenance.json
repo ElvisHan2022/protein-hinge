@@ -1,0 +1,43 @@
+{
+  "calculation": {
+    "candidate_count": 50,
+    "claim_ceiling": "REPURPOSING_HYPOTHESIS",
+    "distance_threshold": "state_model.state_decision.threshold2, empirical q95 in squared-distance space",
+    "restoration_score": "1 - candidate_distance / perturbation_distance",
+    "script": "scripts/make_cell_perturbation_figure.py",
+    "selected_perturbation": "BR00118050:ADA"
+  },
+  "caveat": "Predicted counter-perturbation in processed Cell Painting morphology space; not measured rescue or therapeutic efficacy.",
+  "figure": {
+    "files": {
+      "dashboard_copy": "site/assets/cell_perturbation_restoration.png",
+      "pdf": "figures/cell_perturbation_restoration.pdf",
+      "png": "figures/cell_perturbation_restoration.png",
+      "svg": "figures/cell_perturbation_restoration.svg"
+    },
+    "title": "Protein Hinge: CPJUMP1 cell perturbation restoration figure"
+  },
+  "inputs": [
+    {
+      "file": "data/partner/candidate_ranking.csv",
+      "sha256": "sha256:e93d3ce7526049c8904e36e6e1aeefc2558c38b3032c8c348342390d8cf30b51",
+      "source": "https://raw.githubusercontent.com/biobitworks/aws-biopharma/main/data/magicstudiobox/runs/primary/candidate_ranking.csv"
+    },
+    {
+      "file": "data/partner/evaluation.json",
+      "sha256": "sha256:ede568677be5d45412f359153ebd60ada87b23ec93db6a33f9e836bce1bea62f",
+      "source": "https://raw.githubusercontent.com/biobitworks/aws-biopharma/main/data/magicstudiobox/runs/primary/evaluation.json"
+    },
+    {
+      "file": "data/partner/perturbation_state.json",
+      "sha256": "sha256:c6fa95aaf2094767f613f6900f737a6cadc5e0b996b46ea83a3cfe7516bb1bf7",
+      "source": "https://raw.githubusercontent.com/biobitworks/aws-biopharma/main/data/magicstudiobox/runs/primary/perturbation_state.json"
+    },
+    {
+      "file": "data/partner/state_model.json",
+      "sha256": "sha256:4028c343675f298ba3c91171b94a9d9741a5a52e226119b3080ae7390408a18a",
+      "source": "https://raw.githubusercontent.com/biobitworks/aws-biopharma/main/data/magicstudiobox/runs/primary/state_model.json"
+    }
+  ],
+  "schema": "protein_hinge.figure_provenance.v1"
+}

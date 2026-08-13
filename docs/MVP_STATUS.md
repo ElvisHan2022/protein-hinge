@@ -7,6 +7,9 @@ Date: 2026-08-13
 - Local browser dashboard served from `site/` with no application backend.
 - SQLite projection rebuilds deterministically from `fcg/store/`.
 - Browser verifier recomputes all 62 Merkle leaves from stored node records.
+- Scientific cell-perturbation figure shows the selected ADA perturbation,
+  reference threshold, 50 ranked candidates, restoration scores, and pinned
+  input hashes.
 - Current inclusion route replays to the current Merkle root.
 - Superseded science-only route is shown as stale rather than falsely checked
   against the FTO-extended root.
@@ -20,6 +23,7 @@ Date: 2026-08-13
 python3 db/build_db.py
 node site/verify_test.js
 python3 fto/fto.py
+python3 scripts/make_cell_perturbation_figure.py
 python3 db/serve.py 8787
 ```
 
@@ -61,9 +65,20 @@ http://127.0.0.1:8787/
 
 ## Screenshots
 
+- `../figures/cell_perturbation_restoration.png`
 - `../output/playwright/01-verify-claim-receipt.png`
 - `../output/playwright/02-browse-evidence-posture.png`
 - `../output/playwright/03-sql-tractability-query.png`
 - `../output/playwright/03-sql-tractability-results.png`
 - `../output/playwright/04-prove-root-pass.png`
 - `../output/playwright/05-tamper-root-fail.png`
+
+## Small Partner Data Pulled Locally
+
+- `../data/partner/candidate_ranking.csv`
+- `../data/partner/state_model.json`
+- `../data/partner/perturbation_state.json`
+- `../data/partner/evaluation.json`
+
+Each file is hash-checked by `scripts/make_cell_perturbation_figure.py` before
+the figure is rendered.

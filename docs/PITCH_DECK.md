@@ -30,9 +30,24 @@ Protein Hinge packages a minimal vertical slice:
 - One RFC 6962 Merkle root over the combined graph
 - A browser dashboard that verifies the chain locally
 
+![Cell perturbation restoration figure](../figures/cell_perturbation_restoration.png)
+
+## Slide 4 — Scientific Figure
+
+The cell-perturbation figure shows the processed CPJUMP1 result directly:
+
+- ADA selected as the shifted perturbation
+- Empirical q95 reference threshold
+- 50 candidate profiles ranked by restoration score
+- Candidate distance to reference phenotype
+- Target-match markers and pinned input hashes
+
+This is a distance-domain morphology benchmark, not a PCA reconstruction and
+not measured rescue.
+
 ![Evidence posture](../output/playwright/02-browse-evidence-posture.png)
 
-## Slide 4 — Dashboard
+## Slide 5 — Dashboard
 
 The dashboard is intentionally simple:
 
@@ -44,7 +59,7 @@ The dashboard is intentionally simple:
 
 ![SQL tractability result](../output/playwright/03-sql-tractability-results.png)
 
-## Slide 5 — What Is Verifiable
+## Slide 6 — What Is Verifiable
 
 The proof tab does not trust the stored root. It hashes all node records into
 RFC 6962 leaves, rebuilds the tree, and compares the result with the committed
@@ -59,7 +74,7 @@ Current result:
 
 ![Root proof pass](../output/playwright/04-prove-root-pass.png)
 
-## Slide 6 — Tamper Demo
+## Slide 7 — Tamper Demo
 
 The tamper button changes one node record in the browser's in-memory database.
 The rebuilt root moves, the stated root no longer matches, and the first
@@ -70,7 +85,7 @@ trusting a server.
 
 ![Tamper root mismatch](../output/playwright/05-tamper-root-fail.png)
 
-## Slide 7 — Guardrails
+## Slide 8 — Guardrails
 
 The project keeps claim ceilings explicit:
 
@@ -80,7 +95,7 @@ The project keeps claim ceilings explicit:
 - The demo does not claim treatment, efficacy, clinical actionability, or
   measured rescue
 
-## Slide 8 — Ask
+## Slide 9 — Ask
 
 Use Protein Hinge as the custody layer for phenotype-first discovery demos:
 

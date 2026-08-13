@@ -82,6 +82,7 @@
   .note { color:var(--dim); font-size:12px; margin:0 0 14px; max-width:74ch; }
   .bar { height:5px; background:var(--line); border-radius:3px; overflow:hidden; margin:10px 0; }
   .bar div { height:100%; background:var(--acc); width:0; transition:width .12s; }
+  .figure-img { display:block; width:100%; max-width:1100px; border:1px solid var(--line); border-radius:6px; background:#fff; }
   #drop { border:1px dashed var(--line); padding:36px; text-align:center;
           border-radius:6px; color:var(--dim); }
 </style>
@@ -91,6 +92,7 @@
   <div class="rootline" id="rootline">loading database…</div>
   <nav>
     <button data-t="verify" class="on">VERIFY</button>
+    <button data-t="figure">FIGURE</button>
     <button data-t="browse">BROWSE</button>
     <button data-t="sql">SQL</button>
     <button data-t="prove">PROVE</button>
@@ -118,6 +120,19 @@
         <button class="go" id="qgo">LOOK UP</button>
       </div>
       <div id="vout"></div>
+    </section>
+
+    <!-- ------------------------------------------------------- FIGURE -->
+    <section id="s-figure">
+      <p class="note">Distance-domain scientific figure from the processed CPJUMP1
+        subset: selected ADA perturbation, empirical reference threshold, 50 ranked
+        candidate profiles, restoration scores, and pinned source hashes. This is
+        predicted counter-perturbation, not measured rescue.</p>
+      <div class="card">
+        <h3>CPJUMP1 cell perturbation restoration figure</h3>
+        <img class="figure-img" src="assets/cell_perturbation_restoration.png"
+             alt="Scientific figure showing ADA perturbation distance, top candidate restoration scores, candidate distance scatter, and provenance.">
+      </div>
     </section>
 
     <!-- ------------------------------------------------------- BROWSE -->
