@@ -9,7 +9,18 @@ The published project name is Protein Hinge. Some internal schema identifiers
 and database filenames retain the original biocustody prefix for compatibility
 with the received FCG/FTO code and the prebuilt SQLite projection.
 
-The code and documentation in this repository are licensed under Apache-2.0.
+This repository is licensed under Creative Commons
+Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0).
+
+Strict repository boundary:
+
+- Redistribution of verbatim copies is allowed with attribution.
+- Distribution of modified, remixed, transformed, or built-upon versions is not
+  licensed without separate written permission.
+- This license choice is aligned to the restrictive preprint/publication
+  posture requested for the hackathon package.
+
 The referenced JUMP / Cell Painting Gallery profile data is published by its
-upstream providers under CC0 1.0 Universal. A CC0 morphological-profile license
-does not grant molecule, patent, trademark, clinical, or therapeutic rights.
+upstream providers under CC0 1.0 Universal. That upstream CC0 data status does
+not loosen this repository's CC BY-ND 4.0 license, and it does not grant
+molecule, patent, trademark, clinical, or therapeutic rights.

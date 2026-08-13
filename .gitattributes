@@ -1,0 +1,2 @@
+data/regulatory/*.html -diff -text
+data/regulatory/*.xlsx -diff -text

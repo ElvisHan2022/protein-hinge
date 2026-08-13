@@ -71,8 +71,10 @@ http://127.0.0.1:8787/
 - The null comparison is a negative/weak benchmark: the known pair did not beat
   the shuffle null in the tiny cached run.
 - The Regulatory Map tab states that ClinicalTrials.gov, openFDA, and Open
-  Targets are wired, while Europe/EMA, Japan/PMDA, FDA orphan designation,
-  Convoke, and comprehensive approved-drug coverage remain future work.
+  Targets are wired into the current evidence calculation. It also shows small
+  official EMA/PMDA/FDA-orphan source surfaces captured and hashed for
+  traceability, while full normalized cross-region approved-drug coverage
+  remains future work.
 
 ## Claims To Avoid
 
@@ -85,9 +87,9 @@ http://127.0.0.1:8787/
 - Do not claim the live Disease Search option performs the full Open Targets -> Convoke
   -> ClinicalTrials -> openFDA join. It currently probes ClinicalTrials.gov and
   abstains from full gap grading.
-- Do not claim European EMA/EPAR, Japanese PMDA, FDA orphan designation, or
-  comprehensive approved-drug data has been ingested. Those are listed future
-  work unless source receipts are added.
+- Do not claim full normalized European EMA, Japanese PMDA, FDA orphan
+  designation, or comprehensive approved-drug data has been ingested. Current
+  EMA/PMDA/FDA-orphan coverage is source-surface capture only.
 
 ## Known Caveats
 
