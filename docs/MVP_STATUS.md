@@ -70,6 +70,9 @@ http://127.0.0.1:8787/
   G000-G008 and can refuse therapeutic recommendation output.
 - The null comparison is a negative/weak benchmark: the known pair did not beat
   the shuffle null in the tiny cached run.
+- The Regulatory Map tab states that ClinicalTrials.gov, openFDA, and Open
+  Targets are wired, while Europe/EMA, Japan/PMDA, FDA orphan designation,
+  Convoke, and comprehensive approved-drug coverage remain future work.
 
 ## Claims To Avoid
 

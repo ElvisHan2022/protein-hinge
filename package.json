@@ -9,6 +9,7 @@
     "agent:fanout": "python3 scripts/run_openai_fanout.py",
     "agent:graph": "python3 scripts/build_agent_fanout_graph.py",
     "trace:model": "python3 scripts/build_model_trace.py",
+    "trace:regulatory": "python3 scripts/build_regulatory_coverage.py",
     "aws:preflight": "python3 scripts/aws_preflight.py"
   },
   "dependencies": {

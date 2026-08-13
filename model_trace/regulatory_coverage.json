@@ -1,0 +1,86 @@
+{
+  "active_dashboard_database": "db/biocustody.db and site/biocustody.db",
+  "claim_boundary": "Regulatory search coverage, not legal advice and not a full global approved-drug database.",
+  "coverage": [
+    {
+      "blocker": null,
+      "claim": "Trial-search evidence only; absence of a trial is not proof that no program exists.",
+      "lane": "C",
+      "name": "ClinicalTrials.gov",
+      "plain_status": "Incorporated",
+      "plain_use": "Checks whether this disease and program have already appeared together in registered studies.",
+      "region_or_scope": "United States / international trial registry",
+      "registry_key": "clinicaltrials_gov",
+      "wired": true
+    },
+    {
+      "blocker": "Referenced by the partner repo as an MCP requiring CONVOKE_MCP_TOKEN. We do not hold that token and must not hold it in this repo. Credentials live in .env and are never committed. Until someone with access documents the query surface and the license terms of what it returns, Convoke is listed and NOT wired. An undocumented source cannot be admitted, because its results cannot be recomputed by anyone else.",
+      "claim": "Not admitted without documented access, license terms, and a replayable query receipt.",
+      "lane": "C",
+      "name": "Convoke",
+      "plain_status": "Listed, not incorporated",
+      "plain_use": "Would join targets to drug programs if licensed access is available.",
+      "region_or_scope": "Drug-program intelligence",
+      "registry_key": "convoke",
+      "wired": false
+    },
+    {
+      "blocker": "Not ingested in this MVP. Add only after the query surface, corpus date, fields, and reuse terms are documented.",
+      "claim": "Future work until the query surface, corpus date, fields, and reuse terms are documented.",
+      "lane": "C",
+      "name": "European Medicines Agency EPAR",
+      "plain_status": "Listed, not incorporated",
+      "plain_use": "Would bound European authorization status.",
+      "region_or_scope": "Europe",
+      "registry_key": "ema_epar",
+      "wired": false
+    },
+    {
+      "blocker": "No stable JSON API. Query surface is a web form; treat any capture as COMMITTED and re-verify by hand.",
+      "claim": "Not admitted because the current public query surface is a web form, not a stable replayable API.",
+      "lane": "C",
+      "name": "FDA Orphan Drug Product designation database",
+      "plain_status": "Listed, not incorporated",
+      "plain_use": "Would bound orphan designation and exclusivity questions.",
+      "region_or_scope": "United States",
+      "registry_key": "fda_orphan",
+      "wired": false
+    },
+    {
+      "blocker": null,
+      "claim": "Target-evidence support only; not a regulatory approval source.",
+      "lane": "C",
+      "name": "Open Targets Platform",
+      "plain_status": "Incorporated",
+      "plain_use": "Checks tractability and drug/clinical-candidate counts for selected targets.",
+      "region_or_scope": "Global public target evidence",
+      "registry_key": "open_targets",
+      "wired": true
+    },
+    {
+      "blocker": null,
+      "claim": "Specific incumbent-label evidence; not a full FDA approved-drug census.",
+      "lane": "C",
+      "name": "openFDA drug endpoints",
+      "plain_status": "Partially incorporated",
+      "plain_use": "Pins the incumbent elamipretide label and NDC records.",
+      "region_or_scope": "United States",
+      "registry_key": "openfda_drug",
+      "wired": true
+    },
+    {
+      "blocker": "Not ingested in this MVP. Add only after the query surface, corpus date, fields, and reuse terms are documented.",
+      "claim": "Future work until the query surface, corpus date, fields, and reuse terms are documented.",
+      "lane": "C",
+      "name": "Japan PMDA drug approvals",
+      "plain_status": "Listed, not incorporated",
+      "plain_use": "Would bound Japanese approval status.",
+      "region_or_scope": "Japan",
+      "registry_key": "pmda_japan",
+      "wired": false
+    }
+  ],
+  "plain_english": "The MVP has U.S. trial evidence, selected U.S. FDA label/NDC evidence, and Open Targets support. Europe, Japan, FDA orphan designation, Convoke, and comprehensive approved-drug coverage are listed as future work.",
+  "schema": "protein_hinge.regulatory_coverage.v1",
+  "status": "coverage_map_not_full_ingestion"
+}

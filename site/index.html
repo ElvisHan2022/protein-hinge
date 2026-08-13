@@ -127,6 +127,7 @@
     <button data-t="figure">Cell Evidence</button>
     <button data-t="agents">Agent Trail</button>
     <button data-t="modeltrace">Model Trace</button>
+    <button data-t="regulatory">Regulatory Map</button>
     <button data-t="verify">Evidence Receipt</button>
     <button data-t="browse">All Records</button>
     <button data-t="sql">Data Table</button>
@@ -247,6 +248,20 @@
         <div class="card"><h3>AWS preflight</h3><div id="awsPreflight"></div></div>
       </div>
       <div class="card scroll"><h3>Local JSON before writeback</h3><div id="writebackPacket"></div></div>
+    </section>
+
+    <!-- -------------------------------------------------- REGULATORY -->
+    <section id="s-regulatory">
+      <div class="intro-panel" style="margin-bottom:18px">
+        <h2>What external drug evidence is actually in the demo?</h2>
+        <p>This view separates incorporated sources from useful sources that are
+          only listed for future work. That boundary keeps the pitch honest.</p>
+      </div>
+      <div class="card"><h3>Plain readout</h3><div id="regulatorySummary"></div></div>
+      <div class="grid2">
+        <div class="card scroll"><h3>Coverage by source</h3><div id="regulatoryRows"></div></div>
+        <div class="card scroll"><h3>Captured query receipts</h3><div id="regulatoryQueries"></div></div>
+      </div>
     </section>
 
     <!-- ------------------------------------------------------- BROWSE -->
@@ -434,7 +449,7 @@ async function boot(bytes){
     `one root over both lanes &nbsp; <b class="hash">${esc(m.merkle_root)}</b><br>` +
     `${n} nodes · ${esc(m.merkle_convention)} · corpus pinned ${esc(m.generated_at)} · ` +
     `science ceiling <b>${esc(m.claim_ceiling_science)}</b> · FTO ceiling <b>${esc(m.claim_ceiling_fto)}</b>`;
-  initBrowse(); initAbout(); initSamples(); initElvis(); initAgents(); initModelTrace();
+  initBrowse(); initAbout(); initSamples(); initElvis(); initAgents(); initModelTrace(); initRegulatory();
   lookup('phase_1_axis_claim');
 }
 
@@ -679,6 +694,34 @@ async function initModelTrace(){
     $('#awsPreflight').innerHTML = '';
     $('#writebackPacket').innerHTML = '';
   }
+}
+
+// ---------------------------------------------------------- regulatory
+async function initRegulatory(){
+  const statusRows = all(
+    "SELECT name, lane, CASE wired WHEN 1 THEN 'Incorporated' ELSE 'Listed, not incorporated' END AS status, blocker FROM registry_status ORDER BY wired DESC, name");
+  const queryRows = all(
+    "SELECT registry_name AS source, label AS receipt, http_status, result_count, captured_at FROM registry_query ORDER BY registry_name, label");
+  try{
+    const cov = await (await fetch('assets/regulatory_coverage.json')).json();
+    $('#regulatorySummary').innerHTML = `<div class="callout">${esc(cov.plain_english)}</div>
+      <table>
+        <tr><td class="k">claim boundary</td><td>${esc(cov.claim_boundary)}</td></tr>
+        <tr><td class="k">active database</td><td>${esc(cov.active_dashboard_database)}</td></tr>
+      </table>`;
+    $('#regulatoryRows').innerHTML = tbl((cov.coverage || []).map(r=>({
+      'Source': r.name,
+      'Scope': r.region_or_scope,
+      'Status': r.plain_status,
+      'What it means': r.claim || r.blocker || r.plain_use,
+    })));
+  }catch(e){
+    $('#regulatorySummary').innerHTML = `<div class="callout">The database shows which registries are wired. The coverage JSON has not been generated yet.</div>`;
+    $('#regulatoryRows').innerHTML = tbl(statusRows);
+  }
+  $('#regulatoryQueries').innerHTML = queryRows.length
+    ? tbl(queryRows)
+    : '<p class="dim">No captured registry queries in this database.</p>';
 }
 
 // ---------------------------------------------------------------- verify

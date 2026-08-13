@@ -90,6 +90,7 @@ python3 scripts/run_openai_fanout.py --env-file .env --model gpt-4.1-nano --run-
 python3 scripts/build_agent_fanout_graph.py
 python3 gap/ingest_gap.py
 python3 scripts/build_model_trace.py
+python3 scripts/build_regulatory_coverage.py
 python3 scripts/aws_preflight.py
 python3 db/build_db.py
 ```
@@ -113,6 +114,11 @@ Listed but not incorporated in this MVP:
 
 The dashboard should describe these as future work unless source records and
 receipts are added.
+
+The dashboard `Regulatory Map` tab renders this boundary directly from
+`model_trace/regulatory_coverage.json` plus the local registry tables, so the
+demo can answer "what drug evidence is actually incorporated?" without
+implying Europe/Japan/full-approved-drug coverage.
 
 The received zip includes source builders (`fcg/ingest.py`,
 `fcg/tamper_test.py`, and `fto/ingest_fto.py`), but those scripts reference a
