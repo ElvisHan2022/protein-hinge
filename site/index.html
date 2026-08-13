@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Protein Hinge — evidence ledger</title>
+<!--
+  A read-only query surface over biocustody.db.
+
+  There is no backend. The database is loaded into the browser and every
+  query, including the full Merkle re-verification, runs on the client. That
+  is deliberate: a verifier you have to trust a server to run is not a
+  verifier. Everything here can be checked against fcg/store/ by hand.
+
+  The PROVE tab rebuilds all 62 leaf hashes from the stored record bytes and
+  reconstructs the RFC 6962 tree from scratch. It never reads the stated root
+  until the end, when it compares. The TAMPER button edits one node in the
+  in-memory copy and re-verifies, so you can watch the root move.
+-->
+<style>
+  :root {
+    --bg:#0e1116; --panel:#161b22; --line:#262d36; --fg:#c9d3de;
+    --dim:#6f7b8a; --acc:#5ec2b0; --warn:#e0a33e; --bad:#e05252; --ok:#5ec27a;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--bg); color:var(--fg);
+    font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  header { padding:20px 24px 0; border-bottom:1px solid var(--line); }
+  h1 { margin:0; font-size:15px; font-weight:600; letter-spacing:.06em; }
+  h1 span { color:var(--dim); font-weight:400; }
+  .rootline { margin:8px 0 16px; color:var(--dim); font-size:12px; }
+  .rootline b { color:var(--acc); font-weight:400; }
+  nav { display:flex; gap:2px; }
+  nav button {
+    background:none; border:none; border-bottom:2px solid transparent;
+    color:var(--dim); font:inherit; padding:8px 16px; cursor:pointer;
+  }
+  nav button:hover { color:var(--fg); }
+  nav button.on { color:var(--acc); border-bottom-color:var(--acc); }
+  main { padding:24px; max-width:1180px; }
+  section { display:none; } section.on { display:block; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:16px; }
+  input[type=text], textarea, select {
+    background:var(--panel); border:1px solid var(--line); color:var(--fg);
+    font:inherit; padding:7px 10px; border-radius:4px;
+  }
+  input[type=text] { flex:1; min-width:280px; }
+  textarea { width:100%; min-height:110px; resize:vertical; }
+  button.go {
+    background:var(--acc); border:none; color:#06110e; font:inherit;
+    font-weight:600; padding:8px 16px; border-radius:4px; cursor:pointer;
+  }
+  button.go:hover { filter:brightness(1.12); }
+  button.ghost {
+    background:none; border:1px solid var(--line); color:var(--dim);
+    font:inherit; padding:7px 13px; border-radius:4px; cursor:pointer;
+  }
+  button.ghost:hover { color:var(--fg); border-color:var(--dim); }
+  button.danger { border-color:#5a2b2b; color:var(--bad); }
+  .card {
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:6px; padding:16px; margin-bottom:14px;
+  }
+  .card h3 { margin:0 0 10px; font-size:12px; letter-spacing:.08em;
+             color:var(--dim); font-weight:600; text-transform:uppercase; }
+  table { border-collapse:collapse; width:100%; font-size:12px; }
+  th, td { text-align:left; padding:5px 10px 5px 0; vertical-align:top;
+           border-bottom:1px solid var(--line); }
+  th { color:var(--dim); font-weight:600; white-space:nowrap; }
+  td.k { color:var(--dim); white-space:nowrap; width:1%; padding-right:20px; }
+  .hash { color:var(--acc); word-break:break-all; }
+  .hash.click { cursor:pointer; text-decoration:underline dotted; }
+  .ok { color:var(--ok); } .bad { color:var(--bad); } .warn { color:var(--warn); }
+  .dim { color:var(--dim); }
+  pre { margin:0; white-space:pre-wrap; word-break:break-word;
+        font-size:12px; color:var(--fg); max-height:340px; overflow:auto; }
+  .pill { display:inline-block; padding:1px 7px; border-radius:10px;
+          font-size:11px; border:1px solid var(--line); color:var(--dim); }
+  .pill.rec { color:var(--ok); border-color:#26402e; }
+  .pill.com { color:var(--warn); border-color:#453519; }
+  .scroll { max-height:460px; overflow:auto; }
+  .note { color:var(--dim); font-size:12px; margin:0 0 14px; max-width:74ch; }
+  .bar { height:5px; background:var(--line); border-radius:3px; overflow:hidden; margin:10px 0; }
+  .bar div { height:100%; background:var(--acc); width:0; transition:width .12s; }
+  #drop { border:1px dashed var(--line); padding:36px; text-align:center;
+          border-radius:6px; color:var(--dim); }
+</style>
+
+<header>
+  <h1>Protein Hinge <span>— evidence ledger, queried in your browser</span></h1>
+  <div class="rootline" id="rootline">loading database…</div>
+  <nav>
+    <button data-t="verify" class="on">VERIFY</button>
+    <button data-t="browse">BROWSE</button>
+    <button data-t="sql">SQL</button>
+    <button data-t="prove">PROVE</button>
+    <button data-t="about">ABOUT</button>
+  </nav>
+</header>
+
+<main>
+  <div id="loader"><div id="drop">
+    <p>Could not fetch <code>biocustody.db</code> automatically.</p>
+    <p class="dim">Opening this file directly from disk blocks the fetch. Either
+      serve the folder (<code>python3 db/serve.py</code>) or drop the database file here.</p>
+    <input type="file" id="picker" accept=".db,.sqlite">
+  </div></div>
+
+  <div id="app" style="display:none">
+
+    <!-- ------------------------------------------------------- VERIFY -->
+    <section id="s-verify" class="on">
+      <p class="note">Look up any node by id, content digest, or label. You get the
+        record the root commits to, what it consumes, and — where a route was
+        published — the inclusion proof replayed step by step.</p>
+      <div class="row">
+        <input type="text" id="q" placeholder="node id, sha256 digest, or label (try: phase_1_axis_claim)">
+        <button class="go" id="qgo">LOOK UP</button>
+      </div>
+      <div id="vout"></div>
+    </section>
+
+    <!-- ------------------------------------------------------- BROWSE -->
+    <section id="s-browse">
+      <p class="note">Every node, by layer. Layer 0 is what we were given; layer 3
+        is what we are willing to say. <span class="pill rec">RECOMPUTED</span> means
+        the bytes are in the store and were re-hashed.
+        <span class="pill com">COMMITTED</span> means we hold a digest captured at
+        origin and nothing more — honest for a 13 MB parquet on someone else's bucket.</p>
+      <div class="row">
+        <select id="fkind"><option value="">all kinds</option></select>
+        <select id="flayer"><option value="">all layers</option></select>
+        <select id="flevel"><option value="">all evidence levels</option></select>
+        <input type="text" id="fq" placeholder="filter by label…">
+      </div>
+      <div class="card scroll"><div id="bout"></div></div>
+    </section>
+
+    <!-- ---------------------------------------------------------- SQL -->
+    <section id="s-sql">
+      <p class="note">Full SQL over the ledger. Nothing is hidden and nothing is
+        rate-limited, because the database is already on your machine. Changes you
+        make here affect only this browser tab — and the PROVE tab will notice them.</p>
+      <div class="row" id="samples"></div>
+      <textarea id="sql">SELECT gene, sm_buckets, drug_candidates, verdict
+FROM v_tractability;</textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="go" id="run">RUN</button>
+        <span class="dim" id="sqlmeta"></span>
+      </div>
+      <div class="card scroll"><div id="sout"></div></div>
+    </section>
+
+    <!-- -------------------------------------------------------- PROVE -->
+    <section id="s-prove">
+      <p class="note">This does not trust the stored root. It reads the record bytes
+        of all 62 nodes, hashes each into an RFC 6962 leaf
+        (<code>sha256(0x00 ‖ record)</code>), rebuilds the tree
+        (<code>sha256(0x01 ‖ left ‖ right)</code>, split at the largest power of two
+        below n), and only then compares. If the comparison fails, something in the
+        chain is wrong and you should not believe the rest of this page.</p>
+      <div class="row">
+        <button class="go" id="prove">RE-VERIFY THE ROOT</button>
+        <button class="ghost danger" id="tamper">TAMPER WITH ONE NODE, THEN RE-VERIFY</button>
+        <button class="ghost" id="reload">RELOAD CLEAN COPY</button>
+      </div>
+      <div class="bar"><div id="pbar"></div></div>
+      <div id="pout"></div>
+    </section>
+
+    <!-- -------------------------------------------------------- ABOUT -->
+    <section id="s-about">
+      <div class="card">
+        <h3>What this is</h3>
+        <p class="note">A projection of <code>fcg/store/</code>, which is the actual
+          ledger. This database is regenerated from the store and never edited by
+          hand. If the two ever disagree, the store is right and this file is stale.</p>
+        <p class="note">The database is downstream of the Merkle root and never
+          upstream of it. Hashing the <code>.db</code> into the graph would be
+          circular — the digest would change the graph, which would change the
+          <code>.db</code>, which would change the digest. So the root goes into the
+          database, and the database's own digest is published beside it in
+          <code>publish_manifest.json</code>.</p>
+      </div>
+      <div class="card"><h3>Ledger metadata</h3><div id="aout"></div></div>
+      <div class="card"><h3>Registries</h3><div id="regout"></div></div>
+      <div class="card"><h3>Tamper test, as recorded by the Python suite</h3><div id="tout"></div></div>
+      <div class="card">
+        <h3>Not legal advice</h3>
+        <p class="note">The FTO lane produces a reproducible clearance <em>search
+          record</em>, capped at <code>CLEARANCE_SEARCH_RECORD</code>. It refuses to
+          emit <code>FTO_OPINION</code>. That is a legal conclusion issued by
+          qualified counsel who signs their name to it. Nobody here is a lawyer.</p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+<script>
+// ---------------------------------------------------------------- sha256
+// crypto.subtle is used when available. The fallback exists because a file://
+// page in some browsers has no subtle crypto, and "the verifier did not run"
+// must never be mistaken for "the verification passed".
+const K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+function sha256js(msg){
+  const H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  const l=msg.length, bl=l*8, pad=((l+9+63)&~63);
+  const b=new Uint8Array(pad); b.set(msg); b[l]=0x80;
+  new DataView(b.buffer).setUint32(pad-4, bl>>>0); new DataView(b.buffer).setUint32(pad-8, Math.floor(bl/4294967296));
+  const w=new Uint32Array(64), dv=new DataView(b.buffer);
+  const rr=(x,n)=>(x>>>n)|(x<<(32-n));
+  for(let i=0;i<pad;i+=64){
+    for(let t=0;t<16;t++) w[t]=dv.getUint32(i+t*4);
+    for(let t=16;t<64;t++){
+      const s0=rr(w[t-15],7)^rr(w[t-15],18)^(w[t-15]>>>3);
+      const s1=rr(w[t-2],17)^rr(w[t-2],19)^(w[t-2]>>>10);
+      w[t]=(w[t-16]+s0+w[t-7]+s1)>>>0;
+    }
+    let [a,bb,c,d,e,f,g,h]=H;
+    for(let t=0;t<64;t++){
+      const S1=rr(e,6)^rr(e,11)^rr(e,25), ch=(e&f)^(~e&g);
+      const t1=(h+S1+ch+K[t]+w[t])>>>0;
+      const S0=rr(a,2)^rr(a,13)^rr(a,22), mj=(a&bb)^(a&c)^(bb&c);
+      const t2=(S0+mj)>>>0;
+      h=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=bb;bb=a;a=(t1+t2)>>>0;
+    }
+    H[0]=(H[0]+a)>>>0;H[1]=(H[1]+bb)>>>0;H[2]=(H[2]+c)>>>0;H[3]=(H[3]+d)>>>0;
+    H[4]=(H[4]+e)>>>0;H[5]=(H[5]+f)>>>0;H[6]=(H[6]+g)>>>0;H[7]=(H[7]+h)>>>0;
+  }
+  const out=new Uint8Array(32), o=new DataView(out.buffer);
+  for(let i=0;i<8;i++) o.setUint32(i*4,H[i]);
+  return out;
+}
+const HAVE_SUBTLE = !!(window.crypto && crypto.subtle && crypto.subtle.digest);
+async function sha256(bytes){
+  if(HAVE_SUBTLE){
+    try { return new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)); }
+    catch(e){ /* fall through */ }
+  }
+  return sha256js(bytes);
+}
+const hex = u8 => Array.from(u8).map(b=>b.toString(16).padStart(2,'0')).join('');
+const cat = (...a) => { const n=a.reduce((s,x)=>s+x.length,0), o=new Uint8Array(n);
+  let i=0; for(const x of a){ o.set(x,i); i+=x.length; } return o; };
+const enc = new TextEncoder();
+
+// RFC 6962, matching fcg.py exactly.
+const leafHash = async rec => sha256(cat(new Uint8Array([0]), enc.encode(rec)));
+const nodeHash = async (l,r) => sha256(cat(new Uint8Array([1]), l, r));
+function split(n){ let k=1; while(k*2<n) k*=2; return k; }
+async function merkleRoot(leaves){
+  if(!leaves.length) return sha256(new Uint8Array(0));
+  if(leaves.length===1) return leaves[0];
+  const k=split(leaves.length);
+  return nodeHash(await merkleRoot(leaves.slice(0,k)), await merkleRoot(leaves.slice(k)));
+}
+
+// ---------------------------------------------------------------- state
+let SQL=null, db=null, rawBytes=null;
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function all(sql, params){
+  const st=db.prepare(sql); if(params) st.bind(params);
+  const out=[]; while(st.step()) out.push(st.getAsObject()); st.free(); return out;
+}
+const one = (sql,p) => all(sql,p)[0] || null;
+
+function tbl(rows, opts){
+  if(!rows.length) return '<p class="dim">no rows</p>';
+  const cols=Object.keys(rows[0]);
+  let h='<table><thead><tr>'+cols.map(c=>`<th>${esc(c)}</th>`).join('')+'</tr></thead><tbody>';
+  for(const r of rows){
+    h+='<tr>'+cols.map(c=>{
+      let v=r[c]; if(v instanceof Uint8Array) v=`<blob ${v.length} bytes>`;
+      let s=esc(v); let cls='';
+      if(typeof v==='string' && /^sha256:[0-9a-f]{64}$/.test(v)){
+        cls='hash'; if(opts&&opts.link) return `<td><span class="hash click" data-id="${esc(v)}">${s.slice(0,23)}…</span></td>`;
+        s=s.slice(0,23)+'…';
+      }
+      if(s.length>150) s=s.slice(0,150)+'…';
+      return `<td class="${cls}">${s}</td>`;
+    }).join('')+'</tr>';
+  }
+  return h+'</tbody></table>';
+}
+
+// ---------------------------------------------------------------- boot
+async function boot(bytes){
+  rawBytes = bytes;
+  db = new SQL.Database(new Uint8Array(bytes));
+  $('#loader').style.display='none';
+  $('#app').style.display='block';
+  const m = Object.fromEntries(all('SELECT key,value FROM meta').map(r=>[r.key,r.value]));
+  const n = one('SELECT COUNT(*) c FROM node').c;
+  $('#rootline').innerHTML =
+    `one root over both lanes &nbsp; <b class="hash">${esc(m.merkle_root)}</b><br>` +
+    `${n} nodes · ${esc(m.merkle_convention)} · corpus pinned ${esc(m.generated_at)} · ` +
+    `science ceiling <b>${esc(m.claim_ceiling_science)}</b> · FTO ceiling <b>${esc(m.claim_ceiling_fto)}</b>`;
+  initBrowse(); initAbout(); initSamples();
+  lookup('phase_1_axis_claim');
+}
+
+async function load(){
+  try{
+    const r = await fetch('biocustody.db');
+    if(!r.ok) throw new Error(r.status);
+    await boot(await r.arrayBuffer());
+  }catch(e){ /* leave the picker up */ }
+}
+$('#picker').addEventListener('change', async ev=>{
+  const f=ev.target.files[0]; if(f) await boot(await f.arrayBuffer());
+});
+
+initSqlJs({locateFile:f=>`https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${f}`})
+  .then(s=>{ SQL=s; load(); });
+
+// ---------------------------------------------------------------- tabs
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('section').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); $('#s-'+b.dataset.t).classList.add('on');
+});
+document.addEventListener('click', e=>{
+  const t=e.target.closest('.hash.click');
+  if(t){ document.querySelector('nav button[data-t=verify]').click(); lookup(t.dataset.id); }
+});
+
+// ---------------------------------------------------------------- verify
+function lookup(q){
+  q=(q||'').trim(); if(!q) return;
+  $('#q').value=q;
+  const n = one(`SELECT * FROM node WHERE node_id=? OR content_digest=? OR label=?
+                 OR node_id LIKE ? OR content_digest LIKE ?`,
+                [q,q,q,q+'%','%'+q+'%'])
+        || one('SELECT * FROM node WHERE label LIKE ?', ['%'+q+'%']);
+  if(!n){ $('#vout').innerHTML='<div class="card"><p class="bad">no node matches that.</p></div>'; return; }
+
+  const lvl = n.evidence_level==='RECOMPUTED'
+    ? '<span class="pill rec">RECOMPUTED</span> <span class="dim">bytes held and re-hashed</span>'
+    : '<span class="pill com">COMMITTED</span> <span class="dim">digest captured at origin; bytes not held</span>';
+
+  let h = `<div class="card"><h3>${esc(n.kind)} · layer ${n.layer}</h3>
+    <table>
+    <tr><td class="k">label</td><td><b>${esc(n.label)}</b></td></tr>
+    <tr><td class="k">node id</td><td class="hash">${esc(n.node_id)}</td></tr>
+    <tr><td class="k">content digest</td><td class="hash">${esc(n.content_digest)}</td></tr>
+    <tr><td class="k">evidence</td><td>${lvl}</td></tr>
+    <tr><td class="k">recompute by</td><td>${esc(n.recompute_kind)}</td></tr>
+    <tr><td class="k">bytes</td><td>${n.bytes==null?'<span class="dim">—</span>':Number(n.bytes).toLocaleString()}</td></tr>
+    ${n.origin?`<tr><td class="k">origin</td><td style="word-break:break-all">${esc(n.origin)}</td></tr>`:''}
+    <tr><td class="k">leaf index</td><td>${n.leaf_index} <span class="dim">of ${one('SELECT COUNT(*) c FROM node').c}</span></td></tr>
+    <tr><td class="k">leaf hash</td><td class="hash">${esc(n.leaf_hash)}</td></tr>
+    </table></div>`;
+
+  const c = one('SELECT * FROM claim WHERE node_id=?',[n.node_id]);
+  if(c) h += `<div class="card"><h3>claim</h3><table>
+    <tr><td class="k">statement</td><td>${esc(c.statement)}</td></tr>
+    <tr><td class="k">level</td><td>${esc(c.level)}</td></tr>
+    <tr><td class="k">ceiling</td><td class="warn">${esc(c.claim_ceiling)}</td></tr>
+    ${c.hedge?`<tr><td class="k">hedge</td><td class="warn">${esc(c.hedge)}</td></tr>`:''}
+    </table></div>`;
+
+  const ins = all(`SELECT e.position, n.node_id, n.label, n.kind, n.evidence_level
+                   FROM edge e JOIN node n ON n.node_id=e.input_id
+                   WHERE e.node_id=? ORDER BY e.position`,[n.node_id]);
+  h += `<div class="card"><h3>consumes ${ins.length} input${ins.length===1?'':'s'}</h3>${
+        ins.length?tbl(ins,{link:true}):'<p class="dim">nothing — this is a layer-0 source</p>'}</div>`;
+
+  const outs = all(`SELECT n.node_id, n.label, n.kind FROM edge e
+                    JOIN node n ON n.node_id=e.node_id WHERE e.input_id=?`,[n.node_id]);
+  if(outs.length) h += `<div class="card"><h3>consumed by</h3>${tbl(outs,{link:true})}</div>`;
+
+  const foot = one(`SELECT * FROM v_claim_footprint WHERE claim_label=?`,[n.label]);
+  if(foot) h += `<div class="card"><h3>what this rests on</h3><table>
+    <tr><td class="k">distinct sources</td><td>${foot.sources}</td></tr>
+    <tr><td class="k">of those, bytes held</td><td>${foot.sources_held}
+        <span class="dim">the rest are attested at origin</span></td></tr>
+    <tr><td class="k">derivations</td><td>${foot.derivations}</td></tr>
+    <tr><td class="k">max depth</td><td>${foot.max_depth}</td></tr></table></div>`;
+
+  const rt = all('SELECT * FROM merkle_route WHERE node_id=? ORDER BY step',[n.node_id]);
+  if(rt.length){
+    const stale = rt[0].is_current === 0;
+    h += `<div class="card"><h3>merkle route — inclusion proof</h3>
+      <p class="note">Replaying these siblings from the leaf must land exactly on the
+      root this proof was computed against. Anything else means the node is not in
+      that tree.</p>
+      ${stale?`<p class="warn">This route proves membership in a
+        <b>superseded</b> tree — the ${rt[0].merkle_root===one("SELECT value v FROM meta WHERE key='merkle_root'").v?'':'41-leaf science-only'} root
+        <span class="hash">${esc(rt[0].merkle_root)}</span>, published before the FTO lane
+        extended the graph. It is still a valid proof; it is simply a proof about a
+        different tree. Checking it against today's root would fail, and should.</p>`:''}
+      <table><thead><tr><th>step</th><th>sibling sits</th><th>sibling hash</th></tr></thead><tbody>`;
+    for(const s of rt) h+=`<tr><td>${s.step}</td><td>${esc(s.side)}</td><td class="hash">${esc(s.sibling)}</td></tr>`;
+    h += `</tbody></table><p id="rr" class="dim" style="margin-top:10px">replaying…</p></div>`;
+  }
+  $('#vout').innerHTML=h;
+  if(rt.length) replayRoute(n, rt);
+}
+$('#qgo').onclick = ()=>lookup($('#q').value);
+$('#q').addEventListener('keydown', e=>{ if(e.key==='Enter') lookup($('#q').value); });
+
+async function replayRoute(n, rt){
+  let acc = await leafHash(one('SELECT record_json r FROM node WHERE node_id=?',[n.node_id]).r);
+  const un = h => Uint8Array.from(h.replace('sha256:','').match(/../g).map(b=>parseInt(b,16)));
+  for(const s of rt){
+    const sib = un(s.sibling);
+    acc = s.side==='left' ? await nodeHash(sib, acc) : await nodeHash(acc, sib);
+  }
+  const got='sha256:'+hex(acc);
+  // Check against the root this proof was built against, not against whatever
+  // the current root happens to be. Those are different questions.
+  const want = rt[0].merkle_root;
+  const current = one("SELECT value v FROM meta WHERE key='merkle_root'").v;
+  const el=$('#rr'); if(!el) return;
+  el.className = got===want ? 'ok' : 'bad';
+  el.innerHTML = got===want
+    ? `replays to <span class="hash">${esc(got)}</span> — matches the root this proof was
+       computed against${want===current?', which is the current root. This node is in the tree.'
+       :'. That root is superseded, so this proves membership in an earlier tree, not in today\'s.'}`
+    : `replayed to ${esc(got)}, which is NOT ${esc(want)}. The proof does not hold.`;
+}
+
+// ---------------------------------------------------------------- browse
+function initBrowse(){
+  for(const [sel,col] of [['#fkind','kind'],['#flayer','layer'],['#flevel','evidence_level']]){
+    for(const r of all(`SELECT DISTINCT ${col} v FROM node ORDER BY ${col}`))
+      $(sel).insertAdjacentHTML('beforeend', `<option>${esc(r.v)}</option>`);
+    $(sel).onchange = renderBrowse;
+  }
+  $('#fq').oninput = renderBrowse;
+  renderBrowse();
+}
+function renderBrowse(){
+  const w=[], p=[];
+  if($('#fkind').value){ w.push('kind=?'); p.push($('#fkind').value); }
+  if($('#flayer').value){ w.push('layer=?'); p.push($('#flayer').value); }
+  if($('#flevel').value){ w.push('evidence_level=?'); p.push($('#flevel').value); }
+  if($('#fq').value){ w.push('label LIKE ?'); p.push('%'+$('#fq').value+'%'); }
+  const rows = all(`SELECT layer, kind, evidence_level, label, bytes, node_id
+                    FROM node ${w.length?'WHERE '+w.join(' AND '):''}
+                    ORDER BY layer, kind, label`, p);
+  $('#bout').innerHTML = `<p class="dim" style="margin:0 0 10px">${rows.length} nodes</p>` + tbl(rows,{link:true});
+}
+
+// ------------------------------------------------------------------- sql
+const SAMPLES = [
+  ['what do we actually hold?', 'SELECT * FROM v_evidence_posture;'],
+  ['the tractability finding', 'SELECT * FROM v_tractability;'],
+  ['attested, not held', 'SELECT label, nbytes, http_status FROM v_attested_not_held LIMIT 20;'],
+  ['every claim + its ceiling', 'SELECT * FROM v_claims;'],
+  ['what each claim rests on', 'SELECT * FROM v_claim_footprint;'],
+  ['ancestry of the axis claim',
+   "SELECT depth, kind, ancestor_label, evidence_level\nFROM v_custody_chain\nWHERE root_label='phase_1_axis_claim'\nORDER BY depth, ancestor_label;"],
+  ['the 8 consensus genes', 'SELECT * FROM consensus_gene ORDER BY tier, symbol;'],
+  ['registries: wired or not', 'SELECT * FROM registry_status;'],
+  ['tamper suite results', 'SELECT * FROM tamper_assertion;'],
+];
+function initSamples(){
+  $('#samples').innerHTML = SAMPLES.map((s,i)=>
+    `<button class="ghost" data-s="${i}">${esc(s[0])}</button>`).join('');
+  $('#samples').onclick = e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    $('#sql').value = SAMPLES[+b.dataset.s][1]; runSql();
+  };
+}
+function runSql(){
+  const q=$('#sql').value;
+  const t0=performance.now();
+  try{
+    const rows=all(q);
+    $('#sqlmeta').textContent = `${rows.length} rows · ${(performance.now()-t0).toFixed(1)} ms`;
+    $('#sout').innerHTML = tbl(rows,{link:true});
+  }catch(e){
+    $('#sqlmeta').textContent='';
+    $('#sout').innerHTML = `<p class="bad">${esc(e.message)}</p>`;
+  }
+}
+$('#run').onclick = runSql;
+$('#sql').addEventListener('keydown', e=>{ if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)) runSql(); });
+
+// ----------------------------------------------------------------- prove
+async function prove(label){
+  const bar=$('#pbar'); const out=$('#pout');
+  const rows = all('SELECT leaf_index, node_id, label, leaf_hash, record_json FROM node ORDER BY leaf_index');
+  const leaves=[]; const bad=[];
+  for(let i=0;i<rows.length;i++){
+    const h = await leafHash(rows[i].record_json);
+    if('sha256:'+hex(h) !== rows[i].leaf_hash) bad.push(rows[i]);
+    leaves.push(h);
+    if(i%6===0){ bar.style.width = (100*i/rows.length)+'%'; await new Promise(r=>setTimeout(r)); }
+  }
+  bar.style.width='100%';
+  const got='sha256:'+hex(await merkleRoot(leaves));
+  const want=one("SELECT value v FROM meta WHERE key='merkle_root'").v;
+  const okRoot = got===want;
+
+  let h=`<div class="card"><h3>${esc(label||'independent re-verification')}</h3><table>
+    <tr><td class="k">leaves hashed</td><td>${rows.length}</td></tr>
+    <tr><td class="k">hash backend</td><td>${HAVE_SUBTLE?'WebCrypto (crypto.subtle)':'in-page SHA-256 fallback'}</td></tr>
+    <tr><td class="k">leaf preimages that recompute</td><td class="${bad.length?'bad':'ok'}">${rows.length-bad.length} / ${rows.length}</td></tr>
+    <tr><td class="k">root rebuilt from scratch</td><td class="hash">${esc(got)}</td></tr>
+    <tr><td class="k">root as stated</td><td class="hash">${esc(want)}</td></tr>
+    <tr><td class="k">verdict</td><td class="${okRoot?'ok':'bad'}"><b>${okRoot?'MATCH — the tree is intact':'MISMATCH — the root does not commit to these records'}</b></td></tr>
+    </table>`;
+  if(bad.length){
+    h+=`<p class="bad" style="margin-top:12px">first divergent node — this is the answer to
+        "what broke", and it is a node id rather than a shrug:</p>
+        <table><tr><td class="k">label</td><td><b>${esc(bad[0].label)}</b></td></tr>
+        <tr><td class="k">node id</td><td class="hash">${esc(bad[0].node_id)}</td></tr>
+        <tr><td class="k">leaf index</td><td>${bad[0].leaf_index}</td></tr></table>`;
+  }
+  h+='</div>';
+  out.innerHTML=h;
+}
+$('#prove').onclick = ()=>{ $('#pout').innerHTML=''; $('#pbar').style.width='0'; prove(); };
+
+// The tamper test, live.
+//
+// Note what is being edited. A node RECORD commits to the derivation's
+// parameters; the PAYLOAD lives in a separate atom keyed by content_digest.
+// The Python suite tampers with the atom (a well coordinate, E06 -> E07) and
+// catches it by recomputation. Here we tamper with the record (a replicate
+// count, 7 -> 8) and catch it in the tree. Two different surfaces, two
+// different mechanisms, and an edit has to survive both to go unnoticed.
+//
+// Nothing here touches fcg/store/ on disk. RELOAD CLEAN COPY restores.
+const TAMPER_TARGETS = [
+  ['consensus_axis_specification', '"replicates_per_gene":7', '"replicates_per_gene":8',
+   'replicates per gene, 7 → 8 — one character inside a 2 KB record'],
+  ['counter_perturbation_ranking_method', '"layer":2', '"layer":3', 'declared layer, 2 → 3'],
+];
+$('#tamper').onclick = async ()=>{
+  let hit=null;
+  for(const [label, from, to, desc] of TAMPER_TARGETS){
+    const t = one('SELECT node_id, label, record_json FROM node WHERE label=?',[label]);
+    if(t && t.record_json.includes(from)){ hit={t, from, to, desc}; break; }
+  }
+  if(!hit){
+    // Last resort: flip a byte in whatever is at leaf 0, so the button can
+    // never silently do nothing and be mistaken for a passing test.
+    const t = one('SELECT node_id, label, record_json FROM node ORDER BY leaf_index LIMIT 1');
+    hit = {t, from:'"layer":', to:'"layer" :', desc:'whitespace inside the record — one byte'};
+  }
+  const after = hit.t.record_json.replace(hit.from, hit.to);
+  if(after === hit.t.record_json){
+    $('#pout').innerHTML = '<div class="card"><p class="bad">tamper did not apply — '
+      + 'refusing to report a pass on an edit that never happened.</p></div>';
+    return;
+  }
+  db.run('UPDATE node SET record_json=? WHERE node_id=?', [after, hit.t.node_id]);
+  $('#pout').innerHTML = `<div class="card"><h3>tampered</h3><table>
+    <tr><td class="k">node</td><td><b>${esc(hit.t.label)}</b></td></tr>
+    <tr><td class="k">edit</td><td class="bad">${esc(hit.desc)}</td></tr>
+    <tr><td class="k">surface</td><td class="dim">the node record, which the tree commits to</td></tr>
+    <tr><td class="k">scope</td><td class="dim">in-memory copy only; fcg/store/ on disk is untouched</td></tr>
+    </table></div>`;
+  $('#pbar').style.width='0';
+  await prove('re-verification after tampering');
+};
+$('#reload').onclick = async ()=>{
+  db.close(); db = new SQL.Database(new Uint8Array(rawBytes));
+  $('#pout').innerHTML='<div class="card"><p class="ok">clean copy reloaded.</p></div>';
+  $('#pbar').style.width='0';
+};
+
+// ----------------------------------------------------------------- about
+function initAbout(){
+  $('#aout').innerHTML = tbl(all('SELECT key, value, note FROM meta'));
+  $('#regout').innerHTML = tbl(all(
+    "SELECT name, lane, CASE wired WHEN 1 THEN 'wired' ELSE 'NOT WIRED' END AS status, blocker FROM registry_status"));
+  $('#tout').innerHTML = tbl(all(
+    "SELECT name, CASE passed WHEN 1 THEN 'PASS' ELSE 'FAIL' END AS result FROM tamper_assertion"));
+}
+</script>

@@ -1,0 +1,72 @@
+{
+  "schema": "biocustody.fcg.origin_digests.v1",
+  "note": "SHA-256 computed AT THE POINT OF ORIGIN over the exact response body served by each URI. We do not hold these bytes. Anyone may re-fetch the URI and recompute. Evidence level for every entry here is COMMITTED, not RECOMPUTED.",
+  "capture_method": "http_get_sha256_at_origin",
+  "captured_by": "browser fetch + crypto.subtle.digest('SHA-256')",
+  "captured_on": "2026-08-13",
+  "groups": [
+    {
+      "group": "jump_metadata",
+      "origin_repo": "https://github.com/jump-cellpainting/datasets",
+      "ref": "main",
+      "uri_template": "https://raw.githubusercontent.com/jump-cellpainting/datasets/main/metadata/{file}",
+      "elapsed_s": "5.7",
+      "items": [
+        {"file": "crispr.csv.gz",              "bytes": 64933,   "sha256": "sha256:55e36e6802c6fc5f8e5d5258554368d64601f1847205e0fceb28a2c246c8d1ed", "http_status": 200},
+        {"file": "orf.csv.gz",                 "bytes": 550505,  "sha256": "sha256:9c7ec4b0fa460a3a30f270a15f11b5e85cef9dd105c8a0ab8ab50f6cc98894b8", "http_status": 200},
+        {"file": "compound.csv.gz",            "bytes": 8595537, "sha256": "sha256:8885960e92ebd99eb33699a79129f517e668d78dd94f0d7478d39c9825bd3c0a", "http_status": 200},
+        {"file": "plate.csv.gz",               "bytes": 9690,    "sha256": "sha256:541ada1f64816166509a4e2328316d2a6662ba67e257b7ae134cbec9d7079319", "http_status": 200},
+        {"file": "well.csv.gz",                "bytes": 5975108, "sha256": "sha256:fde9fe0678b8d9973f17e106e4cf7e62017110ee3b700f10e27122e1d5f291a1", "http_status": 200},
+        {"file": "perturbation_control.csv",   "bytes": 740,     "sha256": "sha256:f513c4017555efa486d07c3e9924944d5b0c44d2f2e76ca6e1fc934f5f718ef6", "http_status": 200}
+      ]
+    },
+    {
+      "group": "jump_profiles",
+      "origin_bucket": "https://cellpainting-gallery.s3.amazonaws.com",
+      "dataset": "cpg0016-jump",
+      "uri_template": "{bucket}/{dataset}/{source}/workspace/profiles/{batch}/{plate}/{plate}.parquet",
+      "source": "source_13",
+      "elapsed_s": "18.5",
+      "items": [
+        {"plate": "CP-CC9-R1-01", "batch": "20220914_Run1", "plate_type": "CRISPR",  "bytes": 13508437, "sha256": "sha256:ff670ecb4a395a5103f122df6e0bccb8b5f05f4522bbaf2090292bd32174e97d", "http_status": 200},
+        {"plate": "CP-CC9-R2-01", "batch": "20221009_Run2", "plate_type": "CRISPR",  "bytes": 13566856, "sha256": "sha256:65fc4df0b40f515fc9421b0357fd845279d92a987c468f34aa8832797d2082a9", "http_status": 200},
+        {"plate": "CP-CC9-R3-01", "batch": "20221017_Run3", "plate_type": "CRISPR",  "bytes": 13566411, "sha256": "sha256:d8a4a1a7320288ca248b0732f454569d1fb7430124d0d18f313f267ce5d5870b", "http_status": 200},
+        {"plate": "CP-CC9-R5-01", "batch": "20221109_Run5", "plate_type": "CRISPR",  "bytes": 13565026, "sha256": "sha256:5ba7f9aba0a6c05a122ac435b33298c0ef6da7395df3a382d78ee314fb5dc554", "http_status": 200},
+        {"plate": "CP-CC9-R6-01", "batch": "20221109_Run5", "plate_type": "CRISPR",  "bytes": 13563999, "sha256": "sha256:ac8189d2f60e3766c1a929a1d6f6a9d54ff8d00a3e902739176e55073f537327", "http_status": 200},
+        {"plate": "CP-CC9-R7-01", "batch": "20221109_Run5", "plate_type": "CRISPR",  "bytes": 13561686, "sha256": "sha256:2300087d57847e801495a231a2ad719b7fabb60d21d425b9ecb2b5d98807a8c2", "http_status": 200},
+        {"plate": "CP-CC9-R8-01", "batch": "20221109_Run5", "plate_type": "CRISPR",  "bytes": 13553761, "sha256": "sha256:6a39cc91de3ed69308e06409bf91363cf5f9260f6d91d0b8a89023f15c2c70de", "http_status": 200},
+        {"plate": "CP-CC9-R1-29", "batch": "20220914_Run1", "plate_type": "TARGET2", "bytes": 13563273, "sha256": "sha256:3eb31fa392799c2513b9ef7137926e09c5a5fad2af4e6a924cf8a40c283f6005", "http_status": 200},
+        {"plate": "CP-CC9-R2-29", "batch": "20221009_Run2", "plate_type": "TARGET2", "bytes": 13083738, "sha256": "sha256:21b255e40d65a89de0bb3aa591620d1b5c8e7e4d91cde5c8ee1d227ff505e458", "http_status": 200},
+        {"plate": "CP-CC9-R3-29", "batch": "20221017_Run3", "plate_type": "TARGET2", "bytes": 13563196, "sha256": "sha256:ab69a386ecf8633293f4af14b21b753a60c08695ab3139753aae8b8b9ff64882", "http_status": 200},
+        {"plate": "CP-CC9-R5-29", "batch": "20221109_Run5", "plate_type": "TARGET2", "bytes": 13563039, "sha256": "sha256:24beca1b36a52c608f6e572dbb40a78a8e2012e5c51aae5e29834fe8cdd7adc8", "http_status": 200},
+        {"plate": "CP-CC9-R6-29", "batch": "20221120_Run6", "plate_type": "TARGET2", "bytes": 13562425, "sha256": "sha256:a96eb782caf6c43f364d02fe6a14aa6bed74f1cb5c1117678110a984de389eec", "http_status": 200},
+        {"plate": "CP-CC9-R7-29", "batch": "20221120_Run6", "plate_type": "TARGET2", "bytes": 13563416, "sha256": "sha256:0cb0d562d7a74a8c13394be18e6baa19126d14d7556e32199272dddf22dd879c", "http_status": 200}
+      ]
+    },
+    {
+      "group": "partner_run_biobitworks",
+      "origin_repo": "https://github.com/biobitworks/aws-biopharma",
+      "ref": "main",
+      "uri_template": "https://raw.githubusercontent.com/biobitworks/aws-biopharma/main/{file}",
+      "elapsed_s": "3.3",
+      "custody_note": "These are a COLLABORATOR'S artifacts pinned by digest. Pinning them proves what they served us; it does not adopt their claims, and it does not make their merkle_root recomputable by us.",
+      "items": [
+        {"file": "CHAIN_OF_CUSTODY_DESIGN.md",                                 "bytes": 1971,  "sha256": "sha256:37b99b7df587009848ffa82cf87ef12a88b4fd6cae56c735a739df202d3f531b", "http_status": 200},
+        {"file": "AGENTS.md",                                                  "bytes": 1519,  "sha256": "sha256:d7654fc849ddde38453f700b4f6ac3388b49bb86bb78e5de2873f5757b04bd16", "http_status": 200},
+        {"file": "HACKDAY_STATUS.md",                                          "bytes": 4321,  "sha256": "sha256:36ce1f5f84f9e9c162c29501dae3c0fa171584dcf5f01aac48ceabfbb2e19f54", "http_status": 200},
+        {"file": "data/magicstudiobox/runs/primary/merkle_receipt.json",       "bytes": 581,   "sha256": "sha256:aa333f29dd45ab3f9b5eba2c4cbe10edafeaffedbc6f3a447281591fbd0d84b7", "http_status": 200},
+        {"file": "data/magicstudiobox/runs/primary/tamper_test.json",          "bytes": 425,   "sha256": "sha256:1732f154fa660a4504d1b34bcbd851286a904a92e6657057e64b80beb1cb0c55", "http_status": 200},
+        {"file": "data/magicstudiobox/runs/primary/evaluation.json",           "bytes": 623,   "sha256": "sha256:ede568677be5d45412f359153ebd60ada87b23ec93db6a33f9e836bce1bea62f", "http_status": 200},
+        {"file": "data/magicstudiobox/runs/primary/evaluation_sanity_checks.json", "bytes": 490, "sha256": "sha256:e80612497ab281ec3f6656c2b4b46498545c64066b7b203d6a347b18047ca85d", "http_status": 200},
+        {"file": "data/magicstudiobox/runs/primary/candidate_ranking.csv",     "bytes": 20952, "sha256": "sha256:e93d3ce7526049c8904e36e6e1aeefc2558c38b3032c8c348342390d8cf30b51", "http_status": 200},
+        {"file": "data/magicstudiobox/runs/primary/repurposing_evidence_table.csv", "bytes": 3501, "sha256": "sha256:cd21a99e63dafa26796e1961f5d3c05c43aa3e7ca369526402e2948742903fb1", "http_status": 200},
+        {"file": "data/magicstudiobox/runs/primary/molecular_identity.json",   "bytes": 2592,  "sha256": "sha256:399e54d8adc13bd74b92c14981392990c11c3415b3aa839b45fb419414b9e303", "http_status": 200},
+        {"file": "data/magicstudiobox/runs/primary/perturbation_state.json",   "bytes": 1726,  "sha256": "sha256:c6fa95aaf2094767f613f6900f737a6cadc5e0b996b46ea83a3cfe7516bb1bf7", "http_status": 200},
+        {"file": "data/magicstudiobox/runs/primary/state_model.json",          "bytes": 1806,  "sha256": "sha256:4028c343675f298ba3c91171b94a9d9741a5a52e226119b3080ae7390408a18a", "http_status": 200},
+        {"file": "data/magicstudiobox/runs/primary/similar_drug_evidence_graph.json", "bytes": 11331, "sha256": "sha256:561be3392cd6fcc9072de24f67a7792d12a64cde3c32226818a7800ce885cd25", "http_status": 200},
+        {"file": "data/magicstudiobox/deliverables/FINAL_METRICS.json",        "bytes": 342,   "sha256": "sha256:8721cb2b30ff794771d625411ab8b02298fe878dd4a97f63ec96bfc1dd8f4444", "http_status": 200},
+        {"file": "data/magicstudiobox/deliverables/REPURPOSING_EVIDENCE_TABLE.md", "bytes": 3874, "sha256": "sha256:c1c38c68e393d37073daa2326da9a4bf1929b8f977f3f3560b25b1ab0ee33aba", "http_status": 200}
+      ]
+    }
+  ]
+}

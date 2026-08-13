@@ -1,0 +1,15 @@
+Protein Hinge
+Copyright 2026 BioBitWorks contributors
+
+This repository was prepared from an origin artifact received locally as:
+
+  /Users/byron/Downloads/biocustody.zip
+
+The published project name is Protein Hinge. Some internal schema identifiers
+and database filenames retain the original biocustody prefix for compatibility
+with the received FCG/FTO code and the prebuilt SQLite projection.
+
+The code and documentation in this repository are licensed under Apache-2.0.
+The referenced JUMP / Cell Painting Gallery profile data is published by its
+upstream providers under CC0 1.0 Universal. A CC0 morphological-profile license
+does not grant molecule, patent, trademark, clinical, or therapeutic rights.

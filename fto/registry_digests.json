@@ -1,0 +1,289 @@
+{
+  "schema": "biocustody.fto.registry_digests.v1",
+  "captured_on": "2026-08-13",
+  "capture_method": "http_get_sha256_at_origin",
+  "note": "Live query responses hashed at the point of origin. These endpoints are NOT date-pinned: the same query returns different bytes on a different day. corpus_date is therefore hashed into every node so a stale search is a different node, not a silently reused one.",
+  "registries": [
+    {
+      "registry": "clinicaltrials_gov",
+      "endpoint": "https://clinicaltrials.gov/api/v2/studies",
+      "lane": "C",
+      "elapsed_s": "1.1",
+      "queries": [
+        {
+          "label": "ct_barth_syndrome",
+          "params": {
+            "query.cond": "Barth Syndrome",
+            "pageSize": 200,
+            "format": "json"
+          },
+          "http_status": 200,
+          "bytes": 293964,
+          "sha256": "sha256:5bdd66ea823c420ddef0ce44936b273204d60a0e055d7c8542c6559b8b521c4a",
+          "result_count": 11
+        },
+        {
+          "label": "ct_elamipretide",
+          "params": {
+            "query.intr": "elamipretide",
+            "pageSize": 200,
+            "format": "json"
+          },
+          "http_status": 200,
+          "bytes": 1504815,
+          "sha256": "sha256:b4a4bcc6838803ee2cd6941949138703be793d625f31d1143e3b09b1d76cb434",
+          "result_count": 21
+        },
+        {
+          "label": "ct_cardiolipin",
+          "params": {
+            "query.term": "cardiolipin",
+            "pageSize": 200,
+            "format": "json"
+          },
+          "http_status": 200,
+          "bytes": 940686,
+          "sha256": "sha256:acc0b19bf3f0b2a40f93223f26e8bd0b46d0e4d914cb82a47fc44ca5a186bd46",
+          "result_count": 42
+        }
+      ],
+      "extracted": {
+        "barth_syndrome_studies": 11,
+        "interventional_drug_sponsors": [
+          "Stealth BioTherapeutics Inc."
+        ],
+        "stealth_studies": [
+          {
+            "nct": "NCT03098797",
+            "phase": "PHASE2/PHASE3",
+            "status": "COMPLETED",
+            "intervention": "elamipretide"
+          },
+          {
+            "nct": "NCT07531251",
+            "phase": "PHASE4",
+            "status": "RECRUITING",
+            "title": "4TAZPower"
+          },
+          {
+            "nct": "NCT04689360",
+            "phase": null,
+            "status": "AVAILABLE",
+            "type": "intermediate-size expanded access"
+          }
+        ],
+        "non_drug_or_unrelated": [
+          {
+            "nct": "NCT01694940",
+            "sponsor": "Columbia University",
+            "type": "registry/biorepository (NAMDC)"
+          },
+          {
+            "nct": "NCT03655223",
+            "sponsor": "RTI International",
+            "type": "newborn screening"
+          },
+          {
+            "nct": "NCT01625663",
+            "sponsor": "Duke University",
+            "type": "metabolism study"
+          },
+          {
+            "nct": "NCT01629459",
+            "sponsor": "Washington University",
+            "type": "resistance exercise"
+          },
+          {
+            "nct": "NCT01194141",
+            "sponsor": "Washington University",
+            "type": "exercise training"
+          },
+          {
+            "nct": "NCT05554835",
+            "sponsor": "LMU Klinikum",
+            "type": "natural history registry"
+          },
+          {
+            "nct": "NCT01461304",
+            "sponsor": "Jerry Vockley MD PhD",
+            "type": "compassionate use, triheptanoin",
+            "status": "NO_LONGER_AVAILABLE"
+          },
+          {
+            "nct": "NCT06056297",
+            "sponsor": "X4 Pharmaceuticals",
+            "type": "mavorixafor, unrelated indication; matched on text not on condition"
+          }
+        ],
+        "finding": "The interventional drug field in Barth syndrome is effectively one company. Every other registered study is a registry, a natural-history cohort, an exercise intervention, or a text-match false positive. No competing small-molecule program is registered.",
+        "caveat": "ClinicalTrials.gov registers trials, not programs. Preclinical and unregistered discovery work is invisible here. Absence of a registered competitor is weak evidence of no competitor."
+      }
+    },
+    {
+      "registry": "openfda_drug",
+      "endpoint": "https://api.fda.gov/drug",
+      "lane": "C",
+      "queries": [
+        {
+          "label": "openfda_label_elamipretide",
+          "path": "/label.json",
+          "params": {
+            "search": "openfda.generic_name:\"elamipretide\"",
+            "limit": 10
+          },
+          "http_status": 200,
+          "bytes": 65001,
+          "sha256": "sha256:376840d71df3e2bfa00c8deb2321e20384fd3784074bd2a56edfdbd6051de386",
+          "result_count": 1
+        },
+        {
+          "label": "openfda_ndc_elamipretide",
+          "path": "/ndc.json",
+          "params": {
+            "search": "generic_name:\"elamipretide\"",
+            "limit": 10
+          },
+          "http_status": 200,
+          "bytes": 13710,
+          "sha256": "sha256:9e3d8b7272b9efb5e69097ebc6be4c75061b9adb17b93a2ddbd7f984d8ddd89f",
+          "result_count": 7
+        }
+      ],
+      "extracted": {
+        "finding": "Elamipretide is present in openFDA with one structured product label and seven NDC entries, consistent with an approved, marketed product.",
+        "use": "Establishes the incumbent label. The approved indication and population define exactly what orphan exclusivity covers, which is the boundary a second entrant must sit outside."
+      }
+    },
+    {
+      "registry": "open_targets",
+      "endpoint": "https://api.platform.opentargets.org/api/v4/graphql",
+      "lane": "C",
+      "elapsed_s": "1.6",
+      "graphql_query": "query T($id:String!){target(ensemblId:$id){id approvedSymbol approvedName biotype tractability{label modality value} drugAndClinicalCandidates{count} associatedDiseases(page:{index:0,size:5}){count rows{score disease{id name}}}}}",
+      "queries": [
+        {
+          "gene": "TAZ",
+          "ensembl": "ENSG00000102125",
+          "symbol": "TAFAZZIN",
+          "http_status": 200,
+          "bytes": 2441,
+          "sha256": "sha256:ed50e7f88f569c659c093afe17faae4521d7d353d20db7462bf5c7062c3efd94",
+          "sm_tractability_buckets": 0,
+          "drug_and_clinical_candidates": 0,
+          "associated_diseases": 341
+        },
+        {
+          "gene": "CRLS1",
+          "ensembl": "ENSG00000088766",
+          "symbol": "CRLS1",
+          "http_status": 200,
+          "bytes": 2419,
+          "sha256": "sha256:c0bc7b96eb413285cfcdf59688972125b4d7d9e7b0da73b0198199deb5cf4565",
+          "sm_tractability_buckets": 0,
+          "drug_and_clinical_candidates": 0,
+          "associated_diseases": 136
+        },
+        {
+          "gene": "PGS1",
+          "ensembl": "ENSG00000087157",
+          "symbol": "PGS1",
+          "http_status": 200,
+          "bytes": 2395,
+          "sha256": "sha256:0254c73a665b212990a7146cb436731b783a1083df0aec98971457bc407db6af",
+          "sm_tractability_buckets": 0,
+          "drug_and_clinical_candidates": 0,
+          "associated_diseases": 71
+        },
+        {
+          "gene": "PTPMT1",
+          "ensembl": "ENSG00000110536",
+          "symbol": "PTPMT1",
+          "http_status": 200,
+          "bytes": 2460,
+          "sha256": "sha256:23bbe0ef9de51373f612c35d439e7584d7c0c9845cca3e65a97eec562187e134",
+          "sm_tractability_buckets": 0,
+          "drug_and_clinical_candidates": 0,
+          "associated_diseases": 95
+        },
+        {
+          "gene": "HADHA",
+          "ensembl": "ENSG00000084754",
+          "symbol": "HADHA",
+          "http_status": 200,
+          "bytes": 2526,
+          "sha256": "sha256:4f6071dc99ad6332a9b3f167c718ccc7de5364145a53cefd0ade614b4c03da87",
+          "sm_tractability_buckets": 0,
+          "drug_and_clinical_candidates": 0,
+          "associated_diseases": 1692
+        },
+        {
+          "gene": "PHB",
+          "ensembl": "ENSG00000167085",
+          "symbol": "PHB1",
+          "http_status": 200,
+          "bytes": 2355,
+          "sha256": "sha256:e426342e104f6bd3ca22834732bee654e85ab3143f5a27a7c00d28ce0c00c172",
+          "sm_tractability_buckets": 0,
+          "drug_and_clinical_candidates": 0,
+          "associated_diseases": 463
+        },
+        {
+          "gene": "PHB2",
+          "ensembl": "ENSG00000215021",
+          "symbol": "PHB2",
+          "http_status": 200,
+          "bytes": 2357,
+          "sha256": "sha256:33bd2b3567b2884842eefd7d2ed88dbf3e2489796d602772f77492d4247ec004",
+          "sm_tractability_buckets": 0,
+          "drug_and_clinical_candidates": 0,
+          "associated_diseases": 276
+        },
+        {
+          "gene": "CHCHD3",
+          "ensembl": "ENSG00000106554",
+          "symbol": "CHCHD3",
+          "http_status": 200,
+          "bytes": 2394,
+          "sha256": "sha256:6cad7419d48c1610b6da9a77fce64a088b7b475d3dd3de56998b319a5426e574",
+          "sm_tractability_buckets": 0,
+          "drug_and_clinical_candidates": 0,
+          "associated_diseases": 132
+        }
+      ],
+      "positive_control": {
+        "why": "A field that returns zero for every gene is indistinguishable from a field that is broken or renamed. EGFR was queried with the identical query to prove the zeros are real.",
+        "gene": "EGFR",
+        "ensembl": "ENSG00000146648",
+        "sm_tractability_true": [
+          "SM:Approved Drug",
+          "SM:Structure with Ligand",
+          "SM:High-Quality Ligand",
+          "SM:High-Quality Pocket",
+          "SM:Druggable Family"
+        ],
+        "sm_tractability_buckets": 5,
+        "drug_and_clinical_candidates": 82,
+        "verdict": "Field populates correctly. The zeros on the consensus module are real."
+      },
+      "extracted": {
+        "finding": "All eight consensus genes score zero on every small-molecule tractability bucket and have zero drug or clinical candidates. The cardiolipin/cristae module is undrugged and, by Open Targets' structural criteria, not obviously druggable.",
+        "why_this_supports_the_design": "You cannot run structure-based design against a target with no ligandable pocket. A phenotype-first method does not need one: it ranks compounds by the morphology they produce, whatever protein they happen to touch. The absence of tractability is the reason the conventional route has not been taken, and it is the reason this route is worth taking.",
+        "why_this_is_also_the_main_caveat": "Any hit will be mechanistically unexplained. There is no known chemical matter against this module to sanity-check a hit against, and no positive control compound to validate the axis. A ranked list from this pipeline cannot be cross-checked against prior chemistry, because there is no prior chemistry.",
+        "orthogonality": "Open Targets evidence is genetic, literature, and pathway derived. None of it comes from Cell Painting. Agreement between the two is corroboration; it is not the same signal counted twice."
+      }
+    },
+    {
+      "registry": "fda_orphan",
+      "lane": "C",
+      "status": "NOT_CAPTURED",
+      "reason": "The FDA Orphan Drug Product designation database has no stable JSON API; its query surface is a web form. Any capture would be a screen-scrape whose reproducibility we cannot assert. Recorded as an open checklist item to be resolved by hand rather than faked with an unreproducible digest."
+    },
+    {
+      "registry": "convoke",
+      "lane": "C",
+      "status": "LISTED_NOT_WIRED",
+      "reason": "Referenced by the partner repo as an MCP requiring CONVOKE_MCP_TOKEN. We do not hold that token and it must not be committed to this repo. Until the query surface and the license terms of its output are documented, results from it cannot be recomputed by a third party and therefore cannot be admitted.",
+      "unblock": "Someone with access documents: the endpoint, the query grammar, whether responses are stable or live, and the license on returned content."
+    }
+  ]
+}

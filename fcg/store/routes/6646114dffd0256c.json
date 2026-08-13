@@ -1,0 +1,176 @@
+{
+  "admission": {
+    "admitted": true,
+    "evidence_level": "RECOMPUTED",
+    "label": "fto_finding_lane_C_tractability",
+    "node_id": "sha256:6646114dffd0256c436d1026a663fa3363f5aa95671a8e87a2b0e7e5d70fb2a5"
+  },
+  "custody_chain": [
+    {
+      "bytes": 2071,
+      "bytes_held": true,
+      "capture_method": null,
+      "content_digest": "sha256:dd9b106586a3e81fd0f5a31663f788b9c67d81b0bd020b5741f2c59598e3aee7",
+      "depth": 0,
+      "kind": "CLAIM",
+      "label": "fto_finding_lane_C_tractability",
+      "layer": 3,
+      "node_id": "sha256:6646114dffd0256c436d1026a663fa3363f5aa95671a8e87a2b0e7e5d70fb2a5",
+      "origin": null
+    },
+    {
+      "bytes": 1817,
+      "bytes_held": true,
+      "capture_method": null,
+      "content_digest": "sha256:ee8f8f447ac673b497d743d4923cd22f8f06b7f535d6749d37eb2187c560feff",
+      "depth": 1,
+      "kind": "DERIVATION",
+      "label": "fto_triage_target_tractability",
+      "layer": 2,
+      "node_id": "sha256:e7f314ca7a2b3819f1503feefecbb0ddde07fb82dbded95f6e59661f2ce932dd",
+      "origin": null
+    },
+    {
+      "bytes": 814,
+      "bytes_held": true,
+      "capture_method": null,
+      "content_digest": "sha256:d1f8dd3811ffb988ee186705b8498472d1a3f85557ee07b82c3e85f6526fbf35",
+      "depth": 2,
+      "kind": "DERIVATION",
+      "label": "fto_search_target_tractability",
+      "layer": 1,
+      "node_id": "sha256:527c15c9738e485246dc835a8464050440bc85047262e4e1ee44f1a4495b789f",
+      "origin": null
+    },
+    {
+      "bytes": 2441,
+      "bytes_held": false,
+      "capture_method": "http_get_sha256_at_origin",
+      "content_digest": "sha256:ed50e7f88f569c659c093afe17faae4521d7d353d20db7462bf5c7062c3efd94",
+      "depth": 3,
+      "kind": "SOURCE",
+      "label": "fto/open_targets/opentargets_TAZ",
+      "layer": 0,
+      "node_id": "sha256:48b7bc7ea2024af8e63ee5eb6764928b2da698f51f6dd44b5831bd8f7cc02d16",
+      "origin": "https://api.platform.opentargets.org/api/v4/graphql"
+    },
+    {
+      "bytes": 2419,
+      "bytes_held": false,
+      "capture_method": "http_get_sha256_at_origin",
+      "content_digest": "sha256:c0bc7b96eb413285cfcdf59688972125b4d7d9e7b0da73b0198199deb5cf4565",
+      "depth": 3,
+      "kind": "SOURCE",
+      "label": "fto/open_targets/opentargets_CRLS1",
+      "layer": 0,
+      "node_id": "sha256:b4f4163ac2e816bf8f8bb712e62709ad6ce1887e6e8905fb47f814c8000f62ac",
+      "origin": "https://api.platform.opentargets.org/api/v4/graphql"
+    },
+    {
+      "bytes": 2395,
+      "bytes_held": false,
+      "capture_method": "http_get_sha256_at_origin",
+      "content_digest": "sha256:0254c73a665b212990a7146cb436731b783a1083df0aec98971457bc407db6af",
+      "depth": 3,
+      "kind": "SOURCE",
+      "label": "fto/open_targets/opentargets_PGS1",
+      "layer": 0,
+      "node_id": "sha256:91b09bb95ae7083e4625672aa6055c36ffdf09d5f04b0b4e3b92ca49bfde1ab4",
+      "origin": "https://api.platform.opentargets.org/api/v4/graphql"
+    },
+    {
+      "bytes": 2460,
+      "bytes_held": false,
+      "capture_method": "http_get_sha256_at_origin",
+      "content_digest": "sha256:23bbe0ef9de51373f612c35d439e7584d7c0c9845cca3e65a97eec562187e134",
+      "depth": 3,
+      "kind": "SOURCE",
+      "label": "fto/open_targets/opentargets_PTPMT1",
+      "layer": 0,
+      "node_id": "sha256:e69170f8495362dc1d1fb335c06056bb91b8ffccd31a0cc91b6eeaf0d6d7b7c8",
+      "origin": "https://api.platform.opentargets.org/api/v4/graphql"
+    },
+    {
+      "bytes": 2526,
+      "bytes_held": false,
+      "capture_method": "http_get_sha256_at_origin",
+      "content_digest": "sha256:4f6071dc99ad6332a9b3f167c718ccc7de5364145a53cefd0ade614b4c03da87",
+      "depth": 3,
+      "kind": "SOURCE",
+      "label": "fto/open_targets/opentargets_HADHA",
+      "layer": 0,
+      "node_id": "sha256:a57837ebcad10c951fc86c92981d48e943365426cbda4bde7bf38828b146e2d0",
+      "origin": "https://api.platform.opentargets.org/api/v4/graphql"
+    },
+    {
+      "bytes": 2355,
+      "bytes_held": false,
+      "capture_method": "http_get_sha256_at_origin",
+      "content_digest": "sha256:e426342e104f6bd3ca22834732bee654e85ab3143f5a27a7c00d28ce0c00c172",
+      "depth": 3,
+      "kind": "SOURCE",
+      "label": "fto/open_targets/opentargets_PHB",
+      "layer": 0,
+      "node_id": "sha256:7741ecac1c0f57a8cb755b94d2383be7be28a4495707edd82a737d3a8b400ec2",
+      "origin": "https://api.platform.opentargets.org/api/v4/graphql"
+    },
+    {
+      "bytes": 2357,
+      "bytes_held": false,
+      "capture_method": "http_get_sha256_at_origin",
+      "content_digest": "sha256:33bd2b3567b2884842eefd7d2ed88dbf3e2489796d602772f77492d4247ec004",
+      "depth": 3,
+      "kind": "SOURCE",
+      "label": "fto/open_targets/opentargets_PHB2",
+      "layer": 0,
+      "node_id": "sha256:95b8a483d9fa43253b96f6e9353c0c09cd12d1b0c0a8288469ae5105d0fb355c",
+      "origin": "https://api.platform.opentargets.org/api/v4/graphql"
+    },
+    {
+      "bytes": 2394,
+      "bytes_held": false,
+      "capture_method": "http_get_sha256_at_origin",
+      "content_digest": "sha256:6cad7419d48c1610b6da9a77fce64a088b7b475d3dd3de56998b319a5426e574",
+      "depth": 3,
+      "kind": "SOURCE",
+      "label": "fto/open_targets/opentargets_CHCHD3",
+      "layer": 0,
+      "node_id": "sha256:6c1ad4920940692e5ec4dd3db9a239a87ab4fb6e4670210d3854843e6bd418ab",
+      "origin": "https://api.platform.opentargets.org/api/v4/graphql"
+    }
+  ],
+  "label": "fto_finding_lane_C_tractability",
+  "leaf_hash": "sha256:87176613b45767d0b80f92480d50967ccaecff76f707a87e83a6e4f88f368876",
+  "leaf_index": 29,
+  "merkle_convention": "rfc6962/sha256",
+  "merkle_root": "sha256:d98a2972e57a8e9c2f3111e224950d4ae74c65a6cfc18d064eb07014d4d589a4",
+  "node_id": "sha256:6646114dffd0256c436d1026a663fa3363f5aa95671a8e87a2b0e7e5d70fb2a5",
+  "path": [
+    {
+      "sibling": "sha256:edfdd82b341857f5bd6314eb7da89fc751a7ebe6149e015af30c3f1995a88c2c",
+      "side": "left"
+    },
+    {
+      "sibling": "sha256:410202461d64ba7db03446a41eee0fb3c4b0127de3e79ec958a1f87761e17304",
+      "side": "right"
+    },
+    {
+      "sibling": "sha256:e1a1252b543064433673f0bdbe3457e06817b8b4418a4105a7eb92db75c5cbd0",
+      "side": "left"
+    },
+    {
+      "sibling": "sha256:ac8742b99832441697926ce4197da6283497a9cc31e398ec4c0f88ac29ee6fe1",
+      "side": "left"
+    },
+    {
+      "sibling": "sha256:b34f810e77981807a8192c0c5820201b6ab66f71aa693d5053ca3a0c51d1fb29",
+      "side": "left"
+    },
+    {
+      "sibling": "sha256:9f1f691a592b782b11c070c1a44a84e35c5ee0c5f4837cfda5bc9a7d5c465463",
+      "side": "right"
+    }
+  ],
+  "route_verified": true,
+  "schema": "biocustody.fcg.route.v1"
+}

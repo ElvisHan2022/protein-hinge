@@ -1,0 +1,16 @@
+# Credentials never enter this repo. They live in .env and .env stays out.
+.env
+.env.*
+*.pem
+*.key
+
+__pycache__/
+*.pyc
+.DS_Store
+__MACOSX/
+
+# Nothing under fcg/store/ is ignored, on purpose. The whole store is 532K,
+# the atoms are 37K, and those atoms are the difference between RECOMPUTED and
+# COMMITTED: without the bytes, a reader can only take the digests on trust.
+# Large upstream files (the 13 MB parquets, the JUMP metadata) are never
+# vendored here — they are attested by digest and re-fetched from origin.

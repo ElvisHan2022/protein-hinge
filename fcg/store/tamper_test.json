@@ -1,0 +1,51 @@
+{
+  "after": {
+    "dependent_claim_admitted": false,
+    "dependent_claim_reason": "INPUT_REJECTED",
+    "first_divergent_node": "sha256:0826d363f565fc72c8457358511ae6eaabb41146b3f0a8673c72072f8c348900",
+    "first_divergent_node_is_the_tampered_node": true,
+    "merkle_root": "sha256:7b64fa966ff5d8c1452b991f62a3e46e187954381ddb1c17d86af05b426e1094",
+    "merkle_root_moved": false,
+    "route_admissible": false,
+    "tampered_node_admitted": false,
+    "tampered_node_reason": "DIGEST_MISMATCH",
+    "why_root_did_not_move": "The root is a commitment to the node records, i.e. to what the graph CLAIMS. Editing bytes on disk without editing the record does not change any claim, so the root is unchanged and correct. This tamper is caught by recomputation instead. See ARM B for the attack that does move the root."
+  },
+  "arm_b_coverup": {
+    "description": "bytes altered AND record repaired so recomputation passes",
+    "forged_node_id": "sha256:da459c2bf2aaece737482365339abc13b86ea824bb7af2a9d22a9f879e9baee3",
+    "merkle_root": "sha256:c0514810c0fd8880098c5964f4b43eb52074e9e08085601e80f6581e08338207",
+    "merkle_root_moved": true,
+    "node_id_changed": true,
+    "original_node_id": "sha256:0826d363f565fc72c8457358511ae6eaabb41146b3f0a8673c72072f8c348900",
+    "recomputation_passes": true
+  },
+  "assertions": {
+    "A_cause_named_precisely": true,
+    "A_rejection_propagated_untouched": true,
+    "A_root_correctly_unmoved": true,
+    "A_tampered_node_rejected": true,
+    "B_coverup_defeats_recomputation": true,
+    "B_coverup_moves_the_root": true,
+    "clean_rebuild_readmits": true,
+    "no_edit_survives_both_checks": true
+  },
+  "before": {
+    "claim_admitted": true,
+    "claim_evidence_level": "RECOMPUTED",
+    "merkle_root": "sha256:7b64fa966ff5d8c1452b991f62a3e46e187954381ddb1c17d86af05b426e1094"
+  },
+  "bytes_changed": 1,
+  "canonical_run_modified": false,
+  "change": "E06 -> E07",
+  "changed_artifact": "consensus_axis_specification.payload.genes[TAZ].well",
+  "merkle_convention": "rfc6962/sha256",
+  "pass": true,
+  "restored": {
+    "claim_admitted": true,
+    "merkle_root": "sha256:7b64fa966ff5d8c1452b991f62a3e46e187954381ddb1c17d86af05b426e1094",
+    "merkle_root_returned_to_original": true,
+    "tampered_node_admitted": true
+  },
+  "schema": "biocustody.fcg.tamper_test.v1"
+}

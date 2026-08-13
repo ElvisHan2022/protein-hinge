@@ -1,0 +1,471 @@
+# =============================================================================
+# HACKDAY_STATE.yaml
+# Execution contract. Binding invariants, not goals.
+#
+# READ THIS FIRST, AGENT:
+#   Every field below is a CONSTRAINT, not a suggestion or an aspiration.
+#   You do not have discretion to reinterpret a constraint because you
+#   found something more interesting, more elegant, or easier.
+#   If reality contradicts this file, you STOP and report the contradiction.
+#   You do not resolve it yourself. You do not "adapt the plan."
+#
+#   Any identifier in this file marked `verified: true` was checked against
+#   live JUMP metadata on 2026-08-13. Do not substitute, guess, correct,
+#   or "fix" an identifier. If a lookup fails, that is a finding to report,
+#   not an error to route around.
+# =============================================================================
+
+schema: hackday-execution-contract/v1
+generated: "2026-08-13"
+project: BioCustody
+one_line: >-
+  SS-31 proved the mitochondrial membrane is druggable. It is a daily
+  injection that treats one disease. We rank existing small molecules for
+  which ones reproduce the effect of genetically repairing that membrane,
+  and we bind every number to the bytes it came from.
+
+# -----------------------------------------------------------------------------
+# CLAIM CEILING -- the single most violable invariant in this file
+# -----------------------------------------------------------------------------
+claim_ceiling:
+  maximum_permitted_claim: REPURPOSING_HYPOTHESIS
+  meaning: >-
+    A ranked list of small molecules whose morphological signature opposes
+    the consensus signature of cardiolipin-pathway gene knockouts.
+    That is the entire claim. Nothing above it is authorized.
+
+  explicitly_not_claimed:
+    - measured rescue of any disease phenotype
+    - efficacy, in any system, in vitro or in vivo
+    - binding to cardiolipin or to any named molecular target
+    - mechanism of action of any ranked compound
+    - equivalence, similarity, or comparability to SS-31 / elamipretide
+    - therapeutic relevance to any named patient population
+
+  hard_rule: >-
+    PREDICTED COUNTER-PERTURBATION IS NOT MEASURED RESCUE.
+    Cell Painting observes morphology. It does not observe mechanism.
+    A compound that opposes the disease axis has produced a correlated
+    image, and nothing more has been shown.
+
+  banned_vocabulary:
+    # If any of these appear in generated code comments, README, slides,
+    # voiceover, figure captions, or commit messages -> build is non-compliant.
+    - rescues
+    - reverses
+    - treats
+    - cures
+    - therapeutic
+    - efficacious
+    - validated hit
+    - lead compound
+    - proven
+    - demonstrates that
+    - cardiolipin binder
+    - small-molecule SS-31
+    - SS-31 analog
+    - SS-31 mimetic
+  required_hedge_on_every_result_surface: >-
+    "Predicted counter-perturbation. Not measured rescue."
+
+# -----------------------------------------------------------------------------
+# SS-31 -- role is FIXED. Do not promote it.
+# -----------------------------------------------------------------------------
+ss31:
+  identity:
+    names: [SS-31, elamipretide, MTP-131, Bendavia]
+    brand_approved_2025: FORZINITY
+    modality: tetrapeptide
+    mechanism_literature: binds cardiolipin on the inner mitochondrial membrane
+    regulatory_status: >-
+      FDA accelerated approval, 2025, Barth syndrome, patients >30 kg.
+      First mitochondrial-targeting therapy approved.
+
+  role_in_this_project: ANCHOR_AND_MOTIVATION_ONLY
+
+  invariants:
+    - SS-31 is NOT in the JUMP compound library. It is a peptide.
+    - SS-31 therefore CANNOT appear as a hit. It cannot be recovered,
+      ranked, scored, or validated by this pipeline.
+    - Any output that presents SS-31 as an algorithmic result is a
+      contract violation and must be deleted, not edited.
+    - SS-31 justifies WHY the target is worth pursuing. It is not evidence
+      that any ranked compound resembles it.
+
+  permitted_use:
+    - narrative framing in deck / voiceover / README
+    - "unmet-need argument: peptide = injected daily, not oral, does not
+       cross the blood-brain barrier, so neurological mitochondrial disease
+       (Leigh, MELAS) is out of its reach"
+    - entry into the custody graph as a hashed molecular artifact
+      via the BILN/HELM -> pyPept -> RDKit -> SMILES/InChIKey bridge
+
+  forbidden_use:
+    - computing similarity between SS-31 and any ranked compound
+    - implying the pipeline "found" or "would have found" SS-31
+    - using SS-31 as a positive control for the ranking
+
+# -----------------------------------------------------------------------------
+# BIOLOGY -- LOCKED. Do not substitute genes.
+# -----------------------------------------------------------------------------
+biology:
+  disease_axis_concept: >-
+    Barth syndrome is a membrane-folding disease, not a protein-folding
+    disease. TAFAZZIN maintains cardiolipin; cardiolipin holds the shape of
+    the cristae; broken cristae underperform. Cell Painting stains
+    mitochondria as one of its eight compartments, so the readout channel
+    is on-mechanism for both the lesion and for SS-31.
+
+  design_rationale: >-
+    We do not use a single gene. A compound opposing one knockout is
+    plausibly fitting noise. We define the disease direction as the
+    CONSENSUS of independent ways of breaking the same membrane, and rank
+    against that consensus. This mirrors SS-31's own logic: it does not
+    repair tafazzin, it stabilizes the membrane downstream of the lesion.
+
+  # All IDs verified against jump-cellpainting/datasets @ main, 2026-08-13
+  consensus_knockout_set:
+    modality: CRISPR
+    source: source_13
+    all_verified: true
+
+    tier_1_mandatory:
+      # Both live on the SAME plate design (CP-CC9-R*-01) across 7 replicates.
+      # Cheapest viable axis. If you build nothing else, build this.
+      genes:
+        - symbol: TAZ
+          jcp: JCP2022_806962
+          ncbi_gene_id: 6901
+          well: E06
+          role: cardiolipin remodeling (Barth syndrome causal gene)
+          verified: true
+        - symbol: CRLS1
+          jcp: JCP2022_801511
+          ncbi_gene_id: 54675
+          well: M04
+          role: cardiolipin synthase (makes the lipid)
+          verified: true
+      plates:
+        - {plate: CP-CC9-R1-01, batch: 20220914_Run1}
+        - {plate: CP-CC9-R2-01, batch: 20221009_Run2}
+        - {plate: CP-CC9-R3-01, batch: 20221017_Run3}
+        - {plate: CP-CC9-R5-01, batch: 20221109_Run5}
+        - {plate: CP-CC9-R6-01, batch: 20221109_Run5}
+        - {plate: CP-CC9-R7-01, batch: 20221109_Run5}
+        - {plate: CP-CC9-R8-01, batch: 20221109_Run5}
+      note: "CP-CC9-R4-01 does not exist. This is expected. Do not search for it."
+
+    tier_2_optional:
+      # Only attempt after tier_1 produces a ranked list end to end.
+      genes:
+        - symbol: PGS1
+          jcp: JCP2022_805090
+          ncbi_gene_id: 9489
+          role: "cardiolipin precursor synthesis"
+          wells_by_plate: {CP-CC9-R1-05: J03, CP-CC9-R1-22: D03, CP-CC9-R2-05: J03, CP-CC9-R2-22: D03, CP-CC9-R3-05: J03, CP-CC9-R3-22: D03, CP-CC9-R4-05: J03, CP-CC9-R4-22: D03, CP-CC9-R5-05: J03, CP-CC9-R5-22: D03}
+          verified: true
+        - symbol: PTPMT1
+          jcp: JCP2022_805673
+          ncbi_gene_id: 114971
+          role: "phosphatase required for cardiolipin biosynthesis"
+          well: H14
+          plates: [CP-CC9-R1-16, CP-CC9-R2-16, CP-CC9-R3-16, CP-CC9-R4-16, CP-CC9-R5-16]
+          verified: true
+        - symbol: HADHA
+          jcp: JCP2022_803009
+          ncbi_gene_id: 3030
+          role: "alternate cardiolipin remodeling route"
+          well: D13
+          plates: [CP-CC9-R1-11, CP-CC9-R2-11, CP-CC9-R3-11, CP-CC9-R4-11, CP-CC9-R5-11]
+          verified: true
+        - symbol: PHB
+          jcp: JCP2022_805091
+          ncbi_gene_id: 5245
+          role: "prohibitin scaffold, cardiolipin-binding"
+          well: G22
+          plates: [CP-CC9-R1-24, CP-CC9-R2-24, CP-CC9-R3-24, CP-CC9-R4-24, CP-CC9-R5-24]
+          verified: true
+        - symbol: PHB2
+          jcp: JCP2022_805092
+          ncbi_gene_id: 11331
+          role: "prohibitin scaffold, cardiolipin-binding"
+          well: E17
+          plates: [CP-CC9-R1-22, CP-CC9-R2-22, CP-CC9-R3-22, CP-CC9-R4-22, CP-CC9-R5-22]
+          verified: true
+        - symbol: CHCHD3
+          jcp: JCP2022_801279
+          ncbi_gene_id: 54927
+          role: "MICOS complex, cristae junction shaping"
+          well: G04
+          plates: [CP-CC9-R1-23, CP-CC9-R2-23, CP-CC9-R3-23, CP-CC9-R4-23, CP-CC9-R5-23]
+          verified: true
+      union_plate_count_if_all_used: 37
+      note_run4: >-
+        Tier 2 introduces batch 20221024_Run4 (the R4-* plates), which tier 1
+        does not use. Tier 1 has no R4 because CP-CC9-R4-01 does not exist.
+      warning: >-
+        Tier 2 expands the pull from 7 plates to 37. Do not begin tier 2
+        before tier 1 has produced a ranked list. Partial tier 2 is
+        acceptable; a broken tier 1 is not.
+
+  controls:
+    negcon_crispr_non_targeting: {jcp: JCP2022_800002, name: non-targeting, per_plate_wells: 10, verified: true}
+    control_depth_warning: >-
+      Only 10 non-targeting wells per CRISPR plate, versus 64-79 DMSO wells
+      per TARGET2 plate. The knockout side is the noisier side. This is
+      exactly why 7 replicate plates are mandatory and why gate_1 exists.
+      Do not reduce the plate count to save download time.
+    negcon_crispr_no_guide:      {jcp: JCP2022_800001, name: no-guide, verified: true}
+    poscon_crispr:               {jcp: JCP2022_805264, name: PLK1, verified: true}
+    rule: >-
+      Normalize every knockout against the NON-TARGETING wells ON ITS OWN
+      PLATE. Never against a pooled cross-plate control. Never against
+      no-guide unless non-targeting is unavailable, and if you make that
+      substitution you must record it in the FCO.
+
+  orf_rescue_arm:
+    status: TIER_3_OPTIONAL_AND_HAZARDOUS
+    symbol: TAZ
+    jcp: JCP2022_910418
+    source: source_4
+    batch: 2021_05_10_Batch3
+    well: E16
+    plates: [BR00123613, BR00123614, BR00123616, BR00123617, BR00123618]
+    verified: true
+    negcons: [JCP2022_915128 BFP, JCP2022_915129 HcRed, JCP2022_915130 LUCIFERASE, JCP2022_915131 LacZ]
+    hazard: >-
+      This arm is source_4. The knockout arm is source_13. Different site,
+      different batch, different microscope. Profiles are NOT directly
+      comparable without harmonization.
+    invariant: >-
+      The ORF arm MAY NOT contribute to the primary axis. It may be used
+      only as a qualitative directional sanity check, and any figure using
+      it must be labeled cross-source. If you find yourself computing a
+      distance between a source_4 profile and a source_13 profile, STOP.
+
+# -----------------------------------------------------------------------------
+# COMPOUND ARM -- the reason this is feasible in one day
+# -----------------------------------------------------------------------------
+compound_arm:
+  key_fact: >-
+    source_13 contains BOTH the CRISPR plates and TARGET2 compound plates,
+    imaged in the SAME BATCHES on the same days. Compounds and knockouts are
+    directly comparable without cross-site harmonization. This is the single
+    thing that makes the project tractable today. Do not discard it in favor
+    of a larger compound set.
+
+  plates:
+    - {plate: CP-CC9-R1-29, batch: 20220914_Run1, shares_batch_with: CP-CC9-R1-01}
+    - {plate: CP-CC9-R2-29, batch: 20221009_Run2, shares_batch_with: CP-CC9-R2-01}
+    - {plate: CP-CC9-R3-29, batch: 20221017_Run3, shares_batch_with: CP-CC9-R3-01}
+    - {plate: CP-CC9-R5-29, batch: 20221109_Run5, shares_batch_with: CP-CC9-R5-01}
+    - {plate: CP-CC9-R6-29, batch: 20221120_Run6, shares_batch_with: null}
+    - {plate: CP-CC9-R7-29, batch: 20221120_Run6, shares_batch_with: null}
+  plate_type: TARGET2
+  distinct_perturbations: 302
+  wells: 2304
+  dmso_wells_per_plate: {CP-CC9-R1-29: 64, CP-CC9-R2-29: 64, CP-CC9-R3-29: 64, CP-CC9-R5-29: 64, CP-CC9-R6-29: 79, CP-CC9-R7-29: 79}
+  dmso_jcp: JCP2022_033924
+  verified: true
+
+  annotation_source:
+    file: JUMP-Target-2_compound_metadata.tsv
+    repo: https://github.com/jump-cellpainting/JUMP-Target
+    provides: [broad_sample, InChIKey, pert_iname, pubchem_cid, target_list, smiles, InChI]
+    note: >-
+      SMILES ship with the metadata. The molecular representation step is
+      already solved for this arm. Do not build a structure-fetching layer.
+
+  scale_out_if_time_remains:
+    full_set: cpg0016 compound.csv.gz, 116753 compounds
+    blocker: spans 10+ sources, requires batch correction
+    invariant: >-
+      Do NOT begin scale-out before the enrichment gate below has passed
+      on the 302-compound set. A larger list that has not passed the gate
+      is worth less than a small list that has.
+
+# -----------------------------------------------------------------------------
+# DATA CONTRACT
+# -----------------------------------------------------------------------------
+data:
+  bucket_https: https://cellpainting-gallery.s3.amazonaws.com
+  dataset: cpg0016-jump
+  profile_path_template: "{bucket}/{dataset}/{source}/workspace/profiles/{batch}/{plate}/{plate}.parquet"
+  verified_2026_08_13:
+    method: HTTP range request bytes=0-3, expect status 206 and magic "PAR1"
+    result: >-
+      All 13 required plates (7 tier-1 CRISPR + 6 TARGET2 compound) returned
+      206 with valid parquet magic bytes. source_4 ORF plate BR00123613 also
+      confirmed reachable. Anonymous access, no credentials required.
+    all_13_reachable: true
+    note: >-
+      If a plate 404s at build time, that is a STOP condition. It means the
+      path template or the batch name is wrong. Do not guess an alternative.
+  access: public, anonymous, no credentials
+  level: well-level aggregated profiles ONLY
+
+  forbidden_downloads:
+    - raw images
+    - single-cell data
+    - illumination correction files
+    - any object exceeding 1 GB
+
+  metadata_files:
+    base: https://raw.githubusercontent.com/jump-cellpainting/datasets/main/metadata/
+    files: [crispr.csv.gz, orf.csv.gz, compound.csv.gz, plate.csv.gz, well.csv.gz, perturbation_control.csv]
+    note: all gzipped except perturbation_control.csv
+
+# -----------------------------------------------------------------------------
+# METHOD -- the axis. Do not redesign this.
+# -----------------------------------------------------------------------------
+method:
+  step_1_normalize:
+    rule: per-plate, against that plate's non-targeting wells
+    output: robust z-scored feature matrix
+  step_2_disease_vector:
+    rule: >-
+      For each tier-1 gene, mean profile of its knockout wells minus mean
+      profile of same-plate non-targeting wells. Average across replicate
+      plates. Then average across genes to form CONSENSUS_DISEASE_VECTOR.
+  step_3_compound_vectors:
+    rule: >-
+      For each TARGET2 compound, mean profile minus same-plate DMSO
+      (JCP2022_033924). Same batch as the knockout plates where available.
+  step_4_rank:
+    metric: cosine similarity to CONSENSUS_DISEASE_VECTOR
+    ordering: most negative first (opposing the disease direction)
+    output: ranked list with score, InChIKey, pert_iname, target_list
+  step_5_null:
+    rule: >-
+      Permutation null over shuffled well labels. Report an empirical
+      p-value per compound. A ranked list without a null is not a result.
+
+  forbidden_method_changes:
+    - substituting a learned embedding for the raw feature space
+    - training any model
+    - dropping the permutation null "for time"
+    - pooling controls across plates
+    - mixing source_13 and source_4 profiles in one distance computation
+
+# -----------------------------------------------------------------------------
+# GATES -- each must PASS or be reported as FAILED. Never silently skipped.
+# -----------------------------------------------------------------------------
+gates:
+  gate_1_replicate_reproducibility:
+    test: >-
+      Knockout signatures for the same gene correlate across the 7
+      replicate plates above the median correlation of random well pairs.
+    on_fail: STOP. The axis is noise. Report it. Do not proceed to ranking.
+
+  gate_2_consensus_coherence:
+    test: >-
+      Tier-1 gene vectors (TAZ, CRLS1) are positively correlated with each
+      other. Two independent lesions in one pathway should agree.
+    on_fail: >-
+      Report the disagreement honestly. You may proceed with single-gene
+      TAZ only, but the deck must say "single gene, consensus not established."
+
+  gate_3_annotation_enrichment:
+    test: >-
+      Top-ranked opposing compounds are enriched for mitochondrial /
+      oxidative-phosphorylation / membrane annotations in target_list,
+      relative to the full 302-compound background. Fisher exact test.
+    why: >-
+      This is the credibility number. The method is never told what a
+      mitochondrion is. If it rediscovers the right neighborhood unaided,
+      the list is worth reading. If it does not, the list is worth
+      reporting as negative.
+    on_fail: >-
+      REPORT THE NEGATIVE RESULT. Do not tune parameters until it passes.
+      Do not change the gene set until it passes. A disclosed miss is
+      publishable; a tuned pass is not.
+
+  gate_4_custody_recompute:
+    test: >-
+      Every claim in the final artifact recomputes bit-identically from
+      its named input bytes. Admit iff recomputes.
+    on_fail: reject the claim. Do not annotate it. Do not warn and continue.
+
+  gate_5_tamper_demo:
+    test: >-
+      Mutate one upstream input byte. The dependent downstream claim
+      auto-invalidates and is visibly marked as such without human action.
+    required_for_demo: true
+
+# -----------------------------------------------------------------------------
+# REQUIRED OUTPUTS -- done means all of these exist
+# -----------------------------------------------------------------------------
+required_outputs:
+  - path: results/ranked_compounds.csv
+    must_contain: [rank, cosine_to_disease_axis, empirical_p, InChIKey, pert_iname, target_list]
+  - path: results/enrichment_report.json
+    must_contain: [fisher_p, odds_ratio, background_n, top_n, verdict]
+  - path: results/gates.json
+    must_contain: [gate_1, gate_2, gate_3, gate_4, gate_5, each with pass/fail and evidence hash]
+  - path: fco/binding.json
+    must_contain: [binding_leaf, claim_ceiling, layer_0_atoms with per-file sha256 and byte counts]
+  - path: fco/ss31_molecule.json
+    must_contain: [source_representation, SMILES, InChIKey, sha256]
+    note: SS-31 as a hashed artifact, labeled ANCHOR_NOT_RESULT
+  - path: SLIDE_DECK.md
+    constraint: 7 slides, every claim carries its gate status
+  - path: docs/video_voiceover.txt
+    constraint: 90 seconds, contains the required hedge verbatim
+
+# -----------------------------------------------------------------------------
+# FORBIDDEN -- non-negotiable
+# -----------------------------------------------------------------------------
+forbidden:
+  scope:
+    - starting a new biological hypothesis
+    - changing the gene set to one that produces a better-looking result
+    - substituting a different disease
+    - adding a second disease before tier 1 is complete
+  engineering:
+    - refactoring working code not required by a failing test
+    - redesigning repository architecture
+    - changing the FCO schema except a backwards-compatible bug fix
+    - adding Neptune, CompuCell3D, HealthOmics, or ClawMax
+    - training any model
+    - introducing paid APIs or paid compute
+    - rewriting documentation for style alone
+    - creating speculative follow-up features
+  data:
+    - downloading raw images or single-cell data
+    - committing any parquet or raw dataset to git
+    - publishing anything from the frozen manuscript package
+    - committing credentials, .env contents, or API keys
+  claims:
+    - promoting any claim above REPURPOSING_HYPOTHESIS
+    - presenting prior custody-layer benchmark numbers as biological results
+    - reusing detector metrics (MCC 1.0, FPR 0.0, 0/3000 false admits)
+      without the label "custody-layer evidence, prior work, language-model
+      substrate, not biology"
+
+# -----------------------------------------------------------------------------
+# STOP CONDITIONS -- halt and report, do not self-resolve
+# -----------------------------------------------------------------------------
+stop_and_report_if:
+  - any JCP identifier in this file fails to resolve against live metadata
+  - any listed plate is absent from the bucket
+  - gate_1 fails
+  - a required output cannot be produced without violating a forbidden item
+  - you believe a constraint in this file is wrong
+  - you are about to write any word from banned_vocabulary
+  - elapsed time exceeds 6 hours with no ranked list produced
+
+# -----------------------------------------------------------------------------
+# PHASE
+# -----------------------------------------------------------------------------
+current_phase: PHASE_1_TIER_1_AXIS
+required_output_this_phase: results/ranked_compounds.csv from tier-1 genes only
+completion_condition: >-
+  ranked_compounds.csv exists, gate_1 and gate_3 have recorded verdicts
+  (pass OR fail, both acceptable), and every row traces to a hashed input.
+next_phase_unlocks_only_when: completion_condition is satisfied
+
+open_risks_declared:
+  - cross-source comparison (ORF arm) is not valid without harmonization
+  - 302 compounds is a small screening space; absence of hits is weakly informative
+  - Cell Painting reports morphology, not mechanism; ceiling is structural, not a limitation to be engineered away
+  - TARGET2 compounds are target-annotated, which makes gate_3 possible but also makes the background non-random
