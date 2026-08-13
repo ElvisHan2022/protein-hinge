@@ -8,6 +8,7 @@ __pycache__/
 *.pyc
 .DS_Store
 __MACOSX/
+.playwright-cli/
 
 # Nothing under fcg/store/ is ignored, on purpose. The whole store is 532K,
 # the atoms are 37K, and those atoms are the difference between RECOMPUTED and

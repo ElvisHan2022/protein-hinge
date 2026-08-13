@@ -42,6 +42,13 @@ python3 db/serve.py 8787      # serve the local browser demo
 
 Open `http://localhost:8787` after starting the demo server.
 
+Recording-ready materials:
+
+- [MVP status](docs/MVP_STATUS.md)
+- [Pitch deck document](docs/PITCH_DECK.md)
+- [Video script](docs/VIDEO_SCRIPT.md)
+- [Screenshots](output/playwright/)
+
 The received zip includes source builders (`fcg/ingest.py`,
 `fcg/tamper_test.py`, and `fto/ingest_fto.py`), but those scripts reference a
 local `HACKDAY_STATE.yaml` that was not included in the artifact. The committed
