@@ -1,0 +1,20 @@
+{
+  "aws_cli": "not_checked",
+  "checked_at": "2026-08-13T21:35:54+00:00",
+  "credentials_committed": false,
+  "env_status": {
+    "AWS_ACCESS_KEY_ID": "missing",
+    "AWS_DEFAULT_REGION": "missing",
+    "AWS_SECRET_ACCESS_KEY": "missing",
+    "AWS_SESSION_TOKEN": "missing"
+  },
+  "identity": null,
+  "missing": [
+    "AWS_DEFAULT_REGION",
+    "AWS_ACCESS_KEY_ID",
+    "AWS_SECRET_ACCESS_KEY",
+    "AWS_SESSION_TOKEN"
+  ],
+  "schema": "protein_hinge.aws_preflight.v1",
+  "status": "missing_credentials"
+}

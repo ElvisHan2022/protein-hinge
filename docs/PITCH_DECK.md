@@ -26,7 +26,7 @@ Protein Hinge packages a minimal vertical slice:
 
 - JUMP / Cell Painting profile evidence
 - A consensus perturbation-axis claim
-- Elvis rare-disease prescripted validation and live ClinicalTrials probe
+- Disease Search prescripted validation and live ClinicalTrials probe
 - Candidate-ranking provenance pinned as partner evidence
 - OpenAI model, subagent, and integration FCO receipts
 - FTO/search evidence beside the science lane
@@ -35,7 +35,7 @@ Protein Hinge packages a minimal vertical slice:
 
 ![Cell perturbation restoration figure](../figures/cell_perturbation_restoration.png)
 
-## Slide 4 — Elvis Component
+## Slide 4 — Disease Search
 
 The first screen is disease-first:
 
@@ -77,12 +77,27 @@ The OpenAI fan-out is itself in custody:
 
 ![Agent fan-out FCO graph](../figures/agent_fanout_fco_graph.png)
 
-## Slide 7 — Dashboard
+## Slide 7 — Model Trace
+
+The model trace separates helper-model activity from scientific evidence:
+
+- OpenAI models ran bounded helper agents and wrote FCO receipts.
+- Local Ollama models are inventoried by size, but are not treated as
+  scientific data generators.
+- SeedGraph, Fractal Custody Objects, and gettingsciencedone are referenced as
+  local evidence surfaces, with degraded Watchtower search disclosed.
+- The known-pair benchmark is compared with a shuffle null.
+- The null comparison is conservative: the known pair did not beat the shuffle
+  null in the tiny cached run.
+
+![Null hypothesis comparison](../figures/null_hypothesis_comparison.png)
+
+## Slide 8 — Dashboard
 
 The dashboard is intentionally simple:
 
 - Verify any node by label or hash
-- Run the Elvis prescripted and live demo options
+- Run the Disease Search prescripted and live demo options
 - Inspect the OpenAI fan-out FCO graph
 - Browse all 62 nodes by layer and evidence level
 - Query the local SQLite projection directly
@@ -91,7 +106,7 @@ The dashboard is intentionally simple:
 
 ![SQL tractability result](../output/playwright/03-sql-tractability-results.png)
 
-## Slide 8 — What Is Verifiable
+## Slide 9 — What Is Verifiable
 
 The proof tab does not trust the stored root. It hashes all node records into
 RFC 6962 leaves, rebuilds the tree, and compares the result with the committed
@@ -106,7 +121,7 @@ Current result:
 
 ![Root proof pass](../output/playwright/04-prove-root-pass.png)
 
-## Slide 9 — Tamper Demo
+## Slide 10 — Tamper Demo
 
 The tamper button changes one node record in the browser's in-memory database.
 The rebuilt root moves, the stated root no longer matches, and the first
@@ -117,7 +132,7 @@ trusting a server.
 
 ![Tamper root mismatch](../output/playwright/05-tamper-root-fail.png)
 
-## Slide 10 — Guardrails
+## Slide 11 — Guardrails
 
 The project keeps claim ceilings explicit:
 
@@ -126,10 +141,12 @@ The project keeps claim ceilings explicit:
 - The FTO lane refuses `FTO_OPINION`
 - The demo does not claim treatment, efficacy, clinical actionability, or
   measured rescue
-- The live Elvis option does not claim full Convoke/Open Targets integration
+- The live Disease Search option does not claim full Convoke/Open Targets integration
   until that path is visibly wired and reproducible
+- EMA/EPAR, Japan PMDA, FDA orphan designation, and comprehensive approved-drug
+  coverage are future work, not ingested evidence.
 
-## Slide 11 — Citations
+## Slide 12 — Citations
 
 - Fractal Custody Objects v4/v5 publication package:
   https://doi.org/10.5281/zenodo.21829929
@@ -144,7 +161,7 @@ The project keeps claim ceilings explicit:
 - MMR diversity reranking:
   https://doi.org/10.1145/290941.291025
 
-## Slide 12 — Ask
+## Slide 13 — Ask
 
 Use Protein Hinge as the custody layer for phenotype-first discovery demos:
 

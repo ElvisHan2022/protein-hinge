@@ -1,94 +1,107 @@
 {
-  "schema": "protein_hinge.presentation_brief.v1",
-  "audience": ["hackathon judges", "scientific collaborators", "AI presentation builder"],
-  "project_name": "Protein Hinge",
-  "one_liner": "A disease-first rare-disease repurposing demo with cell-perturbation evidence and hash-verifiable custody.",
-  "claim_ceiling": "REPURPOSING_HYPOTHESIS",
-  "demo_flow": [
-    {
-      "step": 1,
-      "title": "Rare disease query",
-      "visual": "ELVIS tab",
-      "message": "Start with a disease-first question instead of a compound-first dashboard."
-    },
-    {
-      "step": 2,
-      "title": "Prescripted validation",
-      "visual": "Barth syndrome row",
-      "message": "Elamipretide is identified as already tried/covered by GAP rule G004_ALREADY_TRIED, so the deterministic grade is NOT_A_GAP."
-    },
-    {
-      "step": 3,
-      "title": "Live option",
-      "visual": "ClinicalTrials.gov probe button",
-      "message": "The live path checks current trial records but abstains from full gap grading until all joins are wired."
-    },
-    {
-      "step": 4,
-      "title": "Phenotypic restoration",
-      "visual": "CPJUMP1 figure tab",
-      "message": "Candidate profiles are ranked by return toward the reference phenotype, not by claimed treatment effect."
-    },
-    {
-      "step": 5,
-      "title": "FCO/FCG custody",
-      "visual": "AGENTS tab and VERIFY tab",
-      "message": "Each source, calculation, model, subagent, and integration object is hash-addressed and queryable."
-    },
-    {
-      "step": 6,
-      "title": "Tamper failure",
-      "visual": "PROVE tab",
-      "message": "A one-record edit causes the rebuilt root to mismatch and names the divergent node."
-    }
-  ],
-  "core_terms": {
-    "FCO": "Fractal Custody Object: one content-addressed evidence, model, agent, or integration record.",
-    "FCG": "Fractal Custody Graph: linked FCO-style records whose hashes and inputs preserve custody.",
-    "GAP_lane": "Deterministic rare disease repurposing gap finder: disease -> targets -> programs -> prior trials -> rule grade.",
-    "MMR": "Maximal Marginal Relevance, cited for diversity-aware reranking design; not required for the primary restoration-distance result.",
-    "Merkle_root": "A single hash committing to the ordered set of custody records under the declared RFC 6962 convention."
-  },
   "allowed_claims": [
     "The demo is reproducible locally.",
     "The CPJUMP1 figure is a processed-profile phenotypic restoration benchmark.",
-    "The Elvis component includes an offline prescripted validation and a live ClinicalTrials probe.",
+    "The Disease Search component includes an offline prescripted validation and a live ClinicalTrials probe.",
     "The GAP lane rules are deterministic and refuse therapeutic recommendation output.",
     "OpenAI fan-out outputs are recorded as custody objects.",
-    "The API key is used locally and is not committed."
+    "The API key is used locally and is not committed.",
+    "The model trace inventories local model sizes and records which OpenAI model tiers actually ran helper agents.",
+    "The known-pair benchmark did not beat the shuffle null in the tiny cached run, so it is shown as a conservative negative result."
   ],
-  "prohibited_claims": [
-    "therapeutic efficacy",
-    "clinical utility",
-    "biological rejuvenation",
-    "measured rescue",
-    "legal FTO opinion",
-    "full live Convoke/Open Targets integration unless demonstrated"
+  "audience": [
+    "hackathon judges",
+    "scientific collaborators",
+    "AI presentation builder"
   ],
   "citations": [
     {
-      "label": "Fractal Custody Objects v4/v5",
-      "doi": "https://doi.org/10.5281/zenodo.21829929"
+      "doi": "https://doi.org/10.5281/zenodo.21829929",
+      "label": "Fractal Custody Objects v4/v5"
     },
     {
-      "label": "Custody-Verified Classification of AI Model Outputs",
-      "doi": "https://doi.org/10.5281/zenodo.21830287"
+      "doi": "https://doi.org/10.5281/zenodo.21830287",
+      "label": "Custody-Verified Classification of AI Model Outputs"
     },
     {
-      "label": "The Shadow Dogma",
-      "doi": "https://doi.org/10.5281/zenodo.21830361"
+      "doi": "https://doi.org/10.5281/zenodo.21830361",
+      "label": "The Shadow Dogma"
     },
     {
-      "label": "XenoDisorder",
-      "doi": "https://doi.org/10.5281/zenodo.21830386"
+      "doi": "https://doi.org/10.5281/zenodo.21830386",
+      "label": "XenoDisorder"
     },
     {
       "label": "RFC 6962 Certificate Transparency",
       "url": "https://www.rfc-editor.org/rfc/rfc6962.html"
     },
     {
-      "label": "Carbonell and Goldstein 1998 MMR",
-      "doi": "https://doi.org/10.1145/290941.291025"
+      "doi": "https://doi.org/10.1145/290941.291025",
+      "label": "Carbonell and Goldstein 1998 MMR"
     }
-  ]
+  ],
+  "claim_ceiling": "REPURPOSING_HYPOTHESIS",
+  "core_terms": {
+    "FCG": "Fractal Custody Graph: linked FCO-style records whose hashes and inputs preserve custody.",
+    "FCO": "Fractal Custody Object: one content-addressed evidence, model, agent, or integration record.",
+    "GAP_lane": "Deterministic rare disease repurposing gap finder: disease -> targets -> programs -> prior trials -> rule grade.",
+    "MMR": "Maximal Marginal Relevance, cited for diversity-aware reranking design; not required for the primary restoration-distance result.",
+    "Merkle_root": "A single hash committing to the ordered set of custody records under the declared RFC 6962 convention."
+  },
+  "demo_flow": [
+    {
+      "message": "Start with a disease-first question instead of a compound-first dashboard.",
+      "step": 1,
+      "title": "Rare disease query",
+      "visual": "Disease Search tab"
+    },
+    {
+      "message": "Elamipretide is identified as already tried/covered by GAP rule G004_ALREADY_TRIED, so the deterministic grade is NOT_A_GAP.",
+      "step": 2,
+      "title": "Prescripted validation",
+      "visual": "Barth syndrome row"
+    },
+    {
+      "message": "The live path checks current trial records but abstains from full gap grading until all joins are wired.",
+      "step": 3,
+      "title": "Live option",
+      "visual": "ClinicalTrials.gov probe button"
+    },
+    {
+      "message": "Candidate profiles are ranked by return toward the reference phenotype, not by claimed treatment effect.",
+      "step": 4,
+      "title": "Phenotypic restoration",
+      "visual": "CPJUMP1 figure tab"
+    },
+    {
+      "message": "Each source, calculation, model, subagent, and integration object is hash-addressed and queryable.",
+      "step": 5,
+      "title": "FCO/FCG custody",
+      "visual": "AGENTS tab and VERIFY tab"
+    },
+    {
+      "message": "OpenAI helper-agent receipts are separated from scientific data, local model inventory is shown by size, and the known-pair benchmark is compared with the shuffle null.",
+      "step": 6,
+      "title": "Model trace and null comparison",
+      "visual": "Model Trace tab"
+    },
+    {
+      "message": "A one-record edit causes the rebuilt root to mismatch and names the divergent node.",
+      "step": 7,
+      "title": "Tamper failure",
+      "visual": "PROVE tab"
+    }
+  ],
+  "one_liner": "A disease-first rare-disease repurposing demo with cell-perturbation evidence and hash-verifiable custody.",
+  "prohibited_claims": [
+    "therapeutic efficacy",
+    "clinical utility",
+    "biological rejuvenation",
+    "measured rescue",
+    "legal FTO opinion",
+    "full live Convoke/Open Targets integration unless demonstrated",
+    "EMA/EPAR, Japan PMDA, FDA orphan designation, or comprehensive approved-drug coverage unless source receipts are added"
+  ],
+  "project_name": "Protein Hinge",
+  "schema": "protein_hinge.presentation_brief.v1"
 }

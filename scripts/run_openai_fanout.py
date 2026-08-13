@@ -32,6 +32,12 @@ DEFAULT_ENV_CANDIDATES = [
 OUT_ROOT = ROOT / "fco" / "agent_fanout"
 SITE_ASSETS = ROOT / "site" / "assets"
 
+DEFAULT_MODELS = {
+    "low": "gpt-4.1-nano",
+    "mid": "gpt-5.4-nano",
+    "high": "gpt-5.4-mini",
+}
+
 
 AGENTS = [
     {
@@ -39,30 +45,35 @@ AGENTS = [
         "role": "Evidence navigator",
         "objective": "Trace how a viewer should navigate from scientific result to custody receipt.",
         "update_target": "dashboard navigation and video script",
+        "model_tier": "low",
     },
     {
         "agent_id": "figure_auditor",
         "role": "Scientific figure auditor",
         "objective": "Review whether the CPJUMP1 restoration figure is honest about data, distance, and claim ceiling.",
         "update_target": "figure caveats and pitch claims",
+        "model_tier": "high",
     },
     {
         "agent_id": "fco_mapper",
         "role": "FCO graph mapper",
         "objective": "Map the fan-out itself as content-addressed FCOs and describe what each node updates.",
         "update_target": "agent graph and provenance model",
+        "model_tier": "high",
     },
     {
         "agent_id": "elvis_integrator",
-        "role": "Elvis component integrator",
-        "objective": "Review the prescripted rare-disease repurposing demo and the live ClinicalTrials probe against the claim ceiling.",
-        "update_target": "ELVIS dashboard component and video script",
+        "role": "Disease search integrator",
+        "objective": "Review the prescripted rare-disease GAP demo and the live ClinicalTrials probe against the claim ceiling.",
+        "update_target": "Disease Search dashboard component and video script",
+        "model_tier": "mid",
     },
     {
         "agent_id": "environment_packager",
         "role": "Environment packager",
         "objective": "Summarize the Python and npm packages needed to reproduce the demo locally.",
         "update_target": "requirements and package metadata",
+        "model_tier": "low",
     },
 ]
 
@@ -134,6 +145,13 @@ def try_parse_json(text: str) -> Any:
         return None
 
 
+def agent_model(agent: dict[str, str], env: dict[str, str], override: str | None) -> str:
+    if override:
+        return override
+    tier = agent.get("model_tier", "low").upper()
+    return env.get(f"OPENAI_MODEL_{tier}") or DEFAULT_MODELS.get(agent.get("model_tier", "low"), DEFAULT_MODELS["low"])
+
+
 def call_openai(api_key: str, model: str, agent: dict[str, str], run_id: str) -> dict[str, Any]:
     prompt = {
         "context": "Protein Hinge is a local MVP dashboard for a CPJUMP1 processed cell-perturbation restoration figure and a hash-pinned custody/FTO ledger.",
@@ -178,6 +196,7 @@ def call_openai(api_key: str, model: str, agent: dict[str, str], run_id: str) ->
     parsed = try_parse_json(text)
     return {
         "request_prompt": prompt,
+        "model_requested_for_agent": model,
         "response_id": resp.get("id"),
         "response_model": resp.get("model", model),
         "output_text": text,
@@ -185,6 +204,18 @@ def call_openai(api_key: str, model: str, agent: dict[str, str], run_id: str) ->
         "api_status": "ok",
         "run_id": run_id,
     }
+
+
+def call_openai_with_fallback(api_key: str, model: str, fallback_model: str, agent: dict[str, str], run_id: str) -> dict[str, Any]:
+    try:
+        return call_openai(api_key, model, agent, run_id)
+    except urllib.error.HTTPError as first:
+        if model == fallback_model:
+            raise
+        response = call_openai(api_key, fallback_model, agent, run_id)
+        response["model_fallback_from"] = model
+        response["model_fallback_reason"] = f"HTTP {first.code}"
+        return response
 
 
 def build_fco(
@@ -204,6 +235,10 @@ def build_fco(
         "agent": agent,
         "api": {
             "provider": "openai",
+            "model_tier": agent.get("model_tier"),
+            "model_requested_for_agent": response.get("model_requested_for_agent", model),
+            "model_fallback_from": response.get("model_fallback_from"),
+            "model_fallback_reason": response.get("model_fallback_reason"),
             "model_requested": model,
             "model_returned": response.get("response_model"),
             "response_id": response.get("response_id"),
@@ -243,6 +278,7 @@ def build_model_fco(
     run_id: str,
     model: str,
     env_source: str,
+    requested_models: list[str],
     response_models: list[str],
     input_hashes: dict[str, str],
 ) -> dict[str, Any]:
@@ -253,6 +289,7 @@ def build_model_fco(
         "model": {
             "provider": "openai",
             "model_requested": model,
+            "model_requested_values": sorted(set(x for x in requested_models if x)),
             "model_returned_values": sorted(set(x for x in response_models if x)),
         },
         "secret_policy": {
@@ -325,7 +362,8 @@ def main() -> int:
     api_key = env.get("OPENAI_API_KEY") or env.get("OPENAPI_KEY")
     if not api_key:
         raise SystemExit("OPENAI_API_KEY not found in .env or process environment")
-    model = args.model or env.get("OPENAI_MODEL") or "gpt-4.1-nano"
+    model = args.model or "tiered_per_agent"
+    fallback_model = env.get("OPENAI_MODEL_LOW") or DEFAULT_MODELS["low"]
 
     input_paths = {
         "cell_perturbation_figure": ROOT / "figures" / "cell_perturbation_restoration.png",
@@ -355,17 +393,25 @@ def main() -> int:
     started = time.time()
     with cf.ThreadPoolExecutor(max_workers=args.max_workers) as ex:
         future_map = {
-            ex.submit(call_openai, api_key, model, agent, args.run_id): agent
+            ex.submit(
+                call_openai_with_fallback,
+                api_key,
+                agent_model(agent, env, args.model),
+                fallback_model,
+                agent,
+                args.run_id,
+            ): (agent, agent_model(agent, env, args.model))
             for agent in AGENTS
         }
         for fut in cf.as_completed(future_map):
-            agent = future_map[fut]
+            agent, requested_model = future_map[fut]
             try:
                 response = fut.result()
+                final_model = response.get("model_requested_for_agent", requested_model)
                 fco = build_fco(
                     run_id=args.run_id,
                     agent=agent,
-                    model=model,
+                    model=final_model,
                     env_source=env_source,
                     response=response,
                     input_hashes=input_hashes,
@@ -383,6 +429,7 @@ def main() -> int:
         run_id=args.run_id,
         model=model,
         env_source=env_source,
+        requested_models=[f.get("api", {}).get("model_requested_for_agent") for f in fcos],
         response_models=[f.get("api", {}).get("model_returned") for f in fcos],
         input_hashes=input_hashes,
     )
@@ -402,6 +449,8 @@ def main() -> int:
         "created_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
         "duration_seconds": round(time.time() - started, 3),
         "model": model,
+        "model_strategy": "tiered_per_agent" if not args.model else "single_override",
+        "default_models": DEFAULT_MODELS,
         "env_source": env_source,
         "api_key_committed": False,
         "input_hashes": input_hashes,

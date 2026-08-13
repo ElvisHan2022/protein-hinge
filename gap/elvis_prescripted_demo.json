@@ -25,7 +25,7 @@
       "prior_trials": "NCT03098797; NCT07531251; NCT04689360",
       "rule_fired": "G004_ALREADY_TRIED",
       "grade": "NOT_A_GAP",
-      "why_plausible": "Elamipretide is already positioned in Barth syndrome, so the row validates the prior-trial filter rather than representing a new gap. A naive repurposing tool would rediscover the incumbent; Elvis marks it as already tried and points to the NCT evidence.",
+      "why_plausible": "Elamipretide is already positioned in Barth syndrome, so the row validates the prior-trial filter rather than representing a new gap. A naive repurposing tool would rediscover the incumbent; the GAP lane marks it as already tried and points to the NCT evidence.",
       "custody": {
         "source_nodes": [
           "fto/clinicaltrials_gov/ct_barth_syndrome",

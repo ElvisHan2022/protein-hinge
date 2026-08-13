@@ -1,0 +1,41 @@
+{
+  "schema": "protein_hinge.aws_hackathon_context.v1",
+  "source": {
+    "title": "AWS BioPharma AI Hackathon",
+    "url": "https://events.elifuentes.tech/events/biopharma-hackathon/",
+    "captured_for": "demo_context_not_scientific_evidence"
+  },
+  "useful_items": [
+    {
+      "item": "AWS HealthOmics workshop",
+      "why_it_matters": "Use as the future AWS-native bioinformatics tutorial lane. It supports the pitch that the evidence package can later run omics workflows without changing the custody story.",
+      "integration_status": "future_work",
+      "demo_language": "HealthOmics is the obvious next AWS wrapper, not required for the local MVP."
+    },
+    {
+      "item": "Strands Agents SDK workshop",
+      "why_it_matters": "Use as the AWS-native agent orchestration reference. The repo already locks @strands-agents/sdk, while the verified fan-out currently uses direct OpenAI API FCO receipts.",
+      "integration_status": "package_locked_not_runtime_path",
+      "demo_language": "We can move the helper-agent orchestration to Strands/Bedrock later; the receipts already show what each agent did."
+    },
+    {
+      "item": "AWS promotional credits",
+      "why_it_matters": "Useful for running HealthOmics/Bedrock demos during the hackathon, but credentials and credits are never committed.",
+      "integration_status": "operator_action",
+      "demo_language": "Credits extend runway; they are not part of the evidence claim."
+    },
+    {
+      "item": "Genentech Bedrock research-agent case study",
+      "why_it_matters": "Supports the presentation pattern: specialized agents help scientists navigate data and tools, but humans and evidence boundaries remain visible.",
+      "integration_status": "presentation_context",
+      "demo_language": "Our agent trail is the small, auditable version of that pattern."
+    },
+    {
+      "item": "Natera HealthOmics case study",
+      "why_it_matters": "Supports the future scaling story for omics pipelines and operational traceability.",
+      "integration_status": "presentation_context",
+      "demo_language": "HealthOmics is the scale-out path; this MVP proves the custody trail locally first."
+    }
+  ],
+  "claim_boundary": "Hackathon resources are context and roadmap inputs. They are not scientific evidence for the CPJUMP1 ranking or GAP result."
+}

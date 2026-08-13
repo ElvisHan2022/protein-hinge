@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>Protein Hinge — evidence ledger</title>
+<title>Protein Hinge — rare disease evidence trail</title>
 <link rel="icon" href="data:,">
 <!--
   A read-only query surface over biocustody.db.
@@ -17,54 +17,55 @@
 -->
 <style>
   :root {
-    --bg:#0e1116; --panel:#161b22; --line:#262d36; --fg:#c9d3de;
-    --dim:#6f7b8a; --acc:#5ec2b0; --warn:#e0a33e; --bad:#e05252; --ok:#5ec27a;
+    --bg:#0b0f14; --panel:#151b22; --panel2:#101820; --line:#2a3440;
+    --fg:#e4edf5; --dim:#8b98a7; --acc:#42c2a7; --blue:#78a6d8;
+    --warn:#e3b34f; --bad:#e05252; --ok:#67c786; --ink:#07110f;
   }
   * { box-sizing:border-box; }
   body {
     margin:0; background:var(--bg); color:var(--fg);
-    font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font:14px/1.55 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
-  header { padding:20px 24px 0; border-bottom:1px solid var(--line); }
-  h1 { margin:0; font-size:15px; font-weight:600; letter-spacing:.06em; }
-  h1 span { color:var(--dim); font-weight:400; }
-  .rootline { margin:8px 0 16px; color:var(--dim); font-size:12px; }
+  header { padding:22px 28px 0; border-bottom:1px solid var(--line); background:#0d131a; }
+  h1 { margin:0; font-size:20px; font-weight:700; letter-spacing:0; }
+  h1 span { color:var(--dim); font-weight:500; }
+  .rootline { margin:8px 0 16px; color:var(--dim); font-size:12px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
   .rootline b { color:var(--acc); font-weight:400; }
-  nav { display:flex; gap:2px; }
+  nav { display:flex; gap:4px; flex-wrap:wrap; }
   nav button {
     background:none; border:none; border-bottom:2px solid transparent;
-    color:var(--dim); font:inherit; padding:8px 16px; cursor:pointer;
+    color:var(--dim); font:inherit; font-weight:650; padding:10px 14px; cursor:pointer;
   }
   nav button:hover { color:var(--fg); }
   nav button.on { color:var(--acc); border-bottom-color:var(--acc); }
-  main { padding:24px; max-width:1180px; }
+  main { padding:26px 28px; max-width:1220px; }
   section { display:none; } section.on { display:block; }
   .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:16px; }
   input[type=text], textarea, select {
     background:var(--panel); border:1px solid var(--line); color:var(--fg);
-    font:inherit; padding:7px 10px; border-radius:4px;
+    font:inherit; padding:10px 12px; border-radius:6px;
   }
   input[type=text] { flex:1; min-width:280px; }
   textarea { width:100%; min-height:110px; resize:vertical; }
   button.go {
-    background:var(--acc); border:none; color:#06110e; font:inherit;
-    font-weight:600; padding:8px 16px; border-radius:4px; cursor:pointer;
+    background:var(--acc); border:none; color:var(--ink); font:inherit;
+    font-weight:750; padding:10px 16px; border-radius:6px; cursor:pointer;
   }
   button.go:hover { filter:brightness(1.12); }
   button.ghost {
     background:none; border:1px solid var(--line); color:var(--dim);
-    font:inherit; padding:7px 13px; border-radius:4px; cursor:pointer;
+    font:inherit; padding:9px 13px; border-radius:6px; cursor:pointer;
   }
   button.ghost:hover { color:var(--fg); border-color:var(--dim); }
   button.danger { border-color:#5a2b2b; color:var(--bad); }
   .card {
     background:var(--panel); border:1px solid var(--line);
-    border-radius:6px; padding:16px; margin-bottom:14px;
+    border-radius:8px; padding:16px; margin-bottom:14px;
   }
   .card h3 { margin:0 0 10px; font-size:12px; letter-spacing:.08em;
              color:var(--dim); font-weight:600; text-transform:uppercase; }
-  table { border-collapse:collapse; width:100%; font-size:12px; }
-  th, td { text-align:left; padding:5px 10px 5px 0; vertical-align:top;
+  table { border-collapse:collapse; width:100%; font-size:12px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+  th, td { text-align:left; padding:7px 10px 7px 0; vertical-align:top;
            border-bottom:1px solid var(--line); }
   th { color:var(--dim); font-weight:600; white-space:nowrap; }
   td.k { color:var(--dim); white-space:nowrap; width:1%; padding-right:20px; }
@@ -79,37 +80,58 @@
   .pill.rec { color:var(--ok); border-color:#26402e; }
   .pill.com { color:var(--warn); border-color:#453519; }
   .scroll { max-height:460px; overflow:auto; }
-  .note { color:var(--dim); font-size:12px; margin:0 0 14px; max-width:74ch; }
+  .note { color:var(--dim); font-size:13px; margin:0 0 14px; max-width:80ch; }
+  .intro {
+    display:grid; grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);
+    gap:18px; align-items:stretch; margin-bottom:18px;
+  }
+  .intro-panel {
+    background:linear-gradient(135deg,#12212b,#111820 55%,#191f1a);
+    border:1px solid var(--line); border-radius:8px; padding:20px;
+  }
+  .intro-panel h2 { margin:0 0 8px; font-size:24px; line-height:1.15; letter-spacing:0; }
+  .intro-panel p { margin:0; color:#b8c4d0; max-width:72ch; }
+  .plain-list { margin:10px 0 0; padding:0; list-style:none; }
+  .plain-list li { padding:8px 0; border-bottom:1px solid rgba(255,255,255,.07); }
+  .plain-list b { color:var(--fg); }
+  .callout {
+    border-left:3px solid var(--acc); padding:10px 12px; background:var(--panel2);
+    color:#c9d6e2; border-radius:6px; margin:0 0 14px;
+  }
+  .result-good { color:var(--ok); font-weight:700; }
+  .result-warn { color:var(--warn); font-weight:700; }
+  .result-muted { color:var(--dim); font-weight:700; }
   .bar { height:5px; background:var(--line); border-radius:3px; overflow:hidden; margin:10px 0; }
   .bar div { height:100%; background:var(--acc); width:0; transition:width .12s; }
   .figure-img { display:block; width:100%; max-width:1100px; border:1px solid var(--line); border-radius:6px; background:#fff; }
   .metric {
-    min-width:150px; border:1px solid var(--line); border-radius:6px;
-    padding:10px 12px; background:#111720;
+    min-width:160px; border:1px solid var(--line); border-radius:8px;
+    padding:12px 14px; background:#111720;
   }
-  .metric b { display:block; font-size:18px; color:var(--fg); line-height:1.2; }
+  .metric b { display:block; font-size:17px; color:var(--fg); line-height:1.2; }
   .metric span { color:var(--dim); font-size:11px; text-transform:uppercase; letter-spacing:.06em; }
   .grid2 { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr); gap:14px; }
   .selectable tr { cursor:pointer; }
   .selectable tr:hover td { background:#1a222d; }
   #agentGraph { height:430px; border:1px solid var(--line); border-radius:6px; background:#0b0f14; }
-  @media (max-width: 860px) { .grid2 { grid-template-columns:1fr; } }
+  @media (max-width: 860px) { .grid2, .intro { grid-template-columns:1fr; } }
   #drop { border:1px dashed var(--line); padding:36px; text-align:center;
           border-radius:6px; color:var(--dim); }
 </style>
 
 <header>
-  <h1>Protein Hinge <span>— evidence ledger, queried in your browser</span></h1>
+  <h1>Protein Hinge <span>— rare disease evidence trail</span></h1>
   <div class="rootline" id="rootline">loading database…</div>
   <nav>
-    <button data-t="verify" class="on">VERIFY</button>
-    <button data-t="elvis">ELVIS</button>
-    <button data-t="figure">FIGURE</button>
-    <button data-t="agents">AGENTS</button>
-    <button data-t="browse">BROWSE</button>
-    <button data-t="sql">SQL</button>
-    <button data-t="prove">PROVE</button>
-    <button data-t="about">ABOUT</button>
+    <button data-t="elvis" class="on">Disease Search</button>
+    <button data-t="figure">Cell Evidence</button>
+    <button data-t="agents">Agent Trail</button>
+    <button data-t="modeltrace">Model Trace</button>
+    <button data-t="verify">Evidence Receipt</button>
+    <button data-t="browse">All Records</button>
+    <button data-t="sql">Data Table</button>
+    <button data-t="prove">Tamper Check</button>
+    <button data-t="about">About</button>
   </nav>
 </header>
 
@@ -124,7 +146,7 @@
   <div id="app" style="display:none">
 
     <!-- ------------------------------------------------------- VERIFY -->
-    <section id="s-verify" class="on">
+    <section id="s-verify">
       <p class="note">Look up any node by id, content digest, or label. You get the
         record the root commits to, what it consumes, and — where a route was
         published — the inclusion proof replayed step by step.</p>
@@ -136,29 +158,48 @@
     </section>
 
     <!-- -------------------------------------------------------- ELVIS -->
-    <section id="s-elvis">
-      <p class="note">Disease-first rare disease repurposing finder from the Elvis
-        handoff and GAP lane spec. Prescripted mode is the offline Barth/elamipretide validation case.
-        Live mode probes ClinicalTrials.gov only and abstains from the full
-        target/program gap claim until Open Targets and Convoke are wired.</p>
+    <section id="s-elvis" class="on">
+      <div class="intro">
+        <div class="intro-panel">
+          <h2>Find the gap before proposing the drug.</h2>
+          <p>Start with a rare disease. The demo checks whether a known program
+            already covers it, shows the rule that fired, and keeps the evidence
+            trail attached so the result can be checked later.</p>
+        </div>
+        <div class="card">
+          <h3>Plain-English readout</h3>
+          <ul class="plain-list">
+            <li><b>Barth syndrome:</b> elamipretide is already in the landscape.</li>
+            <li><b>Result:</b> not a new gap, but a useful validation case.</li>
+            <li><b>Live mode:</b> checks current trials, then abstains from stronger claims.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="callout">“Elvis” was the internal teammate handoff name. In the
+        product demo this is the disease search and GAP-check view.</p>
       <div class="row">
         <input type="text" id="elvisQ" value="Barth syndrome" placeholder="rare disease or target">
-        <button class="go" id="elvisPrescripted">PRESCRIPTED DEMO</button>
-        <button class="ghost" id="elvisLive">LIVE CLINICALTRIALS PROBE</button>
+        <button class="go" id="elvisPrescripted">Show Known Case</button>
+        <button class="ghost" id="elvisLive">Check Live Trials</button>
       </div>
       <div class="row" id="elvisMetrics"></div>
       <div class="grid2">
-        <div class="card scroll"><h3>ranked programs</h3><div id="elvisRows"></div></div>
-        <div class="card"><h3>custody and claim ceiling</h3><div id="elvisDetail"></div></div>
+        <div class="card scroll"><h3>Disease-program results</h3><div id="elvisRows"></div></div>
+        <div class="card"><h3>What this row means</h3><div id="elvisDetail"></div></div>
       </div>
     </section>
 
     <!-- ------------------------------------------------------- FIGURE -->
     <section id="s-figure">
-      <p class="note">Distance-domain scientific figure from the processed CPJUMP1
-        subset: selected ADA perturbation, empirical reference threshold, 50 ranked
-        candidate profiles, restoration scores, and pinned source hashes. This is
-        predicted counter-perturbation, not measured rescue.</p>
+      <div class="intro-panel" style="margin-bottom:18px">
+        <h2>Does a perturbation move cells back toward the reference state?</h2>
+        <p>This figure is the scientific core: a public Cell Painting profile
+          moves away from the reference cloud, and candidate profiles are ranked
+          by how much closer they sit to that reference.</p>
+      </div>
+      <p class="note">This is phenotypic restoration evidence from processed
+        CPJUMP1 profiles. It is not measured rescue, treatment efficacy, or a
+        clinical recommendation.</p>
       <div class="card">
         <h3>CPJUMP1 cell perturbation restoration figure</h3>
         <img class="figure-img" src="assets/cell_perturbation_restoration.png"
@@ -168,12 +209,42 @@
 
     <!-- ------------------------------------------------------- AGENTS -->
     <section id="s-agents">
-      <p class="note">OpenAI subagents ran from the project <code>.env</code> and
-        wrote one FCO receipt per bounded role. The API key itself is not stored,
-        hashed, committed, or rendered here.</p>
+      <div class="intro-panel" style="margin-bottom:18px">
+        <h2>How the AI work was recorded.</h2>
+        <p>Each helper agent produced a small receipt: what it looked at, what
+          update it proposed, and what it was not allowed to claim. The model
+          and final integration step are recorded too.</p>
+      </div>
+      <p class="note">The OpenAI key came from the local ignored <code>.env</code>.
+        The key itself is not stored, hashed, committed, or shown.</p>
       <div class="grid2">
-        <div class="card"><h3>agent fan-out graph</h3><div id="agentGraph"></div></div>
-        <div class="card"><h3>fan-out manifest</h3><div id="agentManifest"></div></div>
+        <div class="card"><h3>Agent evidence trail</h3><div id="agentGraph"></div></div>
+        <div class="card"><h3>Receipts in the database</h3><div id="agentManifest"></div></div>
+      </div>
+    </section>
+
+    <!-- -------------------------------------------------- MODEL TRACE -->
+    <section id="s-modeltrace">
+      <div class="intro-panel" style="margin-bottom:18px">
+        <h2>Which models touched the demo, and what did they touch?</h2>
+        <p>This view separates model navigation from scientific evidence. OpenAI
+          agents produced traceable update suggestions. Local models are shown
+          as available runtimes unless a receipt says they actually ran.</p>
+      </div>
+      <div class="grid2">
+        <div class="card"><h3>Null comparison</h3>
+          <img class="figure-img" src="assets/null_hypothesis_comparison.png"
+               alt="Observed known-pair benchmark compared with shuffle null.">
+        </div>
+        <div class="card"><h3>Plain readout</h3><div id="modelTraceSummary"></div></div>
+      </div>
+      <div class="grid2">
+        <div class="card scroll"><h3>Model inventory and trace role</h3><div id="modelTraceRows"></div></div>
+        <div class="card scroll"><h3>Source projects checked</h3><div id="modelTraceSources"></div></div>
+      </div>
+      <div class="grid2">
+        <div class="card scroll"><h3>AWS hackathon context</h3><div id="awsContext"></div></div>
+        <div class="card"><h3>AWS preflight</h3><div id="awsPreflight"></div></div>
       </div>
     </section>
 
@@ -362,7 +433,7 @@ async function boot(bytes){
     `one root over both lanes &nbsp; <b class="hash">${esc(m.merkle_root)}</b><br>` +
     `${n} nodes · ${esc(m.merkle_convention)} · corpus pinned ${esc(m.generated_at)} · ` +
     `science ceiling <b>${esc(m.claim_ceiling_science)}</b> · FTO ceiling <b>${esc(m.claim_ceiling_fto)}</b>`;
-  initBrowse(); initAbout(); initSamples(); initElvis(); initAgents();
+  initBrowse(); initAbout(); initSamples(); initElvis(); initAgents(); initModelTrace();
   lookup('phase_1_axis_claim');
 }
 
@@ -393,6 +464,36 @@ document.addEventListener('click', e=>{
 
 // ---------------------------------------------------------------- elvis
 const metric = (label, value) => `<div class="metric"><b>${esc(value)}</b><span>${esc(label)}</span></div>`;
+function modeLabel(mode){
+  return ({
+    prescripted_validation_case: 'Known case',
+    live_clinicaltrials_probe: 'Live trial check',
+    live_error: 'Live check failed',
+  })[mode] || mode;
+}
+function gradeLabel(grade){
+  return ({
+    NOT_A_GAP: 'Not a new gap',
+    ABSTAIN: 'Not enough evidence',
+    GAP_HIGH: 'High-priority gap',
+    GAP_MEDIUM: 'Medium-priority gap',
+    GAP_LOW: 'Early gap',
+    ABSTAIN_LIVE_TARGET_PROGRAM_JOIN_NOT_WIRED: 'Live check only',
+  })[grade] || grade || 'Not enough evidence';
+}
+function rulePlain(rule){
+  return ({
+    G000_UNRESOLVED_TARGET: 'Target name could not be reconciled.',
+    G001_NO_TARGET: 'No disease target above the evidence threshold was supplied for this row.',
+    G002_NO_PROGRAM: 'No matching drug program was found for the target.',
+    G003_LOOKUP_FAILED: 'A source lookup failed.',
+    G004_ALREADY_TRIED: 'A trial already pairs this disease and program.',
+    G005_GAP_APPROVED_DRUG: 'Approved elsewhere and not yet tried here.',
+    G006_GAP_LATE_STAGE: 'Late-stage program and not yet tried here.',
+    G007_GAP_EARLY: 'Early-stage program and not yet tried here.',
+    G008_UNCLASSIFIED: 'The row did not fit a stronger rule.',
+  })[rule] || 'Live mode only checks trial records in this demo.';
+}
 
 function renderElvis(payload){
   const rows = payload.rows || [];
@@ -401,20 +502,20 @@ function renderElvis(payload){
   const mode = payload.mode || 'prescripted';
   const ceiling = payload.claim_ceiling || 'REPURPOSING_HYPOTHESIS';
   $('#elvisMetrics').innerHTML = [
-    metric('mode', mode),
-    metric('rows', rows.length),
-    metric('abstentions', abst.length),
-    metric('claim ceiling', ceiling),
+    metric('View', modeLabel(mode)),
+    metric('Rows found', rows.length),
+    metric('Abstentions', abst.reduce((s,x)=>s + Number(x.count ?? 1), 0)),
+    metric('Claim limit', ceiling),
   ].join('');
 
   const tableRows = rows.map((r,i)=>({
-    row: i + 1,
-    disease: r.disease,
-    target: r.target || r.target_symbol || '—',
-    program: r.drug || r.drug_program || r.program || r.interventions || '—',
-    stage: r.stage || r.phase || r.status || '—',
-    grade: r.grade || 'ABSTAIN',
-    rule: r.rule || r.rule_fired || r.nct_id || '—',
+    '#': i + 1,
+    'Disease': r.disease,
+    'Target': r.target || r.target_symbol || '—',
+    'Program or trial': r.drug || r.drug_program || r.program || r.interventions || r.title || '—',
+    'Stage/status': r.stage || r.phase || r.status || '—',
+    'Result': gradeLabel(r.grade),
+    'Evidence rule': r.rule || r.rule_fired || r.nct_id || '—',
   }));
   $('#elvisRows').innerHTML = tbl(tableRows);
   const tbody = $('#elvisRows tbody');
@@ -434,16 +535,20 @@ function renderElvisDetail(row, payload){
   const nestedCustody = row.custody && typeof row.custody === 'object' ? row.custody : {};
   const nestedSources = nestedCustody.source_nodes || [];
   const trials = row.trials || (row.prior_trials ? String(row.prior_trials).split(';').map(s=>s.trim()) : null) || (row.nct_id ? [row.nct_id] : []);
+  const grade = row.grade || 'ABSTAIN';
+  const rule = row.rule || row.rule_fired || '';
+  const gradeClass = grade.includes('GAP') && !grade.includes('NOT') ? 'result-good'
+    : grade.includes('NOT_A_GAP') ? 'result-warn' : 'result-muted';
   $('#elvisDetail').innerHTML = `<table>
-    <tr><td class="k">query</td><td>${esc(payload.query || payload.default_query || '')}</td></tr>
+    <tr><td class="k">search</td><td>${esc(payload.query || payload.default_query || '')}</td></tr>
     <tr><td class="k">disease</td><td>${esc(row.disease)}</td></tr>
     <tr><td class="k">target</td><td>${esc(row.target || row.target_symbol || 'not joined in live mode')}</td></tr>
-    <tr><td class="k">program</td><td>${esc(row.drug || row.drug_program || row.program || row.interventions || 'not joined')}</td></tr>
-    <tr><td class="k">grade</td><td class="${String(row.grade).includes('NOT_A_GAP')?'warn':''}">${esc(row.grade || 'ABSTAIN')}</td></tr>
-    <tr><td class="k">rule</td><td>${esc(row.rule || row.rule_fired || 'live probe abstains from deterministic gap grading')}</td></tr>
-    <tr><td class="k">trials</td><td>${esc(trials.join('; ') || '—')}</td></tr>
-    <tr><td class="k">custody</td><td>${esc(sourceNodes.join('; ') || nestedSources.join('; ') || row.custody || 'prescripted local JSON')}</td></tr>
-    <tr><td class="k">ceiling</td><td>${esc(payload.claim_ceiling || nestedCustody.claim_ceiling || 'REPURPOSING_HYPOTHESIS')}</td></tr>
+    <tr><td class="k">program</td><td>${esc(row.drug || row.drug_program || row.program || row.interventions || row.title || 'not joined')}</td></tr>
+    <tr><td class="k">plain result</td><td class="${gradeClass}">${esc(gradeLabel(grade))}</td></tr>
+    <tr><td class="k">why</td><td>${esc(rulePlain(rule))}</td></tr>
+    <tr><td class="k">trial IDs</td><td>${esc(trials.join('; ') || '—')}</td></tr>
+    <tr><td class="k">receipt</td><td>${esc(sourceNodes.join('; ') || nestedSources.join('; ') || row.custody || 'prescripted local JSON')}</td></tr>
+    <tr><td class="k">claim limit</td><td>${esc(payload.claim_ceiling || nestedCustody.claim_ceiling || 'REPURPOSING_HYPOTHESIS')}</td></tr>
     </table>
     <p class="note" style="margin-top:12px">${esc(row.why_plausible || payload.note || 'Prescripted validation data from Elvis handoff; not a treatment recommendation.')}</p>`;
 }
@@ -471,8 +576,16 @@ async function initElvis(){
 // ---------------------------------------------------------------- agents
 async function initAgents(){
   const rows = all("SELECT fco_type, label, role, model, fco_id, object_sha256 FROM fco_object ORDER BY fco_type, label");
-  let html = `<p class="dim">${rows.length} FCO object${rows.length===1?'':'s'} projected into SQLite.</p>`;
-  html += tbl(rows);
+  const friendly = rows.map(r=>({
+    'Object': r.label,
+    'Kind': r.fco_type === 'openai_subagent_fanout' ? 'Helper agent'
+      : r.fco_type === 'openai_model' ? 'Model used'
+      : r.fco_type === 'fanout_integration' ? 'Integration receipt' : r.fco_type,
+    'Role': r.role || r.model || 'connects the run',
+    'Receipt': r.fco_id,
+  }));
+  let html = `<p class="dim">${rows.length} receipt object${rows.length===1?'':'s'} are stored in the local database.</p>`;
+  html += tbl(friendly);
   try{
     const manifest = await (await fetch('assets/agent_fanout_latest.json')).json();
     html += `<p class="note" style="margin-top:12px">fan-out Merkle root <span class="hash">${esc(manifest.merkle_root)}</span>; integration object <span class="hash">${esc(manifest.integration_fco_id || '')}</span></p>`;
@@ -496,6 +609,60 @@ async function initAgents(){
     });
   }catch(e){
     $('#agentGraph').innerHTML = `<p class="dim" style="padding:16px">Graph unavailable: ${esc(e.message)}</p>`;
+  }
+}
+
+// ------------------------------------------------------------ model trace
+async function initModelTrace(){
+  try{
+    const trace = await (await fetch('assets/model_trace.json')).json();
+    const nh = trace.null_hypothesis || {};
+    $('#modelTraceSummary').innerHTML = `<div class="callout">
+      ${esc(nh.plain_english || 'The null comparison is recorded as evidence.')}
+    </div><table>
+      <tr><td class="k">known-pair rank</td><td>${esc(nh.known_pair_rank)}</td></tr>
+      <tr><td class="k">observed reciprocal rank</td><td>${esc(nh.observed_reciprocal_rank)}</td></tr>
+      <tr><td class="k">shuffle mean</td><td>${esc(nh.shuffle_mean_reciprocal_rank)}</td></tr>
+      <tr><td class="k">shuffle iterations</td><td>${esc(nh.shuffle_iterations)}</td></tr>
+      <tr><td class="k">claim boundary</td><td>${esc(trace.claim_boundary)}</td></tr>
+    </table>`;
+    $('#modelTraceRows').innerHTML = tbl((trace.models || []).map(m=>({
+      'Model': m.model,
+      'Kind': m.family,
+      'Size': m.size || '',
+      'Status': m.status,
+      'Trace role': m.trace_role,
+    })));
+    const src = trace.source_projects || {};
+    $('#modelTraceSources').innerHTML = tbl(Object.entries(src).map(([name, v])=>({
+      'Project': name,
+      'Status': v.status,
+      'Path': v.path,
+      'Digest': v.readme_sha256 || v.public_manifest_sha256 || '',
+    })));
+    const ctx = trace.hackathon_context || {};
+    $('#awsContext').innerHTML = tbl((ctx.useful_items || []).map(x=>({
+      'Resource': x.item,
+      'Use in demo': x.demo_language,
+      'Status': x.integration_status,
+    })));
+    try{
+      const aws = await (await fetch('assets/aws_preflight.json')).json();
+      $('#awsPreflight').innerHTML = `<table>
+        <tr><td class="k">status</td><td>${esc(aws.status)}</td></tr>
+        <tr><td class="k">region</td><td>${esc((aws.env_status||{}).AWS_DEFAULT_REGION || 'missing')}</td></tr>
+        <tr><td class="k">access key</td><td>${esc((aws.env_status||{}).AWS_ACCESS_KEY_ID || 'missing')}</td></tr>
+        <tr><td class="k">secret policy</td><td>${aws.credentials_committed===false?'not committed':'check required'}</td></tr>
+      </table>`;
+    }catch(e){
+      $('#awsPreflight').innerHTML = `<p class="dim">AWS preflight not generated yet.</p>`;
+    }
+  }catch(e){
+    $('#modelTraceSummary').innerHTML = `<p class="dim">Model trace not generated yet: ${esc(e.message)}</p>`;
+    $('#modelTraceRows').innerHTML = '';
+    $('#modelTraceSources').innerHTML = '';
+    $('#awsContext').innerHTML = '';
+    $('#awsPreflight').innerHTML = '';
   }
 }
 
@@ -632,6 +799,8 @@ const SAMPLES = [
   ['agent integration edges', 'SELECT * FROM fco_edge ORDER BY relation, source_id;'],
   ['GAP lane candidates', 'SELECT * FROM v_gap_candidates;'],
   ['GAP lane receipt', 'SELECT * FROM gap_receipt;'],
+  ['model trace', 'SELECT * FROM v_model_trace;'],
+  ['hackathon context', 'SELECT * FROM hackathon_context;'],
   ['tamper suite results', 'SELECT * FROM tamper_assertion;'],
 ];
 function initSamples(){

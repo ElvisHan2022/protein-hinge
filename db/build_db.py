@@ -273,6 +273,27 @@ CREATE TABLE gap_receipt (
   value TEXT NOT NULL
 );
 
+-- ---------------------------------------------------------------- trace/context
+CREATE TABLE model_trace_record (
+  key   TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+
+CREATE TABLE model_trace_model (
+  model      TEXT NOT NULL,
+  family     TEXT,
+  size       TEXT,
+  status     TEXT,
+  trace_role TEXT
+);
+
+CREATE TABLE hackathon_context (
+  item               TEXT PRIMARY KEY,
+  integration_status TEXT NOT NULL,
+  demo_language      TEXT NOT NULL,
+  why_it_matters     TEXT NOT NULL
+);
+
 -- ================================================================ views
 -- The questions the file store could not answer.
 
@@ -371,6 +392,11 @@ ORDER BY CASE grade
   WHEN 'GAP_LOW' THEN 3
   WHEN 'NOT_A_GAP' THEN 4
   ELSE 5 END, disease, drug_program;
+
+CREATE VIEW v_model_trace AS
+SELECT model, family, size, status, trace_role
+FROM model_trace_model
+ORDER BY CASE family WHEN 'openai_api' THEN 0 ELSE 1 END, size, model;
 """
 
 
@@ -652,6 +678,44 @@ def main():
                        for k, v in receipt_gap.items()),
             )
 
+    # -------------------------------------------------------------- Trace/context
+    trace_path = os.path.join(REPO, "model_trace", "model_trace.json")
+    if os.path.exists(trace_path):
+        trace = jload(trace_path)
+        flat = {
+            "schema": trace.get("schema"),
+            "claim_boundary": trace.get("claim_boundary"),
+            "watchtower_search": trace.get("watchtower_search"),
+            "ollarma_status": (trace.get("ollarma_readiness") or {}).get("status"),
+            "null_hypothesis": trace.get("null_hypothesis"),
+        }
+        con.executemany(
+            "INSERT INTO model_trace_record VALUES (?,?)",
+            sorted((k, json.dumps(v, sort_keys=True) if isinstance(v, (dict, list)) else str(v))
+                   for k, v in flat.items() if v is not None),
+        )
+        con.executemany(
+            "INSERT INTO model_trace_model VALUES (?,?,?,?,?)",
+            sorted(
+                (
+                    m.get("model"), m.get("family"), m.get("size"),
+                    m.get("status"), m.get("trace_role"),
+                )
+                for m in trace.get("models", [])
+            ),
+        )
+        ctx = trace.get("hackathon_context") or {}
+        con.executemany(
+            "INSERT INTO hackathon_context VALUES (?,?,?,?)",
+            sorted(
+                (
+                    item.get("item"), item.get("integration_status"),
+                    item.get("demo_language"), item.get("why_it_matters"),
+                )
+                for item in ctx.get("useful_items", [])
+            ),
+        )
+
     con.commit()
     con.execute("VACUUM")
     con.commit()
@@ -741,7 +805,8 @@ def main():
     for tbl in ("node", "edge", "source", "derivation", "claim", "atom",
                 "merkle_leaf", "merkle_route", "consensus_gene",
                 "registry_query", "registry_status", "tamper_assertion",
-                "fco_object", "fco_edge", "gap_candidate", "gap_receipt"):
+                "fco_object", "fco_edge", "gap_candidate", "gap_receipt",
+                "model_trace_record", "model_trace_model", "hackathon_context"):
         n = con.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()[0]
         print(f"  {tbl:<18} {n:>5} rows")
     print()

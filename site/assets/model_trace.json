@@ -1,0 +1,254 @@
+{
+  "claim_boundary": "Model outputs are trace/navigation evidence only; models did not create scientific input data.",
+  "figures": {
+    "dashboard_copy": "site/assets/null_hypothesis_comparison.png",
+    "null_comparison": "figures/null_hypothesis_comparison.png"
+  },
+  "hackathon_context": {
+    "claim_boundary": "Hackathon resources are context and roadmap inputs. They are not scientific evidence for the CPJUMP1 ranking or GAP result.",
+    "schema": "protein_hinge.aws_hackathon_context.v1",
+    "source": {
+      "captured_for": "demo_context_not_scientific_evidence",
+      "title": "AWS BioPharma AI Hackathon",
+      "url": "https://events.elifuentes.tech/events/biopharma-hackathon/"
+    },
+    "useful_items": [
+      {
+        "demo_language": "HealthOmics is the obvious next AWS wrapper, not required for the local MVP.",
+        "integration_status": "future_work",
+        "item": "AWS HealthOmics workshop",
+        "why_it_matters": "Use as the future AWS-native bioinformatics tutorial lane. It supports the pitch that the evidence package can later run omics workflows without changing the custody story."
+      },
+      {
+        "demo_language": "We can move the helper-agent orchestration to Strands/Bedrock later; the receipts already show what each agent did.",
+        "integration_status": "package_locked_not_runtime_path",
+        "item": "Strands Agents SDK workshop",
+        "why_it_matters": "Use as the AWS-native agent orchestration reference. The repo already locks @strands-agents/sdk, while the verified fan-out currently uses direct OpenAI API FCO receipts."
+      },
+      {
+        "demo_language": "Credits extend runway; they are not part of the evidence claim.",
+        "integration_status": "operator_action",
+        "item": "AWS promotional credits",
+        "why_it_matters": "Useful for running HealthOmics/Bedrock demos during the hackathon, but credentials and credits are never committed."
+      },
+      {
+        "demo_language": "Our agent trail is the small, auditable version of that pattern.",
+        "integration_status": "presentation_context",
+        "item": "Genentech Bedrock research-agent case study",
+        "why_it_matters": "Supports the presentation pattern: specialized agents help scientists navigate data and tools, but humans and evidence boundaries remain visible."
+      },
+      {
+        "demo_language": "HealthOmics is the scale-out path; this MVP proves the custody trail locally first.",
+        "integration_status": "presentation_context",
+        "item": "Natera HealthOmics case study",
+        "why_it_matters": "Supports the future scaling story for omics pipelines and operational traceability."
+      }
+    ]
+  },
+  "models": [
+    {
+      "family": "openai_api",
+      "fco_count": 5,
+      "integration_fco_id": "sha256:24573ef5d6096dda30ba81d04cf71081d79dbeb598d53553955043c423f74a1b",
+      "model": "tiered_per_agent",
+      "model_fco_id": "sha256:883550eb1d8261e80ae924b761d9014a60bad7294f33359a6252120e6bb419d7",
+      "size": "API",
+      "status": "invoked_for_demo_subagents",
+      "trace_role": "generated bounded navigation/update summaries as FCOs"
+    },
+    {
+      "family": "local_ollama",
+      "model": "deepseek-r1:14b",
+      "size": "9.0 GB",
+      "status": "installed_not_invoked_for_science",
+      "trace_role": "candidate local reviewer; no scientific datum generated"
+    },
+    {
+      "family": "local_ollama",
+      "model": "qwen2.5-coder:7b",
+      "size": "4.7 GB",
+      "status": "installed_not_invoked_for_science",
+      "trace_role": "candidate local reviewer; no scientific datum generated"
+    },
+    {
+      "family": "local_ollama",
+      "model": "phi4-reasoning:14b",
+      "size": "11 GB",
+      "status": "installed_not_invoked_for_science",
+      "trace_role": "candidate local reviewer; no scientific datum generated"
+    },
+    {
+      "family": "local_ollama",
+      "model": "qwen2.5:7b",
+      "size": "4.7 GB",
+      "status": "installed_not_invoked_for_science",
+      "trace_role": "candidate local reviewer; no scientific datum generated"
+    },
+    {
+      "family": "local_ollama",
+      "model": "llama3.2:3b",
+      "size": "2.0 GB",
+      "status": "installed_not_invoked_for_science",
+      "trace_role": "candidate local reviewer; no scientific datum generated"
+    },
+    {
+      "family": "local_ollama",
+      "model": "granite4.1:3b",
+      "size": "2.1 GB",
+      "status": "installed_not_invoked_for_science",
+      "trace_role": "candidate local reviewer; no scientific datum generated"
+    },
+    {
+      "family": "local_ollama",
+      "model": "llama3.2:1b",
+      "size": "1.3 GB",
+      "status": "installed_not_invoked_for_science",
+      "trace_role": "candidate local reviewer; no scientific datum generated"
+    },
+    {
+      "family": "local_ollama",
+      "model": "qwen2.5:0.5b",
+      "size": "397 MB",
+      "status": "installed_not_invoked_for_science",
+      "trace_role": "candidate local reviewer; no scientific datum generated"
+    },
+    {
+      "family": "local_ollama",
+      "model": "qwen2.5:1.5b",
+      "size": "986 MB",
+      "status": "installed_not_invoked_for_science",
+      "trace_role": "candidate local reviewer; no scientific datum generated"
+    },
+    {
+      "family": "local_ollama",
+      "model": "nomic-embed-text:latest",
+      "size": "274 MB",
+      "status": "installed_not_invoked_for_science",
+      "trace_role": "candidate local reviewer; no scientific datum generated"
+    },
+    {
+      "family": "local_ollama",
+      "model": "qwen3:1.7b",
+      "size": "1.4 GB",
+      "status": "installed_not_invoked_for_science",
+      "trace_role": "candidate local reviewer; no scientific datum generated"
+    }
+  ],
+  "null_hypothesis": {
+    "dataset": "data/partner/evaluation.json",
+    "dataset_sha256": "sha256:ede568677be5d45412f359153ebd60ada87b23ec93db6a33f9e836bce1bea62f",
+    "known_pair_rank": 28,
+    "observed_hits_at_10": false,
+    "observed_reciprocal_rank": 0.03571428571428571,
+    "plain_english": "The known reference pair did not beat the shuffle null in this tiny benchmark. That is a useful negative result and keeps the claim ceiling conservative.",
+    "reciprocal_rank_enrichment_vs_shuffle": 0.24638253360287107,
+    "shuffle_hits_at_10_rate": 0.346,
+    "shuffle_iterations": 1000,
+    "shuffle_mean_reciprocal_rank": 0.1449546166768923,
+    "shuffle_seed": 260813
+  },
+  "ollarma_readiness": {
+    "admission": {
+      "detail": "fail-closed recovery admission is ON",
+      "enabled": true
+    },
+    "checks": [
+      {
+        "detail": "Selection artifact is older than 24h: 2026-08-02T17:03:16Z. Using pressure-aware local fallback 'qwen2.5:1.5b'; strict validated selection still needs refresh.",
+        "name": "model_availability",
+        "reason_code": "SELECTION_STALE",
+        "status": "degraded"
+      },
+      {
+        "detail": "swap_used_mb=10769 exceeds threshold 8192MB",
+        "name": "swap_posture",
+        "reason_code": "SWAP_DEGRADED",
+        "status": "degraded"
+      },
+      {
+        "detail": "fail-closed recovery admission is ON",
+        "name": "admission_posture",
+        "reason_code": null,
+        "status": "ready"
+      },
+      {
+        "detail": "loaded_model_count=1 source=api/ps+ollama ps+sysctl vm.swapusage",
+        "name": "pipeline_posture",
+        "reason_code": null,
+        "status": "ready"
+      }
+    ],
+    "gateway": {
+      "admissions_today": 0,
+      "allowlist_size": 6,
+      "enabled": true,
+      "rate_cap_state": "within_caps",
+      "receipts_today": 0,
+      "virtual_keys_configured": 0
+    },
+    "generated_at": "2026-08-13T21:35:56.553320+00:00",
+    "model_availability": {
+      "detail": "Selection artifact is older than 24h: 2026-08-02T17:03:16Z. Using pressure-aware local fallback 'qwen2.5:1.5b'; strict validated selection still needs refresh.",
+      "effective_model": "qwen2.5:1.5b",
+      "reason_code": "SELECTION_STALE",
+      "status": "degraded"
+    },
+    "next_fix_commands": [
+      "ollarma run --suites code --trials 3",
+      "ollarma report --run-id <fresh_run_id>",
+      "vm_stat | head  # inspect macOS memory pressure",
+      "sudo purge      # release file cache if needed",
+      "launchctl print gui/$(id -u)/com.byron.ollarma",
+      "curl -sS http://127.0.0.1:8484/startup/readiness | jq"
+    ],
+    "pipeline": {
+      "loaded_model_count": 1,
+      "loaded_models": [
+        "qwen2.5:1.5b"
+      ],
+      "telemetry_source": "api/ps+ollama ps+sysctl vm.swapusage"
+    },
+    "residency": {
+      "next_action": "hold",
+      "opportunistic_resident": false,
+      "opportunistic_target": "phi4-mini",
+      "reason_code": null,
+      "rescue_resident": true,
+      "rescue_target": "qwen2.5:1.5b",
+      "state": "ready",
+      "swap_used_mb": 10769.19
+    },
+    "schema_version": 1,
+    "service_label": "com.byron.ollarma",
+    "status": "degraded",
+    "swap": {
+      "reason_code": "SWAP_DEGRADED",
+      "status": "degraded",
+      "swap_used_mb": 10769.19,
+      "threshold_mb": 8192.0
+    }
+  },
+  "schema": "protein_hinge.model_trace.v1",
+  "source_projects": {
+    "fractal_custody_objects": {
+      "path": "/Users/byron/projects/active/fractal-custody-objects",
+      "public_manifest_sha256": "sha256:c674c02cd020eabc9b496e28d4388702763e48f095462ac91dc5a7e2727a607e",
+      "status": "local_reference_checked"
+    },
+    "gettingsciencedone": {
+      "null_script": "/Users/byron/projects/active/gettingsciencedone/scripts/null_hypothesis_analysis.py",
+      "path": "/Users/byron/projects/active/gettingsciencedone",
+      "status": "local_reference_checked"
+    },
+    "seedgraph": {
+      "path": "/Users/byron/projects/active/seedgraph",
+      "readme_sha256": null,
+      "status": "missing"
+    }
+  },
+  "watchtower_search": {
+    "checked": true,
+    "reason": "semantic embedding timeout; local file evidence used for fast-track integration",
+    "status": "degraded"
+  }
+}

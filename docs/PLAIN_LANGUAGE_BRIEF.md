@@ -16,9 +16,11 @@ used and whether anything was changed.
 5. Rebuild the hash root in the browser.
 6. Tamper with one record and watch the verification fail.
 
-## The Elvis Component
+## The Disease Search Component
 
-The Elvis view turns the demo into a rare-disease repurposing finder.
+The Disease Search view turns the demo into a rare-disease repurposing finder.
+The internal teammate handoff was labelled "Elvis"; users do not need that
+label to understand the product.
 
 For the prescripted demo, Barth syndrome returns elamipretide as an already
 tried program. That is marked `NOT_A_GAP`, not because it is uninteresting, but
@@ -32,7 +34,7 @@ wired and reproducible.
 
 ## The GAP Lane
 
-The GAP lane is the rule system behind the Elvis table. It asks whether the
+The GAP lane is the rule system behind the Disease Search table. It asks whether the
 biology points to a target, whether an existing program hits that target, and
 whether that disease-drug pair has already appeared in registered trials.
 
@@ -79,7 +81,7 @@ is an FCO too.
 - This is a reproducible evidence-chain demo.
 - This is a phenotype-first repurposing hypothesis workflow.
 - The dashboard can verify its own local custody database.
-- The Elvis view can show a disease-first prescripted case and a conservative
+- The Disease Search view can show a disease-first prescripted case and a conservative
   live ClinicalTrials probe.
 - The OpenAI subagents were recorded as custody objects; the API key was not
   recorded or committed.
@@ -100,3 +102,19 @@ The demo answers three questions:
 1. Did a candidate move the measured cell state back toward the reference?
 2. Why do we believe the evidence chain?
 3. Can another person reproduce or detect tampering in the record?
+## The Model Trace
+
+The Model Trace view answers a simple question: which models touched this demo,
+and did any of them create the scientific evidence?
+
+OpenAI models were used to run bounded helper agents. Their job was navigation:
+summarize what to show, propose updates, and record evidence boundaries. Each
+helper output is stored as a custody object.
+
+Local Ollama models are inventoried by size so the team can show what could run
+locally. They are not counted as scientific data sources unless a receipt says
+they actually ran.
+
+The null comparison is intentionally conservative. In the tiny cached benchmark,
+the known pair did not beat the shuffle null. That is a useful negative result,
+not a failure to hide.

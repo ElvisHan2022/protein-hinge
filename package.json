@@ -7,7 +7,9 @@
     "serve": "python3 db/serve.py 8787",
     "figure": "python3 scripts/make_cell_perturbation_figure.py",
     "agent:fanout": "python3 scripts/run_openai_fanout.py",
-    "agent:graph": "python3 scripts/build_agent_fanout_graph.py"
+    "agent:graph": "python3 scripts/build_agent_fanout_graph.py",
+    "trace:model": "python3 scripts/build_model_trace.py",
+    "aws:preflight": "python3 scripts/aws_preflight.py"
   },
   "dependencies": {
     "@strands-agents/sdk": "^1.13.0",

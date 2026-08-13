@@ -49,17 +49,18 @@ Recording-ready materials:
 - [Video script](docs/VIDEO_SCRIPT.md)
 - [Plain-language brief](docs/PLAIN_LANGUAGE_BRIEF.md)
 - [AI presentation brief](docs/AI_PRESENTATION_BRIEF.json)
-- [Elvis component](docs/ELVIS_COMPONENT.md)
+- [Disease search component](docs/ELVIS_COMPONENT.md)
 - [FCO/FCG design citations](docs/FCO_FCG_DESIGN_CITATIONS.md)
 - [Cell perturbation scientific figure](figures/cell_perturbation_restoration.png)
 - [OpenAI fan-out FCO graph](figures/agent_fanout_fco_graph.png)
+- [Null hypothesis comparison figure](figures/null_hypothesis_comparison.png)
 - [Screenshots](output/playwright/)
 
-## Elvis + Agent FCO Demo
+## Disease Search + Agent FCO Demo
 
 The dashboard now has two additional recording surfaces:
 
-- `ELVIS`: disease-first rare disease repurposing finder. Prescripted Barth
+- `Disease Search`: disease-first rare disease repurposing finder. Prescripted Barth
   syndrome data works offline. The live option probes ClinicalTrials.gov and
   abstains from full gap grading until Open Targets and Convoke joins are
   wired.
@@ -71,6 +72,9 @@ The dashboard now has two additional recording surfaces:
   OpenAI model is an FCO, and the integration record tying those outputs into
   Protein Hinge is an FCO. These objects are projected into `fco_object` and
   `fco_edge` tables in the local SQLite database.
+- `MODEL TRACE`: OpenAI and local-model trace surface. OpenAI ran the bounded
+  subagent fan-out. Local Ollama models are inventoried by size and explicitly
+  marked as available runtimes, not scientific data generators.
 - `@strands-agents/sdk` is installed and locked for the requested agent stack,
   though the verified fan-out path currently uses the OpenAI Responses API
   directly so it can write simple FCO receipts without extra runtime coupling.
@@ -81,10 +85,30 @@ Run the bounded fan-out only from a local ignored `.env`:
 python3 scripts/run_openai_fanout.py --env-file .env --model gpt-4.1-nano --run-id 20260813Tfanout-elvis --max-workers 4
 python3 scripts/build_agent_fanout_graph.py
 python3 gap/ingest_gap.py
+python3 scripts/build_model_trace.py
+python3 scripts/aws_preflight.py
 python3 db/build_db.py
 ```
 
 The key and key hash are not written to the repo.
+
+## Regulatory Coverage
+
+Ingested and incorporated:
+
+- ClinicalTrials.gov: Barth syndrome, elamipretide, and cardiolipin queries.
+- openFDA: elamipretide label and NDC records.
+
+Listed but not incorporated in this MVP:
+
+- FDA orphan designation database: public web form, not captured as a stable
+  reproducible source.
+- European Medicines Agency EPAR / European drug approval data.
+- Japan PMDA drug approval data.
+- Full approved-drug coverage across FDA, Europe, and Japan.
+
+The dashboard should describe these as future work unless source records and
+receipts are added.
 
 The received zip includes source builders (`fcg/ingest.py`,
 `fcg/tamper_test.py`, and `fto/ingest_fto.py`), but those scripts reference a

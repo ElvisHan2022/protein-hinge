@@ -1,6 +1,9 @@
-# Elvis Component: Rare Disease Repurposing Finder
+# Disease Search Component
 
-The Elvis handoff pivots the demo from compound-first to disease-first.
+Internal source note: this came from the teammate handoff labelled "Elvis."
+The demo label is **Disease Search**.
+
+The teammate handoff pivots the demo from compound-first to disease-first.
 
 ## Component Contract
 
@@ -21,7 +24,7 @@ Output:
 
 ### Prescripted
 
-The prescripted mode is the Barth/elamipretide validation case from Elvis'
+The prescripted mode is the Barth/elamipretide validation case from the
 handoff. It is guaranteed to work without network access and proves that the
 prior-trial filter marks the incumbent as:
 

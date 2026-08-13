@@ -5,14 +5,15 @@ Target length: 90 seconds.
 ## Shot List
 
 1. Open `http://127.0.0.1:8787/`.
-2. Switch to Elvis and show the prescripted Barth syndrome validation row.
+2. Use Disease Search and show the prescripted Barth syndrome validation row.
 3. Click the live ClinicalTrials probe as the optional live path.
 4. Switch to Figure and show the cell-perturbation restoration figure.
-5. Switch to Agents and show the model, agent, and integration FCO graph.
-6. Show the Verify tab with `phase_1_axis_claim`.
-7. Switch to Prove and click `RE-VERIFY THE ROOT`.
-8. Click `TAMPER WITH ONE NODE, THEN RE-VERIFY`.
-9. End on the mismatch and first divergent node.
+5. Switch to Agent Trail and show the model, agent, and integration receipts.
+6. Switch to Model Trace and show the null comparison.
+7. Show the Evidence Receipt tab with `phase_1_axis_claim`.
+8. Switch to Tamper Check and click `RE-VERIFY THE ROOT`.
+9. Click `TAMPER WITH ONE NODE, THEN RE-VERIFY`.
+10. End on the mismatch and first divergent node.
 
 ## Narration
 
@@ -21,11 +22,12 @@ hypothesis. The point is not just to show a ranking; it is to show exactly what
 evidence the ranking rests on and whether another scientist can reproduce the
 custody chain.
 
-The Elvis tab starts with a prescripted rare-disease validation case. For Barth
-syndrome, elamipretide appears as an already tried program, so the deterministic
-grade is NOT_A_GAP. The live button probes ClinicalTrials.gov, but it abstains
-from full gap grading because the full Open Targets and Convoke joins are not
-claimed wired in this demo.
+The first tab is the disease search. The internal teammate handoff was called
+Elvis, but the product view is plain: start with a rare disease and ask whether
+there is a repurposing gap. For Barth syndrome, elamipretide appears as an
+already tried program, so the deterministic grade is NOT_A_GAP. The live button
+probes ClinicalTrials.gov, but it abstains from full gap grading because the
+full Open Targets and Convoke joins are not claimed wired in this demo.
 
 The scientific figure is the morphology result. ADA is the selected shifted
 perturbation. The q95 reference threshold is shown, then 50 candidate profiles
@@ -36,6 +38,12 @@ measured rescue.
 The Agents tab shows the OpenAI fan-out. Each subagent response is a Fractal
 Custody Object, the model is an object, and the integration record is an object.
 Those objects are also projected into the local SQLite database.
+
+The Model Trace tab separates model work from scientific evidence. OpenAI ran
+the bounded helper agents. Local models are inventoried by size, but are marked
+as available runtimes rather than scientific data sources. The null comparison
+is intentionally conservative: the known pair did not beat the shuffle null in
+the tiny cached run.
 
 Here the dashboard opens on a specific claim. The claim has a node id, a content
 digest, a stated ceiling, and a list of upstream records. Some sources are
@@ -65,6 +73,7 @@ node site/verify_test.js
 python3 scripts/make_cell_perturbation_figure.py
 python3 scripts/run_openai_fanout.py --env-file .env --model gpt-4.1-nano --run-id 20260813Tfanout-elvis --max-workers 4
 python3 scripts/build_agent_fanout_graph.py
+python3 scripts/build_model_trace.py
 python3 db/serve.py 8787
 ```
 
@@ -74,6 +83,7 @@ Open `http://127.0.0.1:8787/`.
 
 - Scientific figure: `../figures/cell_perturbation_restoration.png`
 - Agent FCO graph: `../figures/agent_fanout_fco_graph.png`
+- Null comparison: `../figures/null_hypothesis_comparison.png`
 - Claim receipt: `../output/playwright/01-verify-claim-receipt.png`
 - Evidence table: `../output/playwright/02-browse-evidence-posture.png`
 - SQL setup: `../output/playwright/03-sql-tractability-query.png`

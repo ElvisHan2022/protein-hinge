@@ -1,31 +1,31 @@
 {
   "agent_objects": [
-    "sha256:7e7c08bbaa85700113a5e376faa9c130f342fad7654d1806d8dcd86d6a7b62a9",
-    "sha256:840b5a529e9efa7620dd25e6625e2fb2980c22685e2dbf382c0c749a8f8ec6ee",
-    "sha256:acff71954fc49bbfbffc4baf745686d7ed0a8721340aba5b68fca9af593ee88c",
-    "sha256:cd6c929527f26b73e003b89122ba318775dce0433556a04c7cc696494eea17cf",
-    "sha256:f1535011dce34aa87eec459f4e5003d72f608d31fa42d287b3b863ec2438e412"
+    "sha256:79597008511b84205cd67266b364df777b31d0c96ac3da98b88e92deeb2dbecc",
+    "sha256:ad210e40a5b930c1ab8f7629a1d76802b43e635364c167ed493a0e2488be943a",
+    "sha256:b20e6520d32edefd96f4895b7a305a7c3253c9adabc9f974abc3b45c48714df4",
+    "sha256:f8bc77cb9f40153559c71072076f164cc157845294b91c113090ccc00e0941ea",
+    "sha256:fefccc50ff74921c85e7c7c73efde608092acbfc42691356192401cde107819c"
   ],
-  "content_digest": "sha256:8349200fffae6c520ed525ac78b6210fd43fef7260329833e5487e5c7d92387c",
+  "content_digest": "sha256:24573ef5d6096dda30ba81d04cf71081d79dbeb598d53553955043c423f74a1b",
   "custody": {
     "calculation_version": "scripts/run_openai_fanout.py:v2",
-    "created_at": "2026-08-13T21:16:13+00:00"
+    "created_at": "2026-08-13T21:34:20+00:00"
   },
-  "fco_id": "sha256:8349200fffae6c520ed525ac78b6210fd43fef7260329833e5487e5c7d92387c",
+  "fco_id": "sha256:24573ef5d6096dda30ba81d04cf71081d79dbeb598d53553955043c423f74a1b",
   "fco_type": "fanout_integration",
   "inputs": {
-    "ai_brief": "sha256:0c9ae885df8d9ee754107ecfcc209600db3ead2e92e6f58d8b29d73b47e43f38",
+    "ai_brief": "sha256:0650b19ac4e885a64a332f9269ddb654f3ce402a00447026b5fe0b1cf11efd17",
     "candidate_ranking": "sha256:e93d3ce7526049c8904e36e6e1aeefc2558c38b3032c8c348342390d8cf30b51",
     "cell_perturbation_figure": "sha256:b99adc349a72d578351e1858e4dc0a2597de8ec244d42ecec5fd4f402209d71b",
-    "dashboard": "sha256:bb288112b630bc25ce6442f23ffef88645e780a4e86012b0c76121784549a404",
+    "dashboard": "sha256:776e19d5a01066bd2b6a41f67926fb2d1fc61e6968bf18a071f6d84500909435",
     "design_citations": "sha256:ba9565d24dffb1fa30bfb5c418d39612ab258f9f4a6cf39ae190456d9bc2e97f",
-    "elvis_component_doc": "sha256:e44abbb0ad5ee2a496429764f76c6809e0783b44042c7c698b6c3f8f6b2953f3",
-    "elvis_prescripted_demo": "sha256:c0106602a3fe29d3b5ff3119572b5ffc092b493bd5308a5a126f8291696a85f7",
+    "elvis_component_doc": "sha256:2523624305959f631cef4b6b7ae5da5625c070b019a1cec4ee4381f74c7dae1f",
+    "elvis_prescripted_demo": "sha256:b61e28b96c84d1cb20bc382f997980c20bee7949f2750349e03bdae8fd24a488",
     "gap_lane_receipt": "sha256:f28aa567f0590e24156662276f10e433f8dceb599eb5a35d0c3c05088a5859e3",
     "gap_lane_spec": "sha256:03daf3cefea902ceaa93d8a38c073d0e3cc3d80796e7369c11bb17ee3adae9d3",
-    "mvp_status": "sha256:5f77071e93841481e4d234fbaeb73bd36d5adce8f1505ecc13c93d5d85716e84",
-    "package_metadata": "sha256:d4f655e902db6e4e97f08aab55861a7d398d8d2ebb25b90acb50aa889440dcdf",
-    "plain_language_brief": "sha256:ab681f1501919354f722de3557f9158b37ea91e05007df6de22dda999b21761e"
+    "mvp_status": "sha256:e85eeb1a6208dcd57661207e773e6b98283f0ddc8e6bb194771732943db4b522",
+    "package_metadata": "sha256:c594d617c36c7fb59067c6f3270126edfccef05c3c68c07f11c102a07b83c422",
+    "plain_language_brief": "sha256:dec4ed8dc25c046a70542e4640b19ba4bc7e4ec851a54ebf23df04f4fe23b8a5"
   },
   "integration": {
     "claim_ceiling": "REPURPOSING_HYPOTHESIS",
@@ -39,7 +39,7 @@
     "database_projection": "db/build_db.py adds fco_object and fco_edge tables",
     "secret_policy": "OpenAI key used from local .env; key and key hash are not committed."
   },
-  "model_object": "sha256:5c9766dfc6826489de80b65d50e1acee80da027c423402fde102062864949a40",
+  "model_object": "sha256:883550eb1d8261e80ae924b761d9014a60bad7294f33359a6252120e6bb419d7",
   "run_id": "20260813Tfanout-elvis",
   "schema": "protein_hinge.fco.fanout_integration.v1"
 }

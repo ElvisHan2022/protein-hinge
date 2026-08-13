@@ -80,6 +80,29 @@ REGISTRIES = {
         "auth": None,
         "note": "No stable JSON API. Query surface is a web form; treat any "
                 "capture as COMMITTED and re-verify by hand.",
+        "status": "NOT_CAPTURED",
+    },
+    "ema_epar": {
+        "name": "European Medicines Agency EPAR",
+        "api": None,
+        "lane": "C",
+        "answers": "European authorization status and product assessment records.",
+        "public": True,
+        "auth": None,
+        "note": "Not ingested in this MVP. Add only after the query surface, "
+                "corpus date, fields, and reuse terms are documented.",
+        "status": "LISTED_NOT_WIRED",
+    },
+    "pmda_japan": {
+        "name": "Japan PMDA drug approvals",
+        "api": None,
+        "lane": "C",
+        "answers": "Japanese approval status and product records.",
+        "public": True,
+        "auth": None,
+        "note": "Not ingested in this MVP. Add only after the query surface, "
+                "corpus date, fields, and reuse terms are documented.",
+        "status": "LISTED_NOT_WIRED",
     },
     "open_targets": {
         "name": "Open Targets Platform",
@@ -123,8 +146,8 @@ def registry_status() -> List[Dict[str, Any]]:
             "name": v["name"],
             "lane": v["lane"],
             "public": v["public"],
-            "wired": v.get("status") != "LISTED_NOT_WIRED" and v["api"] is not None,
-            "blocker": v.get("note") if v.get("status") == "LISTED_NOT_WIRED" else None,
+            "wired": v.get("status") is None and v["api"] is not None,
+            "blocker": v.get("note") if v.get("status") is not None else None,
         }
         for k, v in sorted(REGISTRIES.items())
     ]
