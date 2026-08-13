@@ -1,7 +1,16 @@
 # Protein Hinge
 
-A hash-pinned evidence ledger for a small-molecule repurposing hypothesis in
-Barth syndrome, and the freedom-to-operate record that sits beside it.
+Protein Hinge is a dating app for drugs and rare diseases: the drugs already
+exist, the diseases have been waiting forever, and somehow nobody has
+introduced them. Type in a rare disease and we swipe through known
+therapeutics — matching on broken biology, patient genetics, and trial
+history — then tell you who's single, who's taken, and who got ghosted after
+a failed Phase 3. And like any good matchmaker, we spill the tea *with
+receipts*: every claim is hash-fingerprinted, so if anyone edits the evidence,
+the ledger calls them out in front of everybody. No AI wingman makes the
+call — plain, readable rules decide every match, and "we don't know" is a
+respectable answer. Claim ceiling `REPURPOSING_HYPOTHESIS`: we set up the
+date; we don't officiate the wedding.
 
 Two lanes, one Merkle root.
 
