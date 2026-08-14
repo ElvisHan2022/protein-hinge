@@ -51,12 +51,32 @@
       "writeback_status": "deferred_local_json_only"
     },
     {
-      "claim_boundary": "No live KG/SeedGraph/Overwatch writeback performed by this repo update. This records coverage status, not new regulatory ingestion.",
+      "claim_boundary": "No live KG/SeedGraph/Overwatch writeback performed by this repo update. This records coverage status, not full normalized regulatory ingestion.",
       "key": "regulatory_coverage",
-      "relation": "records which drug/trial/regulatory sources are wired versus listed future work",
+      "relation": "records which drug/trial/regulatory sources are wired, source-captured, or future work",
       "schema": "protein_hinge.deferred_writeback_candidate.v1",
       "source_path": "model_trace/regulatory_coverage.json",
-      "source_sha256": "sha256:e9fa4e3663e2fca83dd8b30fbd5e23fccb5a182488d438a7148a10f11cf0a509",
+      "source_sha256": "sha256:f45d4abfe8fe0e19e84c5fdd7ef0ab2e6a59a87f8422bbf334f23367a88ebedc",
+      "target_graph": "watchKG",
+      "writeback_status": "deferred_local_json_only"
+    },
+    {
+      "claim_boundary": "No live KG/SeedGraph/Overwatch writeback performed by this repo update. This records official source-surface capture only, not row-normalized approval evidence.",
+      "key": "regulatory_source_surfaces",
+      "relation": "records official EMA/PMDA/FDA-orphan source artifacts, hashes, and small previews",
+      "schema": "protein_hinge.deferred_writeback_candidate.v1",
+      "source_path": "model_trace/regulatory_source_surfaces.json",
+      "source_sha256": "sha256:b3adc81f1e264582ce52fa2d9e3fa16ff9dfe9c277c652740e1245b5e69ec5d9",
+      "target_graph": "watchKG",
+      "writeback_status": "deferred_local_json_only"
+    },
+    {
+      "claim_boundary": "No live KG/SeedGraph/Overwatch writeback performed by this repo update. Screenshots are presentation artifacts, not additional scientific evidence.",
+      "key": "dashboard_screenshots",
+      "relation": "records useful local dashboard screenshots for video/demo presentation",
+      "schema": "protein_hinge.deferred_writeback_candidate.v1",
+      "source_path": "output/playwright/README.md",
+      "source_sha256": "sha256:f3481ffae426aa9987c366551dafbfef6a35c5ac55fba097a5c6ac65f8fb0667",
       "target_graph": "watchKG",
       "writeback_status": "deferred_local_json_only"
     }

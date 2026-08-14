@@ -259,10 +259,9 @@
           only listed for future work. That boundary keeps the pitch honest.</p>
       </div>
       <div class="card"><h3>Plain readout</h3><div id="regulatorySummary"></div></div>
-      <div class="grid2">
-        <div class="card scroll"><h3>Coverage by source</h3><div id="regulatoryRows"></div></div>
-        <div class="card scroll"><h3>Captured query receipts</h3><div id="regulatoryQueries"></div></div>
-      </div>
+      <div class="card scroll"><h3>Coverage by source</h3><div id="regulatoryRows"></div></div>
+      <div class="card scroll"><h3>Official source surfaces</h3><div id="regulatorySurfaces"></div></div>
+      <div class="card scroll"><h3>Captured query receipts</h3><div id="regulatoryQueries"></div></div>
     </section>
 
     <!-- ------------------------------------------------------ OMICS -->
@@ -799,7 +798,7 @@ async function initRegulatory(){
   const statusRows = all(
     "SELECT name, lane, CASE wired WHEN 1 THEN 'Incorporated' ELSE 'Listed, not incorporated' END AS status, blocker FROM registry_status ORDER BY wired DESC, name");
   const queryRows = all(
-    "SELECT registry_name AS source, label AS receipt, http_status, result_count, captured_at FROM registry_query ORDER BY registry_name, label");
+    "SELECT registry AS source, label AS receipt, http_status, result_count, nbytes, corpus_date FROM registry_query ORDER BY registry, label");
   try{
     const cov = await (await fetch('assets/regulatory_coverage.json')).json();
     $('#regulatorySummary').innerHTML = `<div class="callout">${esc(cov.plain_english)}</div>
@@ -811,11 +810,22 @@ async function initRegulatory(){
       'Source': r.name,
       'Scope': r.region_or_scope,
       'Status': r.plain_status,
+      'Source captures': r.source_surface_count || 0,
       'What it means': r.claim || r.blocker || r.plain_use,
+    })));
+    const surfaces = await (await fetch('assets/regulatory_source_surfaces.json')).json();
+    $('#regulatorySurfaces').innerHTML = tbl((surfaces.sources || []).map(r=>({
+      'Source': r.key,
+      'Scope': r.region_or_scope,
+      'Bytes': r.bytes,
+      'Hash': r.sha256 ? r.sha256.slice(0, 19) + '...' : '',
+      'Local file': r.local_path,
+      'Boundary': r.claim,
     })));
   }catch(e){
     $('#regulatorySummary').innerHTML = `<div class="callout">The database shows which registries are wired. The coverage JSON has not been generated yet.</div>`;
     $('#regulatoryRows').innerHTML = tbl(statusRows);
+    $('#regulatorySurfaces').innerHTML = `<p class="dim">Official source-surface capture not generated yet.</p>`;
   }
   $('#regulatoryQueries').innerHTML = queryRows.length
     ? tbl(queryRows)

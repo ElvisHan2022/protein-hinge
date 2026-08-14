@@ -11,6 +11,7 @@
       "plain_use": "Checks whether this disease and program have already appeared together in registered studies.",
       "region_or_scope": "United States / international trial registry",
       "registry_key": "clinicaltrials_gov",
+      "source_surface_count": 0,
       "wired": true
     },
     {
@@ -22,28 +23,31 @@
       "plain_use": "Would join targets to drug programs if licensed access is available.",
       "region_or_scope": "Drug-program intelligence",
       "registry_key": "convoke",
+      "source_surface_count": 0,
       "wired": false
     },
     {
       "blocker": "Not ingested in this MVP. Add only after the query surface, corpus date, fields, and reuse terms are documented.",
-      "claim": "Future work until the query surface, corpus date, fields, and reuse terms are documented.",
+      "claim": "Official EMA workbooks are captured and hashed; not normalized into full cross-region coverage.",
       "lane": "C",
       "name": "European Medicines Agency EPAR",
-      "plain_status": "Listed, not incorporated",
-      "plain_use": "Would bound European authorization status.",
+      "plain_status": "Small official workbooks captured",
+      "plain_use": "Bounds European medicines and orphan-designation source surfaces.",
       "region_or_scope": "Europe",
       "registry_key": "ema_epar",
+      "source_surface_count": 2,
       "wired": false
     },
     {
       "blocker": "No stable JSON API. Query surface is a web form; treat any capture as COMMITTED and re-verify by hand.",
-      "claim": "Not admitted because the current public query surface is a web form, not a stable replayable API.",
+      "claim": "Official search page is captured and hashed; web-form result rows are not normalized here.",
       "lane": "C",
       "name": "FDA Orphan Drug Product designation database",
-      "plain_status": "Listed, not incorporated",
-      "plain_use": "Would bound orphan designation and exclusivity questions.",
+      "plain_status": "Source surface captured",
+      "plain_use": "Bounds where orphan designation and exclusivity evidence would be checked.",
       "region_or_scope": "United States",
       "registry_key": "fda_orphan",
+      "source_surface_count": 1,
       "wired": false
     },
     {
@@ -55,6 +59,7 @@
       "plain_use": "Checks tractability and drug/clinical-candidate counts for selected targets.",
       "region_or_scope": "Global public target evidence",
       "registry_key": "open_targets",
+      "source_surface_count": 0,
       "wired": true
     },
     {
@@ -66,21 +71,24 @@
       "plain_use": "Pins the incumbent elamipretide label and NDC records.",
       "region_or_scope": "United States",
       "registry_key": "openfda_drug",
+      "source_surface_count": 0,
       "wired": true
     },
     {
       "blocker": "Not ingested in this MVP. Add only after the query surface, corpus date, fields, and reuse terms are documented.",
-      "claim": "Future work until the query surface, corpus date, fields, and reuse terms are documented.",
+      "claim": "Official PMDA approved-products page is captured and hashed; larger linked PDF is not vendored.",
       "lane": "C",
       "name": "Japan PMDA drug approvals",
-      "plain_status": "Listed, not incorporated",
-      "plain_use": "Would bound Japanese approval status.",
+      "plain_status": "Source surface captured",
+      "plain_use": "Bounds Japanese approved-product source location.",
       "region_or_scope": "Japan",
       "registry_key": "pmda_japan",
+      "source_surface_count": 1,
       "wired": false
     }
   ],
-  "plain_english": "The MVP has U.S. trial evidence, selected U.S. FDA label/NDC evidence, and Open Targets support. Europe, Japan, FDA orphan designation, Convoke, and comprehensive approved-drug coverage are listed as future work.",
+  "plain_english": "The MVP has U.S. trial evidence, selected U.S. FDA label/NDC evidence, Open Targets support, and small official EMA/PMDA/FDA-orphan source surfaces captured for traceability. It still does not claim a full FDA/EMA/PMDA approved-drug database.",
   "schema": "protein_hinge.regulatory_coverage.v1",
+  "source_surfaces_path": "model_trace/regulatory_source_surfaces.json",
   "status": "coverage_map_not_full_ingestion"
 }

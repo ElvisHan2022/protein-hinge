@@ -12,6 +12,14 @@ from fto import registry_status  # noqa: E402
 
 OUT = ROOT / "model_trace" / "regulatory_coverage.json"
 SITE_OUT = ROOT / "site" / "assets" / "regulatory_coverage.json"
+SURFACES = ROOT / "model_trace" / "regulatory_source_surfaces.json"
+
+SURFACE_REGISTRY_KEYS = {
+    "ema_medicines_report": "ema_epar",
+    "ema_orphan_designations_report": "ema_epar",
+    "pmda_approved_products_page": "pmda_japan",
+    "fda_orphan_search_page": "fda_orphan",
+}
 
 
 PLAIN = {
@@ -35,21 +43,21 @@ PLAIN = {
     },
     "FDA Orphan Drug Product designation database": {
         "region_or_scope": "United States",
-        "plain_status": "Listed, not incorporated",
-        "plain_use": "Would bound orphan designation and exclusivity questions.",
-        "claim": "Not admitted because the current public query surface is a web form, not a stable replayable API.",
+        "plain_status": "Source surface captured",
+        "plain_use": "Bounds where orphan designation and exclusivity evidence would be checked.",
+        "claim": "Official search page is captured and hashed; web-form result rows are not normalized here.",
     },
     "European Medicines Agency EPAR": {
         "region_or_scope": "Europe",
-        "plain_status": "Listed, not incorporated",
-        "plain_use": "Would bound European authorization status.",
-        "claim": "Future work until the query surface, corpus date, fields, and reuse terms are documented.",
+        "plain_status": "Small official workbooks captured",
+        "plain_use": "Bounds European medicines and orphan-designation source surfaces.",
+        "claim": "Official EMA workbooks are captured and hashed; not normalized into full cross-region coverage.",
     },
     "Japan PMDA drug approvals": {
         "region_or_scope": "Japan",
-        "plain_status": "Listed, not incorporated",
-        "plain_use": "Would bound Japanese approval status.",
-        "claim": "Future work until the query surface, corpus date, fields, and reuse terms are documented.",
+        "plain_status": "Source surface captured",
+        "plain_use": "Bounds Japanese approved-product source location.",
+        "claim": "Official PMDA approved-products page is captured and hashed; larger linked PDF is not vendored.",
     },
     "Convoke": {
         "region_or_scope": "Drug-program intelligence",
@@ -61,9 +69,18 @@ PLAIN = {
 
 
 def main() -> None:
+    surfaces = {}
+    if SURFACES.exists():
+        captured = json.loads(SURFACES.read_text())
+        for item in captured.get("sources", []):
+            registry_key = SURFACE_REGISTRY_KEYS.get(item["key"])
+            if registry_key:
+                surfaces.setdefault(registry_key, []).append(item)
+
     rows = []
     for r in registry_status():
         plain = PLAIN.get(r["name"], {})
+        source_surface_count = len(surfaces.get(r["key"], []))
         rows.append(
             {
                 "registry_key": r["key"],
@@ -78,6 +95,7 @@ def main() -> None:
                 "plain_use": plain.get("plain_use", ""),
                 "claim": plain.get("claim", ""),
                 "blocker": r.get("blocker"),
+                "source_surface_count": source_surface_count,
             }
         )
 
@@ -87,11 +105,13 @@ def main() -> None:
         "claim_boundary": "Regulatory search coverage, not legal advice and not a full global approved-drug database.",
         "plain_english": (
             "The MVP has U.S. trial evidence, selected U.S. FDA label/NDC evidence, "
-            "and Open Targets support. Europe, Japan, FDA orphan designation, "
-            "Convoke, and comprehensive approved-drug coverage are listed as future work."
+            "Open Targets support, and small official EMA/PMDA/FDA-orphan source "
+            "surfaces captured for traceability. It still does not claim a full "
+            "FDA/EMA/PMDA approved-drug database."
         ),
         "active_dashboard_database": "db/biocustody.db and site/biocustody.db",
         "coverage": rows,
+        "source_surfaces_path": "model_trace/regulatory_source_surfaces.json",
     }
     text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
     OUT.write_text(text)

@@ -170,6 +170,7 @@ python3 scripts/run_openai_fanout.py --env-file .env --model gpt-4.1-nano --run-
 python3 scripts/build_agent_fanout_graph.py
 python3 gap/ingest_gap.py
 python3 scripts/build_model_trace.py
+python3 scripts/capture_regulatory_sources.py
 python3 scripts/build_regulatory_coverage.py
 python3 scripts/aws_preflight.py
 python3 db/build_db.py
@@ -179,18 +180,23 @@ The key and key hash are not written to the repo.
 
 ## Regulatory Coverage
 
-Ingested and incorporated:
+Ingested and incorporated into the current evidence calculation:
 
 - ClinicalTrials.gov: Barth syndrome, elamipretide, and cardiolipin queries.
 - openFDA: elamipretide label and NDC records.
 
+Captured as bounded official source surfaces, not full normalized ingestion:
+
+- EMA medicines and orphan-designation workbooks.
+- PMDA approved-products source page.
+- FDA orphan designation search page.
+
 Listed but not incorporated in this MVP:
 
-- FDA orphan designation database: public web form, not captured as a stable
-  reproducible source.
-- European Medicines Agency EPAR / European drug approval data.
-- Japan PMDA drug approval data.
 - Full approved-drug coverage across FDA, Europe, and Japan.
+- Normalized FDA orphan designation result rows.
+- Normalized PMDA Japanese approval rows.
+- Normalized EMA row joins to candidate programs.
 
 The dashboard should describe these as future work unless source records and
 receipts are added.
@@ -315,5 +321,10 @@ separately.
 
 ## License
 
-Code and documentation are released under Apache-2.0. See `LICENSE` and
-`NOTICE`.
+This repository is released under **Creative Commons
+Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)**. See `LICENSE`
+and `NOTICE`.
+
+Plainly: verbatim redistribution with attribution is allowed. Distribution of
+modified, remixed, transformed, or built-upon versions is not licensed without
+separate written permission.

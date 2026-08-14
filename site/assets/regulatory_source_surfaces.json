@@ -1,0 +1,251 @@
+{
+  "captured_on": "2026-08-13",
+  "claim_boundary": "Official source surfaces and small workbooks are captured for traceability. This is not a full FDA/EMA/PMDA approved-drug database.",
+  "reverify_caveat": "These official sources are live web resources. Re-fetching later may produce different bytes; that is a source-corpus change rather than a silent mutation of this committed capture.",
+  "schema": "protein_hinge.regulatory_source_surfaces.v1",
+  "sources": [
+    {
+      "bytes": 897984,
+      "captured_on": "2026-08-13",
+      "claim": "Small official EMA medicines workbook captured and hashed; not normalized into a full global approval database.",
+      "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "final_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx",
+      "http_status": 200,
+      "key": "ema_medicines_report",
+      "local_path": "data/regulatory/ema_medicines_report.xlsx",
+      "not_date_pinned": true,
+      "preview": {
+        "preview_rows": [
+          [
+            "Content type:",
+            "Medicine",
+            "Output automatically generated from content on www.ema.europa.eu on:",
+            "13/08/2026 - 18:05",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        ],
+        "row_count_in_first_sheet": 2739,
+        "sheet": "xl/worksheets/sheet1.xml"
+      },
+      "region_or_scope": "Europe",
+      "schema": "protein_hinge.regulatory_source_surface.v1",
+      "sha256": "sha256:f3deae6e713d8a9b01c3c882669255b88b3ad0942bb0103195c55793d1809c5a",
+      "source_type": "xlsx",
+      "url": "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx"
+    },
+    {
+      "bytes": 347986,
+      "captured_on": "2026-08-13",
+      "claim": "Small official EMA orphan-designations workbook captured and hashed; used as source-surface evidence only.",
+      "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "final_url": "https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx",
+      "http_status": 200,
+      "key": "ema_orphan_designations_report",
+      "local_path": "data/regulatory/ema_orphan_designations_report.xlsx",
+      "not_date_pinned": true,
+      "preview": {
+        "preview_rows": [
+          [
+            "Content type:",
+            "Orphan designation",
+            "Output automatically generated from content on www.ema.europa.eu on:",
+            "13/08/2026 - 18:15",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        ],
+        "row_count_in_first_sheet": 3288,
+        "sheet": "xl/worksheets/sheet1.xml"
+      },
+      "region_or_scope": "Europe",
+      "schema": "protein_hinge.regulatory_source_surface.v1",
+      "sha256": "sha256:3909eb4f96fb03d96ff384c94e628d85791f5617db63bd927d6aa5938af8cbb9",
+      "source_type": "xlsx",
+      "url": "https://www.ema.europa.eu/en/documents/report/medicines-output-orphan_designations-report_en.xlsx"
+    },
+    {
+      "bytes": 52895,
+      "captured_on": "2026-08-13",
+      "claim": "Official PMDA approved-products page captured and hashed; page points to a larger PDF list that is not vendored.",
+      "content_type": "text/html",
+      "final_url": "https://www.pmda.go.jp/english/review-services/reviews/approved-information/drugs/0002.html",
+      "http_status": 200,
+      "key": "pmda_approved_products_page",
+      "local_path": "data/regulatory/pmda_approved_products_page.html",
+      "not_date_pinned": true,
+      "preview": {
+        "mentions": {
+          "approved": true,
+          "excel": true,
+          "orphan": true
+        },
+        "selected_links": [
+          {
+            "href": "/english/review-services/reviews/approved-information/0003.html",
+            "text": "Information for Approved Products"
+          },
+          {
+            "href": "/english/review-services/reviews/approved-information/0001.html",
+            "text": "Information for Approved Products"
+          },
+          {
+            "href": "/files/000281190.pdf",
+            "text": "April 2004 to February 2026 [3.06 MB]"
+          },
+          {
+            "href": "/english/review-services/reviews/approved-information/0001.html",
+            "text": "Information for Approved Products"
+          },
+          {
+            "href": "/english/review-services/reviews/approved-information/drugs/0002.html",
+            "text": "List of Approved Products"
+          },
+          {
+            "href": "/english/review-services/reviews/approved-information/devices/0001.html",
+            "text": "List of Approved Products"
+          },
+          {
+            "href": "/english/review-services/reviews/approved-information/0002.html",
+            "text": "List of Approved Products"
+          }
+        ],
+        "title": "List of Approved Products | Pharmaceuticals and Medical Devices Agency"
+      },
+      "region_or_scope": "Japan",
+      "schema": "protein_hinge.regulatory_source_surface.v1",
+      "sha256": "sha256:9cbf0471e130ffacfec6b1f1fbd77d59b4927aac0a7aeb5caafcbad3dc04091f",
+      "source_type": "html",
+      "url": "https://www.pmda.go.jp/english/review-services/reviews/approved-information/drugs/0002.html"
+    },
+    {
+      "bytes": 34331,
+      "captured_on": "2026-08-13",
+      "claim": "Official FDA orphan-designation search surface captured and hashed; web-form query results are not normalized here.",
+      "content_type": "text/html;charset=UTF-8",
+      "final_url": "https://www.accessdata.fda.gov/scripts/opdlisting/oopd/",
+      "http_status": 200,
+      "key": "fda_orphan_search_page",
+      "local_path": "data/regulatory/fda_orphan_search_page.html",
+      "not_date_pinned": true,
+      "preview": {
+        "mentions": {
+          "approved": true,
+          "excel": true,
+          "orphan": true
+        },
+        "selected_links": [
+          {
+            "href": "https://www.fda.gov/industry/designating-orphan-product-drugs-and-biological-products/instructions-searchable-designation-database",
+            "text": "Click for detailed instructions."
+          },
+          {
+            "href": "https://www.fda.gov/about-fda/website-policies/viewing-files",
+            "text": "Instructions for Downloading Viewers and Players"
+          }
+        ],
+        "title": "Search Orphan Drug Designations and Approvals"
+      },
+      "region_or_scope": "United States",
+      "schema": "protein_hinge.regulatory_source_surface.v1",
+      "sha256": "sha256:8e66f5735983c49a69ad067f646dd4df65f1185f4c312855b8ec5e608ed8ff15",
+      "source_type": "html",
+      "url": "https://www.accessdata.fda.gov/scripts/opdlisting/oopd/"
+    }
+  ],
+  "status": "source_surfaces_captured_not_full_ingestion"
+}
