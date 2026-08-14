@@ -1,102 +1,75 @@
 {
-  "captured_at": "2026-08-13T22:07:25+00:00",
+  "captured_at": "2026-08-13T23:35:27+00:00",
   "claim_boundary": "PATHOGENIC_VARIANT_REPORTED",
   "genes": [
     {
+      "clinvar_total_before_filter": 337,
+      "excluded_large_cnv": 137,
       "gene": "TAFAZZIN",
-      "pathogenic_or_likely": 337,
+      "pathogenic_or_likely": 100,
       "records_fetched": 337,
       "top_conditions": [
         {
           "condition": "3-Methylglutaconic aciduria type 2",
-          "records": 85
+          "records": 83
         },
         {
-          "condition": "See cases",
-          "records": 60
+          "condition": "TAFAZZIN-related disorder",
+          "records": 2
         },
         {
-          "condition": "Syndromic X-linked intellectual disability Lubs type",
-          "records": 4
+          "condition": "Cardiovascular phenotype",
+          "records": 2
         },
         {
-          "condition": "X-linked Emery-Dreifuss muscular dystrophy",
-          "records": 3
+          "condition": "Cardiomyopathy",
+          "records": 2
         },
         {
-          "condition": "Adrenoleukodystrophy",
-          "records": 3
+          "condition": "Left ventricular noncompaction cardiomyopathy",
+          "records": 1
         }
       ]
     },
     {
+      "clinvar_total_before_filter": 33,
+      "excluded_large_cnv": 30,
       "gene": "CRLS1",
-      "pathogenic_or_likely": 33,
+      "pathogenic_or_likely": 3,
       "records_fetched": 33,
       "top_conditions": [
         {
-          "condition": "See cases",
-          "records": 18
-        },
-        {
           "condition": "Combined oxidative phosphorylation deficiency 57",
           "records": 3
-        },
-        {
-          "condition": "Congenital myasthenic syndrome 18",
-          "records": 1
-        },
-        {
-          "condition": "Inosine triphosphatase deficiency",
-          "records": 1
-        },
-        {
-          "condition": "Renal agenesis",
-          "records": 1
         }
       ]
     },
     {
+      "clinvar_total_before_filter": 14,
+      "excluded_large_cnv": 14,
       "gene": "PGS1",
-      "pathogenic_or_likely": 14,
+      "pathogenic_or_likely": 0,
       "records_fetched": 14,
-      "top_conditions": [
-        {
-          "condition": "See cases",
-          "records": 9
-        }
-      ]
+      "top_conditions": []
     },
     {
+      "clinvar_total_before_filter": 13,
+      "excluded_large_cnv": 12,
       "gene": "PTPMT1",
-      "pathogenic_or_likely": 13,
+      "pathogenic_or_likely": 1,
       "records_fetched": 13,
       "top_conditions": [
         {
-          "condition": "See cases",
-          "records": 7
-        },
-        {
-          "condition": "Aniridia 1",
-          "records": 1
-        },
-        {
           "condition": "Neurodevelopmental disorder with ataxia and brain abnormalities",
-          "records": 1
-        },
-        {
-          "condition": "Agammaglobulinemia",
-          "records": 1
-        },
-        {
-          "condition": "Leukocyte adhesion deficiency type II",
           "records": 1
         }
       ]
     },
     {
+      "clinvar_total_before_filter": 267,
+      "excluded_large_cnv": 16,
       "gene": "HADHA",
-      "pathogenic_or_likely": 267,
+      "pathogenic_or_likely": 251,
       "records_fetched": 267,
       "top_conditions": [
         {
@@ -112,73 +85,41 @@
           "records": 36
         },
         {
-          "condition": "See cases",
-          "records": 12
+          "condition": "HADHA-related disorder",
+          "records": 2
         },
         {
-          "condition": "HADHA-related disorder",
+          "condition": "Inborn genetic diseases",
           "records": 2
         }
       ]
     },
     {
+      "clinvar_total_before_filter": 0,
+      "excluded_large_cnv": 0,
       "gene": "PHB",
       "pathogenic_or_likely": 0,
       "records_fetched": 0,
       "top_conditions": []
     },
     {
+      "clinvar_total_before_filter": 46,
+      "excluded_large_cnv": 46,
       "gene": "PHB2",
-      "pathogenic_or_likely": 46,
+      "pathogenic_or_likely": 0,
       "records_fetched": 46,
-      "top_conditions": [
-        {
-          "condition": "See cases",
-          "records": 21
-        },
-        {
-          "condition": "Chromosome 4q21 deletion syndrome",
-          "records": 1
-        },
-        {
-          "condition": "Peroxisome biogenesis disorder 2B",
-          "records": 1
-        },
-        {
-          "condition": "Developmental and epileptic encephalopathy, 21",
-          "records": 1
-        },
-        {
-          "condition": "Pallister-Killian syndrome",
-          "records": 1
-        }
-      ]
+      "top_conditions": []
     },
     {
+      "clinvar_total_before_filter": 32,
+      "excluded_large_cnv": 32,
       "gene": "CHCHD3",
-      "pathogenic_or_likely": 32,
+      "pathogenic_or_likely": 0,
       "records_fetched": 32,
-      "top_conditions": [
-        {
-          "condition": "See cases",
-          "records": 17
-        },
-        {
-          "condition": "Ring chromosome 7",
-          "records": 1
-        },
-        {
-          "condition": "Renal transitional cell carcinoma",
-          "records": 1
-        },
-        {
-          "condition": "Pleomorphic xanthoastrocytoma",
-          "records": 1
-        }
-      ]
+      "top_conditions": []
     }
   ],
-  "note": "Counts are ClinVar submitter classifications (pathogenic or likely pathogenic), fetched live from NCBI and re-fetchable from the recorded query URLs. They are genetic association evidence, not measured rescue and not diagnosis.",
+  "note": "Counts are ClinVar submitter classifications (pathogenic or likely pathogenic), fetched live from NCBI and re-fetchable from the recorded query URLs. Large copy-number events spanning many genes are excluded, so each count reflects gene-specific variants only; the excluded totals are recorded per gene. This is genetic association evidence, not measured rescue and not diagnosis.",
   "schema": "protein_hinge.clinvar_evidence.v1",
-  "tsv_sha256": "b676ebb7369507ade7c4e08224ff08378b4f2a596cd76cadcd4f23c857f72413"
+  "tsv_sha256": "6bdf8a0e2478c29a29fcb757609bef149bfda8af4a5f3886425c0da48d7f9dc3"
 }

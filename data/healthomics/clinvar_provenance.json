@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-08-13T22:07:25+00:00",
+  "captured_at": "2026-08-13T23:35:27+00:00",
   "filter": "pathogenic OR likely pathogenic, per gene",
   "genes": [
     "TAFAZZIN",
@@ -157,7 +157,7 @@
   "source": "NCBI ClinVar via E-utilities",
   "tsv": {
     "path": "data/healthomics/clinvar_subset.tsv",
-    "rows": 642,
-    "sha256": "b676ebb7369507ade7c4e08224ff08378b4f2a596cd76cadcd4f23c857f72413"
+    "rows": 355,
+    "sha256": "6bdf8a0e2478c29a29fcb757609bef149bfda8af4a5f3886425c0da48d7f9dc3"
   }
 }

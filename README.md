@@ -12,7 +12,8 @@ call — plain, readable rules decide every match, and "we don't know" is a
 respectable answer. Claim ceiling `REPURPOSING_HYPOTHESIS`: we set up the
 date; we don't officiate the wedding.
 
-Two lanes, one Merkle root.
+Two custody lanes, one Merkle root — with a HealthOmics genetics lane feeding
+the gap grading beside them.
 
 ```
   SCIENCE LANE                          FTO LANE
@@ -66,10 +67,11 @@ verifiable receipt on every row.
    browser**; a tamper button shows a one-byte edit being caught live.
    *Tech: fcg.py, SQLite, sql.js (WebAssembly), vanilla JS.*
 
-**AWS HealthOmics status, honestly:** the ClinVar subset (642
+**AWS HealthOmics status, honestly:** the ClinVar subset (355 gene-specific
 pathogenic-variant records for the eight consensus genes, all query digests
-recorded) is built and the store-creation pipeline is written; no data has
-been generated in AWS yet. The dashboard's HealthOmics tab probes the account
+recorded, large multi-gene copy-number events excluded rather than counted)
+is built and the store-creation pipeline is written; no data has been
+generated in AWS yet. The dashboard's HealthOmics tab probes the account
 live and abstains in writing until the store exists — in this system,
 "not wired yet" is a first-class answer.
 
@@ -114,7 +116,9 @@ variants in the eight consensus genes and writes
 (requires `aws configure`; hackathon user `elvish.an`, region `us-east-1`)
 idempotently creates `s3://protein-hinge-omics-<account>`, an import IAM role,
 and the `protein_hinge_clinvar` TSV/GENERIC annotation store, then runs the
-import. The dashboard's HealthOmics tab and its live probe
+import. TSV/GENERIC was a deliberate scoping choice over a VCF variant store:
+a VCF store requires importing a full reference genome first, which buys
+nothing for gene-level evidence within hackathon time. The dashboard's HealthOmics tab and its live probe
 (`/api/healthomics`) render whatever state actually exists — including the
 credentials-missing abstention.
 

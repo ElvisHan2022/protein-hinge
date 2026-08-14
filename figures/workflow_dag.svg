@@ -12,6 +12,7 @@
 
   <text x="40" y="46" font-size="23" font-weight="700" fill="#1c2530">Protein Hinge — workflow, input to output</text>
   <text x="40" y="70" font-size="14" fill="#68747f">Every edge is a recorded step. Solid boxes are wired and receipted; dashed boxes are listed, not incorporated.</text>
+  <text x="40" y="88" font-size="12" fill="#8c3d3d">Full grading runs on the Barth syndrome validation case; arbitrary live input gets a trial probe plus honest abstention.</text>
 
   <!-- INPUT -->
   <rect x="40" y="330" width="150" height="88" rx="8" fill="#eef1f4" stroke="#c6ced6"/>

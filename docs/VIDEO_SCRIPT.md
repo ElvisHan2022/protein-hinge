@@ -15,7 +15,7 @@ can be pre-staged as bookmarks.
 > Targets GraphQL: what biology is broken? NCBI ClinVar, pulled through
 > E-utilities and loaded into an AWS HealthOmics annotation store — via boto3,
 > S3, and IAM: do patients really carry pathogenic variants in these genes?
-> 642 records say yes. ClinicalTrials.gov's REST API: has this pairing been
+> 355 gene-specific records say yes. ClinicalTrials.gov's REST API: has this pairing been
 > tried? openFDA: is the drug approved? Convoke is dashed out — listed,
 > deliberately not wired, and we say so.
 >
@@ -57,10 +57,12 @@ DO: open the HealthOmics tab, point to the evidence table, click
 **CHECK LIVE STORE STATE**.
 
 > The genetic second opinion. We pulled every pathogenic variant ClinVar
-> reports for our eight genes — 642 records, every query digest-recorded.
-> Look at TAFAZZIN: 337 pathogenic records, top condition
-> 3-Methylglutaconic aciduria type 2 — that *is* Barth syndrome. The genetics
-> independently agrees with the disease biology.
+> reports for our eight genes — 355 gene-specific records, every query
+> digest-recorded, after throwing out 287 whole-chromosome events that a
+> naive pipeline would have counted. Look at TAFAZZIN: 100 pathogenic
+> records, top condition 3-Methylglutaconic aciduria type 2 — that *is*
+> Barth syndrome. The genetics independently agrees with the disease
+> biology, and four of the eight genes honestly show zero.
 >
 > The AWS HealthOmics lane is built to hold exactly this subset as an
 > annotation store — the ingest pipeline is written and one command away —
@@ -112,6 +114,13 @@ DO: click **RE-VERIFY THE ROOT**; after the pass, click
 > Patients get trials worth asking about, providers get receipts, payers and
 > policymakers get audit trails. Same table, same evidence, four audiences.
 
+## Cutting to a shorter cap
+
+If the submission caps at ~2:30: drop Beat 3 (cell evidence — the deck slide
+covers it), merge Beat 4 into Beat 5 ("every claim carries a receipt — and
+here is what happens when someone edits one"), and trim Act 1 to its first
+and last paragraphs. That lands near 2:20.
+
 ## Fallbacks
 
 - Conference wifi: the Known Case path is fully offline — skip the live
@@ -145,3 +154,4 @@ Open `http://127.0.0.1:8787/`.
 - Root proof: `../output/playwright/04-prove-root-pass.png`
 - Tamper failure: `../output/playwright/05-tamper-root-fail.png`
 - HealthOmics tab: `../output/playwright/07-healthomics-tab.png`
+- Disease Search: `../output/playwright/08-disease-search.png`

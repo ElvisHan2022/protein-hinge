@@ -16,7 +16,7 @@
   "rows": [
     {
       "disease": "Barth syndrome",
-      "target_symbol": "TAZ",
+      "target_symbol": "TAFAZZIN (TAZ)",
       "association_score": 0.89,
       "drug_program": "elamipretide",
       "company": "Stealth BioTherapeutics",

@@ -17,7 +17,8 @@ story: top of `README.md`. Pitch arc: `docs/PITCH_DECK.md`.
 - Branch `healthomics-lane`, ahead of `main`. Do not push without asking.
 - Dashboard works offline: committed `site/biocustody.db`, prescripted Barth
   syndrome case, live ClinicalTrials.gov probe.
-- HealthOmics lane: ClinVar subset built (642 records, digests recorded);
+- HealthOmics lane: ClinVar subset built (355 gene-specific records after
+  CNV filtering, digests recorded);
   store/import pipeline written; **nothing created in AWS yet** — blocked on
   `aws configure` with hackathon IAM user `elvish.an`, region `us-east-1`.
   Until then the dashboard's HealthOmics tab abstains, by design.

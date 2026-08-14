@@ -37,6 +37,19 @@ GENES = ["TAFAZZIN", "CRLS1", "PGS1", "PTPMT1", "HADHA", "PHB", "PHB2", "CHCHD3"
 
 PATHOGENIC = '("clinsig pathogenic"[Properties] OR "clinsig likely pathogenic"[Properties])'
 
+# Large CNVs (whole-arm copy-number events) span hundreds of genes and would
+# inflate per-gene counts with variants that are not gene-specific. A record
+# is kept only if it is not a copy-number object and involves few genes.
+MAX_GENES_PER_VARIANT = 3
+CNV_OBJ_TYPES = ("copy number loss", "copy number gain")
+
+
+def gene_specific(rec: dict) -> bool:
+    obj_type = (rec.get("obj_type") or "").lower()
+    if any(t in obj_type for t in CNV_OBJ_TYPES):
+        return False
+    return len(rec.get("genes") or []) <= MAX_GENES_PER_VARIANT
+
 
 def fetch(url: str) -> bytes:
     req = urllib.request.Request(url, headers={"User-Agent": "protein-hinge-demo/0.1"})
@@ -72,6 +85,8 @@ def main() -> int:
         result = json.loads(raw)["esearchresult"]
         ids = result.get("idlist", [])
         total = int(result.get("count", "0"))
+        kept = 0
+        excluded_cnv = 0
         conditions: dict[str, int] = {}
 
         for i in range(0, len(ids), 100):
@@ -89,6 +104,10 @@ def main() -> int:
                 rec = summaries.get(uid)
                 if not rec:
                     continue
+                if not gene_specific(rec):
+                    excluded_cnv += 1
+                    continue
+                kept += 1
                 classification = (rec.get("germline_classification") or {})
                 traits = []
                 for ts in (rec.get("germline_classification") or {}).get("trait_set", []):
@@ -108,8 +127,10 @@ def main() -> int:
 
         top = sorted(conditions.items(), key=lambda kv: -kv[1])[:5]
         per_gene[gene] = {
-            "pathogenic_or_likely": total,
+            "pathogenic_or_likely": kept,
             "records_fetched": len(ids),
+            "clinvar_total_before_filter": total,
+            "excluded_large_cnv": excluded_cnv,
             "top_conditions": [{"condition": c, "records": n} for c, n in top],
         }
         time.sleep(0.4)
@@ -132,8 +153,10 @@ def main() -> int:
         "claim_boundary": "PATHOGENIC_VARIANT_REPORTED",
         "note": ("Counts are ClinVar submitter classifications (pathogenic or likely "
                  "pathogenic), fetched live from NCBI and re-fetchable from the recorded "
-                 "query URLs. They are genetic association evidence, not measured rescue "
-                 "and not diagnosis."),
+                 "query URLs. Large copy-number events spanning many genes are excluded, "
+                 "so each count reflects gene-specific variants only; the excluded totals "
+                 "are recorded per gene. This is genetic association evidence, not "
+                 "measured rescue and not diagnosis."),
         "tsv_sha256": tsv_digest,
         "genes": [{"gene": g, **per_gene[g]} for g in GENES],
     }

@@ -60,7 +60,7 @@ wired, and we say so.
 
 ## Slide 5 — Demo: Disease Search
 
-![Claim receipt](../output/playwright/01-verify-claim-receipt.png)
+![Disease Search](../output/playwright/08-disease-search.png)
 
 - Input "Barth syndrome" → four graded rows.
 - Elamipretide fires `G004_ALREADY_TRIED` → **NOT_A_GAP**, with the three NCT
@@ -72,11 +72,13 @@ wired, and we say so.
 
 ![HealthOmics tab](../output/playwright/07-healthomics-tab.png)
 
-- 642 pathogenic-variant records pulled from ClinVar for the eight consensus
-  genes; every query URL and response digest recorded.
-- TAFAZZIN: 337 pathogenic records, top condition *3-Methylglutaconic aciduria
+- 355 gene-specific pathogenic-variant records pulled from ClinVar for the
+  eight consensus genes; every query URL and response digest recorded — and
+  287 whole-chromosome copy-number events that naive pipelines would count
+  were excluded, with the exclusions recorded per gene.
+- TAFAZZIN: 100 pathogenic records, top condition *3-Methylglutaconic aciduria
   type 2* — which **is** Barth syndrome. The genetics independently agrees
-  with the disease biology.
+  with the disease biology. Four of the eight genes honestly show zero.
 - The annotation-store pipeline (S3 + IAM + HealthOmics) is written and one
   command away; **no data generated in AWS yet** — and the dashboard probes
   the account live and abstains in writing rather than faking a green light.
@@ -113,6 +115,10 @@ stranger a receipt that verifies without trusting them.
   explicit, rendered distinction.
 - **Honest wiring:** what isn't integrated is drawn dashed and said out loud —
   Convoke, Athena SQL, EMA/PMDA coverage.
+- **We show our own negative results:** the cell-evidence benchmark's null
+  comparison is conservative — the known pair did not beat the shuffle null in
+  the small cached run — and the dashboard displays that rather than hiding
+  it. A system that only ever agrees with itself proves nothing.
 
 TxGNN can't tell you which predictions to distrust. Citeline can't show its
 receipts. We can.
