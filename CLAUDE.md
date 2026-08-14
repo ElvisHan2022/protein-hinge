@@ -18,10 +18,13 @@ story: top of `README.md`. Pitch arc: `docs/PITCH_DECK.md`.
 - Dashboard works offline: committed `site/biocustody.db`, prescripted Barth
   syndrome case, live ClinicalTrials.gov probe.
 - HealthOmics lane: ClinVar subset built (355 gene-specific records after
-  CNV filtering, digests recorded);
-  store/import pipeline written; **nothing created in AWS yet** — blocked on
-  `aws configure` with hackathon IAM user `elvish.an`, region `us-east-1`.
-  Until then the dashboard's HealthOmics tab abstains, by design.
+  CNV filtering, digests recorded) and **uploaded to the event's HealthOmics
+  S3 bucket**; our VEP run launched on the account's workflow
+  (`scripts/run_healthomics_workflow.py`). The event SCP denies the
+  deprecated annotation-store API — the live probe records that denial as a
+  receipt. Credentials: temporary event creds in gitignored `.env`
+  (plain `KEY=value`, no `$Env:`), they expire — refresh from the event
+  portal when AWS calls fail with ExpiredToken.
 - Convoke: listed, deliberately not wired. Leave it that way unless a token
   and documented query surface both exist.
 

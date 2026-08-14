@@ -273,11 +273,14 @@
           patients? The subset is loaded into an AWS HealthOmics annotation
           store, and this view shows exactly what is wired and what is not.</p>
       </div>
-      <p class="note">HealthOmics stores what we load into it — a ClinVar subset
-        for the eight genes, fetched from recorded query URLs with response
-        digests. Classifications are submitter assertions:
+      <p class="note">The ClinVar subset (fetched from recorded query URLs with
+        response digests) is uploaded to the event's HealthOmics S3 bucket, and
+        our own VEP annotation run executes on the account's HealthOmics
+        workflow. Classifications are submitter assertions:
         <b>pathogenic-variant-reported evidence, not measured rescue and not
-        diagnosis</b>. Athena SQL over the store is listed, not wired.</p>
+        diagnosis</b>. The event account denies the deprecated annotation-store
+        API by service control policy — the probe below records that denial as
+        a receipt instead of hiding it.</p>
       <div class="grid2">
         <div class="card"><h3>AWS preflight</h3><div id="omicsPreflight"></div></div>
         <div class="card"><h3>Annotation store, live</h3>
@@ -765,26 +768,41 @@ async function initOmics(){
     $('#omicsEvidence').innerHTML = `<p class="dim">ClinVar evidence not generated yet.
       Run <code>py scripts/build_clinvar_evidence.py</code>.</p>`;
   }
+  try{
+    const wf = await (await fetch('assets/healthomics_workflow.json')).json();
+    const ups = Object.entries(wf.evidence_uploads||{}).map(([name, u])=>({
+      'Artifact': name, 'S3 URI': u.s3_uri, 'sha256': (u.sha256||'').slice(0,19)+'…',
+    }));
+    $('#omicsPreflight').innerHTML +=
+      '<h3 style="margin-top:12px">Evidence in AWS S3</h3>' + tbl(ups) +
+      (wf.run ? `<p class="callout" style="margin-top:8px">Our VEP annotation run
+        <b>${esc(wf.run.name)}</b> was started on the account's
+        <code>${esc(wf.run.workflow)}</code> HealthOmics workflow
+        (run id ${esc(wf.run.id)}).</p>` : '');
+  }catch(e){ /* workflow receipt not generated yet */ }
   $('#omicsProbe').onclick = async ()=>{
     $('#omicsLive').innerHTML = '<p class="dim">probing…</p>';
     try{
       const live = await (await fetch('/api/healthomics')).json();
-      const stores = (live.annotation_stores||[]);
-      const jobs = (live.import_jobs||[]);
+      const stores = (live.stores||[]);
+      const wfs = (live.workflows||[]);
+      const runs = (live.runs||[]);
       const abst = (live.abstentions||[]);
       $('#omicsLive').innerHTML =
         `<table>
           <tr><td class="k">status</td><td>${esc(live.status)}</td></tr>
-          <tr><td class="k">identity</td><td>${live.identity?esc(live.identity.arn_suffix)+(live.identity.matches_expected?' (matches elvish.an)':' (does not match elvish.an)'):'not resolved'}</td></tr>
+          <tr><td class="k">identity</td><td>${live.identity?esc(live.identity.arn_suffix):'not resolved'}</td></tr>
         </table>` +
         (stores.length ? '<h3 style="margin-top:10px">Stores</h3>'+tbl(stores.map(s=>({
-            'Name': s.name, 'Status': s.status, 'Format': s.format,
-            'Size': s.size_bytes==null?'':s.size_bytes,
-          }))) : '<p class="dim">No annotation stores visible.</p>') +
-        (jobs.length ? '<h3 style="margin-top:10px">Import jobs</h3>'+tbl(jobs.map(j=>({
-            'Job': j.id, 'Store': j.destination, 'Status': j.status, 'Created': j.created,
+            'Kind': s.kind, 'Name': s.name,
+          }))) : '<p class="dim">No stores visible.</p>') +
+        (wfs.length ? '<h3 style="margin-top:10px">Workflows</h3>'+tbl(wfs.map(w=>({
+            'Workflow': w.name, 'Id': w.id,
           }))) : '') +
-        (abst.length ? '<h3 style="margin-top:10px">Abstentions</h3>'+tbl(abst.map(a=>({
+        (runs.length ? '<h3 style="margin-top:10px">Runs</h3>'+tbl(runs.map(r=>({
+            'Run': r.name, 'Status': r.status, 'Started by us': r.ours ? 'yes' : '',
+          }))) : '') +
+        (abst.length ? '<h3 style="margin-top:10px">Abstentions, recorded</h3>'+tbl(abst.map(a=>({
             'Stage': a.stage, 'Reason': a.reason,
           }))) : '');
     }catch(e){

@@ -22,6 +22,17 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SITE = os.path.join(os.path.dirname(HERE), "site")
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
 
+# Local-only credentials for the live AWS probe. Values never leave this
+# process; nothing from .env is ever written to a response.
+_ENV_FILE = os.path.join(os.path.dirname(HERE), ".env")
+if os.path.exists(_ENV_FILE):
+    with open(_ENV_FILE, encoding="utf-8-sig", errors="ignore") as _f:
+        for _line in _f:
+            _line = _line.strip()
+            if _line and not _line.startswith("#") and "=" in _line:
+                _k, _v = _line.split("=", 1)
+                os.environ.setdefault(_k.strip(), _v.strip().strip('"').strip("'"))
+
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *a, **kw):
@@ -105,18 +116,24 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.send_json(payload)
 
     def serve_healthomics_api(self):
-        """Live AWS HealthOmics store state, redacted. Abstains without creds."""
+        """Live AWS HealthOmics state, redacted. Abstains without creds.
+
+        The event account denies the deprecated annotation-store APIs by
+        service control policy; that denial is reported as a receipt. The
+        allowed surface — reference/sequence stores, workflows, runs — is
+        listed live, with our own runs flagged.
+        """
         payload = {
-            "schema": "protein_hinge.healthomics.live.v1",
+            "schema": "protein_hinge.healthomics.live.v2",
             "mode": "live_healthomics_probe",
-            "store_name": "protein_hinge_clinvar",
-            "expected_username": "elvish.an",
             "identity": None,
-            "annotation_stores": [],
-            "import_jobs": [],
+            "stores": [],
+            "workflows": [],
+            "runs": [],
             "abstentions": [],
-            "note": ("Live probe lists annotation stores and import jobs only. "
-                     "Athena SQL over the store is listed, not wired."),
+            "note": ("Live listing of the HealthOmics workflow surface. "
+                     "Annotation stores are SCP-denied in the event account; "
+                     "the denial is recorded below, not hidden."),
         }
         try:
             import boto3
@@ -131,7 +148,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if session.get_credentials() is None:
             payload["abstentions"].append({
                 "stage": "credentials",
-                "reason": "No AWS credentials found. Run `aws configure` as elvish.an.",
+                "reason": "No AWS credentials found. Put event credentials in .env.",
             })
             payload["status"] = "abstain_missing_credentials"
             self.send_json(payload)
@@ -142,19 +159,28 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             payload["identity"] = {
                 "account": ident.get("Account"),
                 "arn_suffix": arn[-32:],
-                "matches_expected": "elvish.an" in arn,
             }
             omics = session.client("omics")
-            for s in omics.list_annotation_stores(maxResults=50).get("annotationStores", []):
-                payload["annotation_stores"].append({
-                    "name": s.get("name"), "status": s.get("status"),
-                    "format": s.get("storeFormat"), "size_bytes": s.get("storeSizeBytes"),
+            for s in omics.list_reference_stores(maxResults=10).get("referenceStores", []):
+                payload["stores"].append({"kind": "reference", "name": s.get("name")})
+            for s in omics.list_sequence_stores(maxResults=10).get("sequenceStores", []):
+                payload["stores"].append({"kind": "sequence", "name": s.get("name")})
+            for w in omics.list_workflows(type="PRIVATE", maxResults=10).get("items", []):
+                payload["workflows"].append({"name": w.get("name"), "id": w.get("id")})
+            for r in omics.list_runs(maxResults=20).get("items", []):
+                name = r.get("name") or ""
+                payload["runs"].append({
+                    "name": name, "status": r.get("status"),
+                    "ours": name.startswith("protein-hinge-"),
                 })
-            for j in omics.list_annotation_import_jobs(maxResults=20).get("annotationImportJobs", []):
-                payload["import_jobs"].append({
-                    "id": j.get("id"), "status": j.get("status"),
-                    "destination": j.get("destinationName"),
-                    "created": str(j.get("creationTime", "")),
+            try:
+                omics.list_annotation_stores(maxResults=1)
+            except Exception as exc:
+                payload["abstentions"].append({
+                    "stage": "annotation_stores",
+                    "reason": ("Denied by the event's service control policy "
+                               "(deprecated API surface). Recorded as a receipt: "
+                               f"{str(exc)[:160]}"),
                 })
             payload["status"] = "ok"
         except Exception as exc:

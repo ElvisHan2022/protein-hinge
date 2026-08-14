@@ -101,23 +101,31 @@ def main() -> int:
 
     try:
         omics = session.client("omics")
-        stores = omics.list_annotation_stores(maxResults=50).get("annotationStores", [])
-        for s in stores:
-            payload["annotation_stores"].append({
-                "name": s.get("name"),
-                "status": s.get("status"),
-                "format": s.get("storeFormat"),
-                "size_bytes": s.get("storeSizeBytes"),
+        payload["stores"] = []
+        payload["workflows"] = []
+        payload["runs"] = []
+        for s in omics.list_reference_stores(maxResults=10).get("referenceStores", []):
+            payload["stores"].append({"kind": "reference", "name": s.get("name")})
+        for s in omics.list_sequence_stores(maxResults=10).get("sequenceStores", []):
+            payload["stores"].append({"kind": "sequence", "name": s.get("name")})
+        for w in omics.list_workflows(type="PRIVATE", maxResults=10).get("items", []):
+            payload["workflows"].append(w.get("name"))
+        for r in omics.list_runs(maxResults=20).get("items", []):
+            name = r.get("name") or ""
+            payload["runs"].append({
+                "name": name, "status": r.get("status"),
+                "ours": name.startswith("protein-hinge-"),
             })
-        ours = [s for s in stores if s.get("name") == STORE_NAME]
-        if not ours:
+        try:
+            omics.list_annotation_stores(maxResults=1)
+        except Exception as exc:
             payload["abstentions"].append({
-                "stage": "annotation_store",
-                "reason": (f"Store {STORE_NAME} not found. "
-                           "Run scripts/setup_healthomics.py to create and load it."),
+                "stage": "annotation_stores",
+                "reason": ("Denied by the event's service control policy "
+                           "(deprecated API surface); the workflow lane is the "
+                           f"sanctioned path. Receipt: {str(exc)[:150]}"),
             })
-            return finish("store_missing")
-        return finish("ok" if ours[0].get("status") == "ACTIVE" else "store_not_active")
+        return finish("ok" if payload["workflows"] else "workflow_surface_empty")
     except Exception as exc:
         payload["abstentions"].append({"stage": "omics", "reason": f"{type(exc).__name__}: {exc}"})
         return finish("omics_unreachable")

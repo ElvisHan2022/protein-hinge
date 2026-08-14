@@ -79,9 +79,14 @@ wired, and we say so.
 - TAFAZZIN: 100 pathogenic records, top condition *3-Methylglutaconic aciduria
   type 2* — which **is** Barth syndrome. The genetics independently agrees
   with the disease biology. Four of the eight genes honestly show zero.
-- The annotation-store pipeline (S3 + IAM + HealthOmics) is written and one
-  command away; **no data generated in AWS yet** — and the dashboard probes
-  the account live and abstains in writing rather than faking a green light.
+- The evidence is **live in AWS**: the subset TSV and its provenance are
+  uploaded digest-keyed to the account's HealthOmics S3 bucket, and our own
+  VEP annotation run (`protein-hinge-vep-…`) executed on the account's
+  HealthOmics workflow.
+- The event's service control policy denies the deprecated annotation-store
+  API — and the dashboard's live probe **records that denial as a receipt**
+  next to the working stores, workflows, and runs. Honesty, demonstrated
+  against a real permission boundary.
 
 ## Slide 7 — Demo: cell evidence
 

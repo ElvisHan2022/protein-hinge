@@ -1,0 +1,37 @@
+{
+  "account": "058514355412",
+  "evidence_uploads": {
+    "clinvar_provenance.json": {
+      "s3_uri": "s3://omics-output-us-east-1-058514355412/protein-hinge/clinvar/a684fe4a5a46dd0e/clinvar_provenance.json",
+      "sha256": "a684fe4a5a46dd0ed0a3ef65d4bb5d3059495f2068b05aac3e61af0f710e3f9e"
+    },
+    "clinvar_subset.tsv": {
+      "s3_uri": "s3://omics-output-us-east-1-058514355412/protein-hinge/clinvar/6bdf8a0e2478c29a/clinvar_subset.tsv",
+      "sha256": "6bdf8a0e2478c29a29fcb757609bef149bfda8af4a5f3886425c0da48d7f9dc3"
+    }
+  },
+  "region": "us-east-1",
+  "run": {
+    "id": "5903831",
+    "name": "protein-hinge-vep-20260814-010338",
+    "parameters_cloned_from": "vep-auto-run-20260813-175930",
+    "status": "PENDING",
+    "workflow": "vep-annotation-workflow"
+  },
+  "schema": "protein_hinge.healthomics_workflow.v1",
+  "started_at": "2026-08-14T01:03:38+00:00",
+  "steps": [
+    {
+      "detail": "s3://omics-output-us-east-1-058514355412/protein-hinge/clinvar/6bdf8a0e2478c29a/clinvar_subset.tsv",
+      "step": "upload"
+    },
+    {
+      "detail": "s3://omics-output-us-east-1-058514355412/protein-hinge/clinvar/a684fe4a5a46dd0e/clinvar_provenance.json",
+      "step": "upload"
+    },
+    {
+      "detail": "5903831 (PENDING)",
+      "step": "start_run"
+    }
+  ]
+}

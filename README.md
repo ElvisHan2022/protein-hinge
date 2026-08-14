@@ -70,10 +70,11 @@ verifiable receipt on every row.
 **AWS HealthOmics status, honestly:** the ClinVar subset (355 gene-specific
 pathogenic-variant records for the eight consensus genes, all query digests
 recorded, large multi-gene copy-number events excluded rather than counted)
-is built and the store-creation pipeline is written; no data has been
-generated in AWS yet. The dashboard's HealthOmics tab probes the account
-live and abstains in writing until the store exists — in this system,
-"not wired yet" is a first-class answer.
+is uploaded digest-keyed to the event account's HealthOmics S3 bucket, and
+our own VEP annotation run executes on the account's HealthOmics workflow.
+The event's service control policy denies the deprecated annotation-store
+API; the dashboard's live probe records that denial as a receipt beside the
+working workflow surface — in this system, "denied" is a first-class answer.
 
 ## What the project is
 

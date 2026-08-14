@@ -64,15 +64,13 @@ DO: open the HealthOmics tab, point to the evidence table, click
 > Barth syndrome. The genetics independently agrees with the disease
 > biology, and four of the eight genes honestly show zero.
 >
-> The AWS HealthOmics lane is built to hold exactly this subset as an
-> annotation store — the ingest pipeline is written and one command away —
-> but no data has been generated in AWS yet, and the dashboard says so
-> itself: watch it probe our account and abstain, in writing, instead of
-> faking a green light. In this system, "not wired yet" is a first-class
-> answer.
-
-(If the store is live by recording time, replace the last two sentences with:
-"and there's the store — ACTIVE, import COMPLETED, under our account.")
+> And this evidence lives in AWS: the subset and its provenance are uploaded
+> digest-keyed to the account's HealthOmics S3 bucket, and we launched our
+> own VEP annotation run on the account's HealthOmics workflow — watch the
+> live probe list it. One more thing: the event account denies the
+> deprecated annotation-store API by service control policy, and instead of
+> hiding that, the probe records the denial as a receipt, right under the
+> working runs. In this system, even "denied" is a first-class answer.
 
 ### Beat 3 — Cell Evidence (~25s) — `#figure`
 
