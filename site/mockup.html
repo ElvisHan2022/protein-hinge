@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Protein Hinge — design mockup</title>
+<style>
+  /* ---- Design tokens: Abridge calm x Doximity cards, one clinical green ---- */
+  :root{
+    --bg:#F6F4EF;            /* warm clinical cream */
+    --card:#FFFFFF;
+    --ink:#1E2A25;
+    --ink-2:#54635C;
+    --ink-3:#8A968F;
+    --line:#E6E2D8;
+    --accent:#0B6B53;        /* deep clinical green */
+    --accent-tint:#E9F2EE;
+    --accent-line:#BFD8CF;
+    --amber:#8F6614;         /* abstention */
+    --amber-tint:#F7EFDC;
+    --amber-line:#E4D2A8;
+    --red:#A33D3D;           /* tamper / denial */
+    --red-tint:#F7E9E9;
+    --red-line:#E0BFBF;
+    --mono:ui-monospace,'Cascadia Code',Consolas,monospace;
+    --serif:'Charter','Iowan Old Style','Palatino Linotype',Georgia,serif;
+    --sans:-apple-system,'Segoe UI',system-ui,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--sans);}
+  a{color:var(--accent);text-decoration:none}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+
+  /* ---- The accountability frame: verification banner is the first pixel ---- */
+  .trustbar{background:var(--ink);color:#EDF3F0;font-size:13px}
+  .trustbar .wrap{display:flex;align-items:center;gap:14px;padding:9px 28px;flex-wrap:wrap}
+  .trustbar .dot{width:8px;height:8px;border-radius:50%;background:#5CC79E;flex:none}
+  .trustbar b{font-weight:600}
+  .trustbar .hash{font-family:var(--mono);font-size:11.5px;color:#9DBDB0;letter-spacing:.02em}
+  .trustbar .go{margin-left:auto;color:#8FD8BA;font-weight:600}
+
+  header.site{padding:34px 0 6px}
+  .brandrow{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  h1.brand{font:700 30px/1.1 var(--serif);letter-spacing:-.01em}
+  .brand small{font:400 15px var(--sans);color:var(--ink-2)}
+  nav.crumbs{display:flex;gap:22px;margin-top:20px;border-bottom:1px solid var(--line);font-size:14px}
+  nav.crumbs span{padding:9px 2px;color:var(--ink-2)}
+  nav.crumbs span.on{color:var(--ink);font-weight:600;border-bottom:2px solid var(--accent)}
+
+  /* ---- Search hero ---- */
+  .hero{padding:30px 0 6px}
+  .hero h2{font:650 26px/1.25 var(--serif);max-width:640px}
+  .hero p.sub{color:var(--ink-2);margin-top:8px;max-width:600px}
+  .searchrow{display:flex;gap:10px;margin-top:20px;max-width:640px}
+  .searchrow input{flex:1;border:1px solid var(--line);border-radius:12px;background:var(--card);
+    padding:13px 16px;font:15px var(--sans);color:var(--ink);box-shadow:0 1px 2px rgba(30,42,37,.05)}
+  .btn{border:0;border-radius:12px;padding:13px 22px;font:600 14.5px var(--sans);cursor:pointer}
+  .btn.primary{background:var(--accent);color:#fff}
+  .btn.ghost{background:var(--card);color:var(--accent);border:1px solid var(--accent-line)}
+
+  /* ---- Stat tiles ---- */
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:26px 0 8px}
+  .tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .tile b{display:block;font:700 26px/1.1 var(--serif)}
+  .tile span{color:var(--ink-2);font-size:13px}
+  .tile.amber{border-color:var(--amber-line);background:var(--amber-tint)}
+  .tile.amber b{color:var(--amber)}
+
+  /* ---- Layout ---- */
+  .cols{display:grid;grid-template-columns:1fr 380px;gap:20px;align-items:start;margin:18px 0 26px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .card>.hd{padding:15px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+  .card>.hd h3{font:650 16px var(--serif)}
+  .card>.hd .note{margin-left:auto;font-size:12px;color:var(--ink-3)}
+  .card .bd{padding:6px 20px 16px}
+
+  /* ---- Result rows ---- */
+  .row{display:grid;grid-template-columns:1fr auto;gap:4px 14px;padding:15px 0;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:0}
+  .row .pair{font-weight:600;font-size:15.5px}
+  .row .pair em{font-style:normal;color:var(--ink-2);font-weight:400}
+  .row .meta{color:var(--ink-2);font-size:13px;margin-top:2px}
+  .pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 12px;
+    font:600 12.5px var(--sans);white-space:nowrap;align-self:start}
+  .pill.taken{background:var(--accent-tint);color:var(--accent);border:1px solid var(--accent-line)}
+  .pill.abst{background:var(--amber-tint);color:var(--amber);border:1px solid var(--amber-line)}
+  .pill svg{flex:none}
+  .chips{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;
+    padding:3px 9px;font-size:12px;color:var(--ink-2);background:#FBFAF7}
+  .chip .fp{font-family:var(--mono);font-size:10.5px;color:var(--accent)}
+  .chip.rule{color:var(--ink-2)}
+
+  /* ---- Receipt rail: the custody chain as a stepper ---- */
+  .rail .bd{padding:18px 20px}
+  .stepper{position:relative;margin:6px 0 4px;padding-left:26px}
+  .stepper::before{content:'';position:absolute;left:8px;top:10px;bottom:14px;width:2px;
+    background:linear-gradient(var(--accent-line),var(--accent))}
+  .step{position:relative;padding:0 0 18px}
+  .step::before{content:'';position:absolute;left:-24px;top:5px;width:12px;height:12px;border-radius:50%;
+    background:var(--card);border:3px solid var(--accent)}
+  .step.src::before{border-color:var(--accent-line)}
+  .step h4{font:600 13.5px var(--sans)}
+  .step .fp{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);word-break:break-all}
+  .tag{display:inline-block;border-radius:6px;padding:1px 7px;font:600 10.5px var(--sans);
+    letter-spacing:.04em;margin-left:6px;vertical-align:1px}
+  .tag.rec{background:var(--accent-tint);color:var(--accent)}
+  .tag.com{background:#EEECE5;color:var(--ink-2)}
+  .verifybox{margin-top:8px;background:var(--accent-tint);border:1px solid var(--accent-line);
+    border-radius:12px;padding:13px 15px;font-size:13.5px}
+  .verifybox b{color:var(--accent)}
+
+  /* ---- Gene bars (single-hue magnitude, direct labels, honest zeros) ---- */
+  .genes .g{display:grid;grid-template-columns:86px 1fr 44px;align-items:center;gap:10px;padding:5px 0}
+  .genes .nm{font:600 12.5px var(--mono)}
+  .genes .track{height:14px;border-radius:4px;background:#EFEDE6;overflow:hidden}
+  .genes .fill{height:100%;border-radius:4px 3px 3px 4px;background:var(--accent)}
+  .genes .v{font:600 12.5px var(--sans);color:var(--ink-2);text-align:right}
+  .genes .zero .v{color:var(--ink-3)}
+  .genes .zero .nm{color:var(--ink-3)}
+
+  /* ---- Ledger strip ---- */
+  .ledger{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:0 0 30px}
+  .ledger .card{padding:15px 18px}
+  .ledger h4{font:650 14px var(--serif);margin-bottom:6px}
+  .ledger p{font-size:13px;color:var(--ink-2)}
+  .ledger .ok{color:var(--accent);font-weight:600}
+  .ledger .deny{color:var(--red);font-weight:600}
+  .ledger .fp{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);word-break:break-all}
+
+  footer{border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink-2);font-size:13px}
+  footer b{color:var(--ink)}
+  .mocknote{background:var(--amber-tint);border:1px solid var(--amber-line);color:var(--amber);
+    border-radius:10px;padding:8px 14px;font-size:12.5px;margin:14px 0 0;display:inline-block}
+  @media (max-width:900px){.cols{grid-template-columns:1fr}.tiles{grid-template-columns:repeat(2,1fr)}
+    .ledger{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- Accountability is the frame: first thing on every screen -->
+<div class="trustbar">
+  <div class="wrap">
+    <span class="dot"></span>
+    <span><b>62 / 62 evidence records verified</b> — Merkle root recomputed in your browser, not on our server</span>
+    <span class="hash">sha256:d98a2972e57a8e9c…d4d589a4</span>
+    <span class="go">Run the tamper test →</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="site">
+    <div class="brandrow">
+      <h1 class="brand">Protein Hinge</h1>
+      <small>rare-disease repurposing, with receipts</small>
+    </div>
+    <nav class="crumbs">
+      <span class="on">Find a gap</span><span>Genetic evidence</span><span>Cell evidence</span>
+      <span>Evidence receipts</span><span>Audit &amp; tamper test</span>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h2>Which existing drugs should already have been tried for this disease?</h2>
+    <p class="sub">Type a rare disease. Every verdict below is decided by readable rules — never a model —
+      and carries a receipt you can verify yourself.</p>
+    <div class="searchrow">
+      <input value="Barth syndrome">
+      <button class="btn primary">Find the gap</button>
+      <button class="btn ghost">Check live trials</button>
+    </div>
+    <span class="mocknote">Design mockup — static page, real data, no source code changed</span>
+  </section>
+
+  <section class="tiles">
+    <div class="tile"><b>4</b><span>pairings evaluated</span></div>
+    <div class="tile"><b>1</b><span>already-tried match, with trial IDs</span></div>
+    <div class="tile amber"><b>0</b><span>abstentions — shown at equal weight, always</span></div>
+    <div class="tile"><b>355</b><span>gene-specific pathogenic variant records</span></div>
+  </section>
+
+  <div class="cols">
+    <!-- Results -->
+    <div class="card">
+      <div class="hd"><h3>Disease–program verdicts</h3><span class="note">rules G000–G008 · code decides, never the model</span></div>
+      <div class="bd">
+        <div class="row">
+          <div>
+            <div class="pair">Elamipretide <em>× Barth syndrome</em></div>
+            <div class="meta">Target TAFAZZIN (TAZ) · Stealth BioTherapeutics · Approved</div>
+          </div>
+          <span class="pill taken">
+            <svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 6.5 5 9l5-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+            Already tried — not a new gap</span>
+          <div class="chips">
+            <span class="chip rule">Rule G004_ALREADY_TRIED</span>
+            <span class="chip">NCT03098797 · NCT07531251 · NCT04689360</span>
+            <span class="chip">Receipt <span class="fp">✓ ct_barth_syndrome</span></span>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <div class="pair">Elamipretide <em>× Primary mitochondrial myopathy</em></div>
+            <div class="meta">Mitochondrial disease program · Phase 3 — terminated 2020</div>
+          </div>
+          <span class="pill abst">◐ Not enough evidence</span>
+          <div class="chips"><span class="chip rule">Rule G001_NO_TARGET — no target above threshold supplied</span></div>
+        </div>
+        <div class="row">
+          <div>
+            <div class="pair">Elamipretide <em>× Leber's hereditary optic neuropathy</em></div>
+            <div class="meta">Mitochondrial disease program · Phase 2 — completed 2019</div>
+          </div>
+          <span class="pill abst">◐ Not enough evidence</span>
+          <div class="chips"><span class="chip rule">Rule G001_NO_TARGET</span></div>
+        </div>
+        <div class="row">
+          <div>
+            <div class="pair">Elamipretide <em>× Friedreich ataxia</em></div>
+            <div class="meta">Mitochondrial disease program · Phase 1/2 — completed 2024</div>
+          </div>
+          <span class="pill abst">◐ Not enough evidence</span>
+          <div class="chips"><span class="chip rule">Rule G001_NO_TARGET</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Receipt rail -->
+    <div class="card rail">
+      <div class="hd"><h3>The receipt, for row one</h3></div>
+      <div class="bd">
+        <div class="stepper">
+          <div class="step src">
+            <h4>ClinicalTrials.gov capture <span class="tag rec">RECOMPUTED</span></h4>
+            <div class="fp">fto/clinicaltrials_gov/ct_barth_syndrome</div>
+          </div>
+          <div class="step src">
+            <h4>openFDA label, elamipretide <span class="tag rec">RECOMPUTED</span></h4>
+            <div class="fp">fto/openfda_drug/openfda_label_elamipretide</div>
+          </div>
+          <div class="step src">
+            <h4>Consensus axis claim <span class="tag com">COMMITTED</span></h4>
+            <div class="fp">phase_1_axis_claim</div>
+          </div>
+          <div class="step">
+            <h4>One Merkle root over every lane</h4>
+            <div class="fp">sha256:d98a2972e57a8e9c2f3111e224950d4ae74c65a6cfc18d064eb07014d4d589a4</div>
+          </div>
+        </div>
+        <div class="verifybox">
+          <b>Verify it yourself.</b> Your browser re-hashes all 62 records and rebuilds this
+          root locally. Change one byte of evidence — ours or anyone's — and the root moves.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <!-- Genetic evidence -->
+    <div class="card genes">
+      <div class="hd"><h3>Patient genetics agree</h3>
+        <span class="note">ClinVar pathogenic records per gene · CNVs excluded · zeros shown honestly</span></div>
+      <div class="bd">
+        <div class="g"><span class="nm">HADHA</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="v">251</span></div>
+        <div class="g"><span class="nm">TAFAZZIN</span><div class="track"><div class="fill" style="width:39.8%"></div></div><span class="v">100</span></div>
+        <div class="g"><span class="nm">CRLS1</span><div class="track"><div class="fill" style="width:1.2%"></div></div><span class="v">3</span></div>
+        <div class="g"><span class="nm">PTPMT1</span><div class="track"><div class="fill" style="width:0.4%"></div></div><span class="v">1</span></div>
+        <div class="g zero"><span class="nm">PGS1</span><div class="track"></div><span class="v">0</span></div>
+        <div class="g zero"><span class="nm">PHB</span><div class="track"></div><span class="v">0</span></div>
+        <div class="g zero"><span class="nm">PHB2</span><div class="track"></div><span class="v">0</span></div>
+        <div class="g zero"><span class="nm">CHCHD3</span><div class="track"></div><span class="v">0</span></div>
+        <p style="font-size:12.5px;color:var(--ink-2);margin-top:10px">TAFAZZIN's top reported condition is
+          <b>3-methylglutaconic aciduria type 2 — Barth syndrome itself.</b> 287 multi-gene copy-number
+          events a naive pipeline would count were excluded, and the exclusions are receipted.</p>
+      </div>
+    </div>
+
+    <!-- Abstention ledger -->
+    <div class="card">
+      <div class="hd"><h3>What we can't say — same volume as results</h3></div>
+      <div class="bd">
+        <div class="row">
+          <div><div class="pair">Convoke <em>industry program catalog</em></div>
+          <div class="meta">No verifiable query surface — a source a third party can't re-check is inadmissible.</div></div>
+          <span class="pill abst">◐ Listed, not wired</span>
+        </div>
+        <div class="row">
+          <div><div class="pair">HealthOmics annotation store</div>
+          <div class="meta">Denied by the event account's service control policy. The denial itself is on file as a receipt.</div></div>
+          <span class="pill abst">◐ Denied — receipted</span>
+        </div>
+        <div class="row">
+          <div><div class="pair">Europe &amp; Japan drug registries</div>
+          <div class="meta">Captured as pinned pages; not incorporated as evidence, and never implied.</div></div>
+          <span class="pill abst">◐ Future work</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AWS ledger strip -->
+  <section class="ledger">
+    <div class="card">
+      <h4>Evidence in AWS S3</h4>
+      <p><span class="ok">✓ Uploaded, digest-keyed</span> — ClinVar subset + provenance</p>
+      <p class="fp">s3://omics-output-us-east-1-…/protein-hinge/clinvar/6bdf8a0e…</p>
+    </div>
+    <div class="card">
+      <h4>AWS HealthOmics run</h4>
+      <p><span class="ok">✓ COMPLETED</span> — our VEP annotation run on the account workflow</p>
+      <p class="fp">protein-hinge-vep-20260814-010338 · run 5903831</p>
+    </div>
+    <div class="card">
+      <h4>Live account probe</h4>
+      <p><span class="deny">⊘ Annotation-store API denied by SCP</span> — recorded, not hidden</p>
+      <p class="fp">stores · workflows · runs listed live, ours flagged</p>
+    </div>
+  </section>
+
+  <footer>
+    The strongest claim this system permits itself is a <b>repurposing hypothesis</b> — enforced in code,
+    never treatment advice. We set up the date; we don't officiate the wedding.
+  </footer>
+</div>
+</body>
+</html>
