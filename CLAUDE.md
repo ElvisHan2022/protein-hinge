@@ -25,6 +25,11 @@ story: top of `README.md`. Pitch arc: `docs/PITCH_DECK.md`.
   receipt. Credentials: temporary event creds in gitignored `.env`
   (plain `KEY=value`, no `$Env:`), they expire — refresh from the event
   portal when AWS calls fail with ExpiredToken.
+- Sequence lane: `scripts/build_fasta_lane.py` writes `data/fasta/`
+  (8 canonical + 95 variant sequences, 260 abstained with named reasons)
+  and the `Sequences` dashboard tab. Feeds folding/synthesis work.
+- `db/serve.py` is threaded — a slow AWS probe must never freeze the
+  dashboard's own asset fetches (it did, before).
 - Convoke: listed, deliberately not wired. Leave it that way unless a token
   and documented query surface both exist.
 
@@ -37,6 +42,7 @@ node site/verify_test.js                  # headless verification replay
 py scripts/build_clinvar_evidence.py      # refresh ClinVar subset (no AWS)
 py scripts/healthomics_preflight.py       # redacted AWS/store status JSON
 py scripts/setup_healthomics.py           # bucket + role + store + import (needs creds)
+py scripts/build_fasta_lane.py            # UniProt + ClinVar variant FASTA (no AWS)
 ```
 
 Dashboard tabs deep-link: `#elvis` `#omics` `#figure` `#verify` `#prove` etc.

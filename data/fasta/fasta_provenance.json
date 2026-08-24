@@ -1,0 +1,174 @@
+{
+  "abstentions": [
+    {
+      "kind": "no_protein_notation",
+      "records": 116,
+      "stage": "variant_reconstruction"
+    },
+    {
+      "kind": "frameshift",
+      "records": 113,
+      "stage": "variant_reconstruction"
+    },
+    {
+      "kind": "residue_mismatch",
+      "records": 28,
+      "stage": "variant_reconstruction"
+    },
+    {
+      "kind": "position_out_of_range",
+      "records": 3,
+      "stage": "variant_reconstruction"
+    }
+  ],
+  "captured_at": "2026-08-24T21:46:12+00:00",
+  "claim_ceiling": "SEQUENCE_RECORD",
+  "clinvar_input": {
+    "path": "data/healthomics/clinvar_subset.tsv",
+    "sha256": "6bdf8a0e2478c29a29fcb757609bef149bfda8af4a5f3886425c0da48d7f9dc3"
+  },
+  "genes": [
+    {
+      "abstained": 78,
+      "accession": "Q16635",
+      "applied": 22,
+      "canonical_length": 262,
+      "gene": "TAFAZZIN",
+      "missense": 13,
+      "nonsense": 9
+    },
+    {
+      "abstained": 0,
+      "accession": "Q9UJA2",
+      "applied": 3,
+      "canonical_length": 301,
+      "gene": "CRLS1",
+      "missense": 3,
+      "nonsense": 0
+    },
+    {
+      "abstained": 0,
+      "accession": "Q32NB8",
+      "applied": 0,
+      "canonical_length": 556,
+      "gene": "PGS1",
+      "missense": 0,
+      "nonsense": 0
+    },
+    {
+      "abstained": 0,
+      "accession": "Q8WUK0",
+      "applied": 1,
+      "canonical_length": 201,
+      "gene": "PTPMT1",
+      "missense": 1,
+      "nonsense": 0
+    },
+    {
+      "abstained": 182,
+      "accession": "P40939",
+      "applied": 69,
+      "canonical_length": 763,
+      "gene": "HADHA",
+      "missense": 21,
+      "nonsense": 48
+    },
+    {
+      "abstained": 0,
+      "accession": "P35232",
+      "applied": 0,
+      "canonical_length": 272,
+      "gene": "PHB",
+      "missense": 0,
+      "nonsense": 0
+    },
+    {
+      "abstained": 0,
+      "accession": "Q99623",
+      "applied": 0,
+      "canonical_length": 299,
+      "gene": "PHB2",
+      "missense": 0,
+      "nonsense": 0
+    },
+    {
+      "abstained": 0,
+      "accession": "Q9NX63",
+      "applied": 0,
+      "canonical_length": 227,
+      "gene": "CHCHD3",
+      "missense": 0,
+      "nonsense": 0
+    }
+  ],
+  "outputs": {
+    "consensus_genes.fasta": {
+      "records": 8,
+      "sha256": "98f31f1ce20f4f919e6463b026ab321ee3617acaf3c1e1e02a555ae289ed4565"
+    },
+    "variants.fasta": {
+      "records": 95,
+      "sha256": "68a210de01e0f19ecc3f67e19a8c08b40ff783eda0f76bf0855a41bbf9ebfe8f"
+    }
+  },
+  "schema": "protein_hinge.fasta_lane.v1",
+  "source": "UniProtKB reviewed human entries + ClinVar subset held locally",
+  "uniprot_queries": [
+    {
+      "bytes": 1178,
+      "gene": "TAFAZZIN",
+      "queried_symbol": "TAFAZZIN",
+      "sha256": "171aa3813645f5d0cf77f9a5f2e30d022c68cbd91c1848dd7669a3f5f1f8ac9a",
+      "url": "https://rest.uniprot.org/uniprotkb/search?query=gene_exact%3ATAFAZZIN+AND+organism_id%3A9606+AND+reviewed%3Atrue&fields=accession%2Cid%2Cprotein_name%2Csequence&format=json&size=1"
+    },
+    {
+      "bytes": 968,
+      "gene": "CRLS1",
+      "queried_symbol": "CRLS1",
+      "sha256": "92d1f5dd8cd9878c1445d1c149661621729efba3c00a6be92345545c4d9d31ca",
+      "url": "https://rest.uniprot.org/uniprotkb/search?query=gene_exact%3ACRLS1+AND+organism_id%3A9606+AND+reviewed%3Atrue&fields=accession%2Cid%2Cprotein_name%2Csequence&format=json&size=1"
+    },
+    {
+      "bytes": 1332,
+      "gene": "PGS1",
+      "queried_symbol": "PGS1",
+      "sha256": "f6d5d95954f12f9a41134b92e4063d20bed303e4163d80cb23b9a732646f11cf",
+      "url": "https://rest.uniprot.org/uniprotkb/search?query=gene_exact%3APGS1+AND+organism_id%3A9606+AND+reviewed%3Atrue&fields=accession%2Cid%2Cprotein_name%2Csequence&format=json&size=1"
+    },
+    {
+      "bytes": 1221,
+      "gene": "PTPMT1",
+      "queried_symbol": "PTPMT1",
+      "sha256": "590db2b2f6028f3586822f97603573a6a360920a8576300f5ef3979a092cac50",
+      "url": "https://rest.uniprot.org/uniprotkb/search?query=gene_exact%3APTPMT1+AND+organism_id%3A9606+AND+reviewed%3Atrue&fields=accession%2Cid%2Cprotein_name%2Csequence&format=json&size=1"
+    },
+    {
+      "bytes": 2482,
+      "gene": "HADHA",
+      "queried_symbol": "HADHA",
+      "sha256": "17328e892470b3d761435b61ca9e729e17e9f11bd673eb8950db7da9f3e37371",
+      "url": "https://rest.uniprot.org/uniprotkb/search?query=gene_exact%3AHADHA+AND+organism_id%3A9606+AND+reviewed%3Atrue&fields=accession%2Cid%2Cprotein_name%2Csequence&format=json&size=1"
+    },
+    {
+      "bytes": 683,
+      "gene": "PHB",
+      "queried_symbol": "PHB",
+      "sha256": "d60607ec16e0776dbd121fe93636f752275240e2111618d13ec95db6bb2125b3",
+      "url": "https://rest.uniprot.org/uniprotkb/search?query=gene_exact%3APHB+AND+organism_id%3A9606+AND+reviewed%3Atrue&fields=accession%2Cid%2Cprotein_name%2Csequence&format=json&size=1"
+    },
+    {
+      "bytes": 855,
+      "gene": "PHB2",
+      "queried_symbol": "PHB2",
+      "sha256": "6878e8fa424849c59ab285edc03c8ff9892be31f21161fa4e5997e99e516eb7b",
+      "url": "https://rest.uniprot.org/uniprotkb/search?query=gene_exact%3APHB2+AND+organism_id%3A9606+AND+reviewed%3Atrue&fields=accession%2Cid%2Cprotein_name%2Csequence&format=json&size=1"
+    },
+    {
+      "bytes": 719,
+      "gene": "CHCHD3",
+      "queried_symbol": "CHCHD3",
+      "sha256": "b8d1a6a0a8ccb48d25da872a835b32c8182197b2c5ebbea5268d853480d988aa",
+      "url": "https://rest.uniprot.org/uniprotkb/search?query=gene_exact%3ACHCHD3+AND+organism_id%3A9606+AND+reviewed%3Atrue&fields=accession%2Cid%2Cprotein_name%2Csequence&format=json&size=1"
+    }
+  ]
+}

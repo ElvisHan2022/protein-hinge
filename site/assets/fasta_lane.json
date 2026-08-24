@@ -1,0 +1,170 @@
+{
+  "abstentions": [
+    {
+      "kind": "no_protein_notation",
+      "records": 116,
+      "stage": "variant_reconstruction"
+    },
+    {
+      "kind": "frameshift",
+      "records": 113,
+      "stage": "variant_reconstruction"
+    },
+    {
+      "kind": "residue_mismatch",
+      "records": 28,
+      "stage": "variant_reconstruction"
+    },
+    {
+      "kind": "position_out_of_range",
+      "records": 3,
+      "stage": "variant_reconstruction"
+    }
+  ],
+  "captured_at": "2026-08-24T21:46:12+00:00",
+  "claim_ceiling": "SEQUENCE_RECORD",
+  "examples": [
+    {
+      "accession": "VCV002580153",
+      "gene": "TAFAZZIN",
+      "hgvs_p": "p.Cys72Phe",
+      "length": 262,
+      "note": "C72F applied to canonical sequence"
+    },
+    {
+      "accession": "VCV002506909",
+      "gene": "TAFAZZIN",
+      "hgvs_p": "p.Arg94Gly",
+      "length": 262,
+      "note": "R94G applied to canonical sequence"
+    },
+    {
+      "accession": "VCV002506908",
+      "gene": "TAFAZZIN",
+      "hgvs_p": "p.Asp74Glu",
+      "length": 262,
+      "note": "D74E applied to canonical sequence"
+    },
+    {
+      "accession": "VCV002506886",
+      "gene": "TAFAZZIN",
+      "hgvs_p": "p.Gly124Arg",
+      "length": 262,
+      "note": "G124R applied to canonical sequence"
+    },
+    {
+      "accession": "VCV001202910",
+      "gene": "TAFAZZIN",
+      "hgvs_p": "p.Arg94Pro",
+      "length": 262,
+      "note": "R94P applied to canonical sequence"
+    },
+    {
+      "accession": "VCV000807698",
+      "gene": "TAFAZZIN",
+      "hgvs_p": "p.Gly80Arg",
+      "length": 262,
+      "note": "G80R applied to canonical sequence"
+    },
+    {
+      "accession": "VCV000691833",
+      "gene": "TAFAZZIN",
+      "hgvs_p": "p.Val119Met",
+      "length": 262,
+      "note": "V119M applied to canonical sequence"
+    },
+    {
+      "accession": "VCV000653322",
+      "gene": "TAFAZZIN",
+      "hgvs_p": "p.Arg94His",
+      "length": 262,
+      "note": "R94H applied to canonical sequence"
+    }
+  ],
+  "genes": [
+    {
+      "abstained": 78,
+      "accession": "Q16635",
+      "applied": 22,
+      "canonical_length": 262,
+      "gene": "TAFAZZIN",
+      "missense": 13,
+      "nonsense": 9
+    },
+    {
+      "abstained": 0,
+      "accession": "Q9UJA2",
+      "applied": 3,
+      "canonical_length": 301,
+      "gene": "CRLS1",
+      "missense": 3,
+      "nonsense": 0
+    },
+    {
+      "abstained": 0,
+      "accession": "Q32NB8",
+      "applied": 0,
+      "canonical_length": 556,
+      "gene": "PGS1",
+      "missense": 0,
+      "nonsense": 0
+    },
+    {
+      "abstained": 0,
+      "accession": "Q8WUK0",
+      "applied": 1,
+      "canonical_length": 201,
+      "gene": "PTPMT1",
+      "missense": 1,
+      "nonsense": 0
+    },
+    {
+      "abstained": 182,
+      "accession": "P40939",
+      "applied": 69,
+      "canonical_length": 763,
+      "gene": "HADHA",
+      "missense": 21,
+      "nonsense": 48
+    },
+    {
+      "abstained": 0,
+      "accession": "P35232",
+      "applied": 0,
+      "canonical_length": 272,
+      "gene": "PHB",
+      "missense": 0,
+      "nonsense": 0
+    },
+    {
+      "abstained": 0,
+      "accession": "Q99623",
+      "applied": 0,
+      "canonical_length": 299,
+      "gene": "PHB2",
+      "missense": 0,
+      "nonsense": 0
+    },
+    {
+      "abstained": 0,
+      "accession": "Q9NX63",
+      "applied": 0,
+      "canonical_length": 227,
+      "gene": "CHCHD3",
+      "missense": 0,
+      "nonsense": 0
+    }
+  ],
+  "note": "Canonical sequences from UniProt, plus protein sequences reconstructed from the pathogenic ClinVar records this project already holds. A substitution is applied only when the wild-type residue matches the canonical sequence at that position; everything else abstains with a named reason. These are folding and assay inputs - not structures, not binding claims, not predictions of pathogenicity.",
+  "schema": "protein_hinge.fasta_lane.projection.v1",
+  "variant_fasta": {
+    "path": "data/fasta/variants.fasta",
+    "records": 95,
+    "sha256": "68a210de01e0f19ecc3f67e19a8c08b40ff783eda0f76bf0855a41bbf9ebfe8f"
+  },
+  "wt_fasta": {
+    "path": "data/fasta/consensus_genes.fasta",
+    "records": 8,
+    "sha256": "98f31f1ce20f4f919e6463b026ab321ee3617acaf3c1e1e02a555ae289ed4565"
+  }
+}

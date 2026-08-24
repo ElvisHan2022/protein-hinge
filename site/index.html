@@ -129,6 +129,7 @@
     <button data-t="modeltrace">Model Trace</button>
     <button data-t="regulatory">Regulatory Map</button>
     <button data-t="omics">HealthOmics</button>
+    <button data-t="fasta">Sequences</button>
     <button data-t="verify">Evidence Receipt</button>
     <button data-t="browse">All Records</button>
     <button data-t="sql">Data Table</button>
@@ -294,6 +295,33 @@
       </div>
       <div class="card scroll"><h3>ClinVar pathogenic-variant evidence, by consensus gene</h3>
         <div id="omicsEvidence"></div></div>
+    </section>
+
+    <!-- ------------------------------------------------------- FASTA -->
+    <section id="s-fasta">
+      <div class="intro-panel" style="margin-bottom:18px">
+        <h2>Sequences a wet lab can actually use.</h2>
+        <p>The evidence lanes end in a table; a bench ends in a FASTA file. This
+          view turns the pathogenic variants we hold into protein sequences —
+          the inputs a folding run or a synthesis order actually takes.</p>
+      </div>
+      <p class="note">Canonical sequences come from reviewed human UniProt
+        entries; variant sequences are rebuilt from the ClinVar records already
+        in this ledger. A substitution is applied <b>only</b> when the wild-type
+        residue named by ClinVar matches the canonical sequence at that
+        position — otherwise the record abstains rather than emitting a
+        plausible-but-wrong sequence. Claim ceiling
+        <code>SEQUENCE_RECORD</code>: these are folding and assay inputs, not
+        structures, binding claims, or predictions of pathogenicity.</p>
+      <div class="row" id="fastaMetrics"></div>
+      <div class="grid2">
+        <div class="card scroll"><h3>Canonical sequences and variants applied</h3>
+          <div id="fastaGenes"></div></div>
+        <div class="card"><h3>What we would not reconstruct</h3>
+          <div id="fastaAbstentions"></div></div>
+      </div>
+      <div class="card scroll"><h3>Example reconstructed variants</h3>
+        <div id="fastaExamples"></div></div>
     </section>
 
     <!-- ------------------------------------------------------- BROWSE -->
@@ -481,7 +509,7 @@ async function boot(bytes){
     `one root over both lanes &nbsp; <b class="hash">${esc(m.merkle_root)}</b><br>` +
     `${n} nodes · ${esc(m.merkle_convention)} · corpus pinned ${esc(m.generated_at)} · ` +
     `science ceiling <b>${esc(m.claim_ceiling_science)}</b> · FTO ceiling <b>${esc(m.claim_ceiling_fto)}</b>`;
-  initBrowse(); initAbout(); initSamples(); initElvis(); initAgents(); initModelTrace(); initRegulatory(); initOmics();
+  initBrowse(); initAbout(); initSamples(); initElvis(); initAgents(); initModelTrace(); initRegulatory(); initOmics(); initFasta();
   lookup('phase_1_axis_claim');
 }
 
@@ -809,6 +837,52 @@ async function initOmics(){
       $('#omicsLive').innerHTML = `<p class="bad">live probe failed: ${esc(e.message)}</p>`;
     }
   };
+}
+
+// --------------------------------------------------------------- fasta
+async function initFasta(){
+  try{
+    const f = await (await fetch('assets/fasta_lane.json')).json();
+    const applied = (f.genes||[]).reduce((n,g)=>n+(g.applied||0),0);
+    const abst = (f.abstentions||[]).reduce((n,a)=>n+(a.records||0),0);
+    $('#fastaMetrics').innerHTML = [
+      ['SEQUENCES BUILT', applied],
+      ['GENES COVERED', (f.genes||[]).filter(g=>g.accession).length],
+      ['NOT RECONSTRUCTED', abst],
+      ['CLAIM CEILING', esc(f.claim_ceiling||'')],
+    ].map(([k,v])=>`<div class="metric"><b>${v}</b><span>${k}</span></div>`).join('');
+    $('#fastaGenes').innerHTML = `<div class="callout">${esc(f.note)}</div>` +
+      tbl((f.genes||[]).map(g=>({
+        'Gene': g.gene,
+        'UniProt': g.accession || 'not resolved',
+        'Canonical length': g.canonical_length==null?'':g.canonical_length,
+        'Sequences built': g.applied,
+        'Missense': g.missense,
+        'Truncating': g.nonsense,
+        'Abstained': g.abstained,
+      }))) +
+      `<p class="dim" style="margin-top:8px">
+        <code>${esc(f.wt_fasta.path)}</code> — ${f.wt_fasta.records} records,
+        sha256 <span class="hash">${esc((f.wt_fasta.sha256||'').slice(0,24))}…</span><br>
+        <code>${esc(f.variant_fasta.path)}</code> — ${f.variant_fasta.records} records,
+        sha256 <span class="hash">${esc((f.variant_fasta.sha256||'').slice(0,24))}…</span>
+      </p>`;
+    $('#fastaAbstentions').innerHTML = tbl((f.abstentions||[]).map(a=>({
+        'Reason': a.kind, 'Records': a.records,
+      }))) + `<p class="dim" style="margin-top:8px">Frameshifts cannot be
+        rebuilt from a ClinVar title, and a residue mismatch means the record is
+        numbered against a different isoform. Both abstain by design.</p>`;
+    $('#fastaExamples').innerHTML = tbl((f.examples||[]).map(e=>({
+        'Gene': e.gene, 'ClinVar': e.accession, 'Change': e.hgvs_p,
+        'Length': e.length, 'Applied as': e.note,
+      })));
+  }catch(e){
+    $('#fastaMetrics').innerHTML = '';
+    $('#fastaGenes').innerHTML = `<p class="dim">Sequence lane not generated yet.
+      Run <code>py scripts/build_fasta_lane.py</code>.</p>`;
+    $('#fastaAbstentions').innerHTML = '';
+    $('#fastaExamples').innerHTML = '';
+  }
 }
 
 // ---------------------------------------------------------- regulatory

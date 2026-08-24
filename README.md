@@ -103,6 +103,24 @@ python3 db/serve.py 8787      # serve the local browser demo
 Open `http://localhost:8787` after starting the demo server. Tabs deep-link:
 `#omics` opens HealthOmics, `#prove` opens the tamper check, and so on.
 
+### The sequence (FASTA) lane
+
+```bash
+python3 scripts/build_fasta_lane.py   # UniProt canonical + ClinVar variant FASTA
+```
+
+Resolves each consensus gene to its reviewed human UniProt entry (every query
+URL and response digest recorded), then rebuilds protein sequences for the
+pathogenic ClinVar variants already in the ledger. A substitution is applied
+**only** when the wild-type residue named by ClinVar matches the canonical
+sequence at that position; a mismatch means the record is numbered against a
+different isoform, so it abstains rather than emitting a plausible-but-wrong
+sequence. Writes `data/fasta/consensus_genes.fasta` (8 canonical sequences),
+`data/fasta/variants.fasta` (95 reconstructed variants), and per-reason
+abstention counts for the 260 records it would not rebuild. Claim ceiling
+`SEQUENCE_RECORD`: these are folding and assay *inputs*, not structures,
+binding claims, or predictions of pathogenicity.
+
 ### The AWS HealthOmics lane
 
 ```bash

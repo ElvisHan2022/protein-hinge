@@ -204,8 +204,15 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 if not os.path.exists(os.path.join(SITE, "biocustody.db")):
     sys.exit("site/biocustody.db is missing. Run: python3 db/build_db.py")
 
-socketserver.TCPServer.allow_reuse_address = True
-with socketserver.TCPServer(("", PORT), Handler) as httpd:
+class Server(socketserver.ThreadingTCPServer):
+    # Threaded on purpose. The live AWS probe can block for many seconds when
+    # credentials have expired; on a single-threaded server that one request
+    # freezes the whole dashboard, including its own asset fetches.
+    daemon_threads = True
+    allow_reuse_address = True
+
+
+with Server(("", PORT), Handler) as httpd:
     print(f"serving {SITE}")
     print("project Protein Hinge")
     print(f"open    http://localhost:{PORT}")
