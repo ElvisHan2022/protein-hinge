@@ -19,7 +19,10 @@ const path = require('path');
 
 const HERE = __dirname;
 const REPO = path.dirname(HERE);
-const SRC = fs.readFileSync(path.join(HERE, 'index.html'), 'utf8');
+// Normalised to LF: git autocrlf checks index.html out with CRLF on
+// Windows, while the lift markers below are written with bare LF.
+const SRC = fs.readFileSync(path.join(HERE, 'index.html'), 'utf8')
+  .split('\r\n').join('\n');
 
 // ---- lift the implementation straight out of the page ---------------------
 // Deliberately not a reimplementation. If someone edits index.html and breaks

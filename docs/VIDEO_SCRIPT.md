@@ -13,8 +13,8 @@ can be pre-staged as bookmarks.
 >
 > Five evidence lanes, one question each, all hitting real public APIs. Open
 > Targets GraphQL: what biology is broken? NCBI ClinVar, pulled through
-> E-utilities and loaded into an AWS HealthOmics annotation store — via boto3,
-> S3, and IAM: do patients really carry pathogenic variants in these genes?
+> E-utilities and staged into AWS HealthOmics — via boto3, S3, and IAM:
+> do patients really carry pathogenic variants in these genes?
 > 355 gene-specific records say yes. ClinicalTrials.gov's REST API: has this pairing been
 > tried? openFDA: is the drug approved? Convoke is dashed out — listed,
 > deliberately not wired, and we say so.
@@ -133,8 +133,9 @@ and last paragraphs. That lands near 2:20.
 python3 db/build_db.py
 node site/verify_test.js
 python3 scripts/build_clinvar_evidence.py
+python3 scripts/build_fasta_lane.py
 python3 scripts/healthomics_preflight.py
-python3 scripts/setup_healthomics.py        # needs `aws configure` (elvish.an)
+python3 scripts/run_healthomics_workflow.py # S3 upload + VEP run (needs .env creds)
 python3 db/serve.py 8787
 ```
 

@@ -157,7 +157,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             ident = session.client("sts").get_caller_identity()
             arn = str(ident.get("Arn", ""))
             payload["identity"] = {
-                "account": ident.get("Account"),
+                "account_last4": str(ident.get("Account", ""))[-4:],
                 "arn_suffix": arn[-32:],
             }
             omics = session.client("omics")

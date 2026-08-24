@@ -52,7 +52,7 @@ verifiable receipt on every row.
 
 1. **GATHER** — ask five public sources one question each, hashing every
    response at capture: Open Targets (what biology is broken?), NCBI ClinVar
-   loaded into an **AWS HealthOmics annotation store** (do patients carry
+   staged into **AWS HealthOmics** (do patients carry
    pathogenic variants in these genes?), ClinicalTrials.gov (has this pairing
    been tried?), openFDA (is the drug approved?), and JUMP Cell Painting
    (does any compound push cells back toward the healthy state?).
@@ -133,11 +133,12 @@ The first script queries NCBI ClinVar for pathogenic / likely-pathogenic
 variants in the eight consensus genes and writes
 `data/healthomics/clinvar_subset.tsv` plus per-query digests. The setup script
 (requires `aws configure`; hackathon user `elvish.an`, region `us-east-1`)
-idempotently creates `s3://protein-hinge-omics-<account>`, an import IAM role,
-and the `protein_hinge_clinvar` TSV/GENERIC annotation store, then runs the
-import. TSV/GENERIC was a deliberate scoping choice over a VCF variant store:
-a VCF store requires importing a full reference genome first, which buys
-nothing for gene-level evidence within hackathon time. The dashboard's HealthOmics tab and its live probe
+creates an S3 bucket, an import IAM role, and a TSV/GENERIC annotation store.
+**It does not run in the hackathon event account**, whose service control
+policy denies the annotation-store API; it is retained for accounts where
+that API is permitted. The path that does work there is
+`scripts/run_healthomics_workflow.py` — evidence uploaded digest-keyed to S3
+plus a VEP annotation run on the account's HealthOmics workflow. The dashboard's HealthOmics tab and its live probe
 (`/api/healthomics`) render whatever state actually exists — including the
 credentials-missing abstention.
 

@@ -1,7 +1,7 @@
 {
   "abstentions": [
     {
-      "reason": "Denied by the event's service control policy (deprecated API surface); the workflow lane is the sanctioned path. Receipt: An error occurred (AccessDeniedException) when calling the ListAnnotationStores operation: User: arn:aws:sts::058514355412:assumed-role/WSParticipantR",
+      "reason": "Denied by the event's service control policy (deprecated API surface); the workflow lane is the sanctioned path. Receipt: An error occurred (AccessDeniedException) when calling the ListAnnotationStores operation: User: arn:aws:sts::ACCOUNT_REDACTED:assumed-role/WSParticipantR",
       "stage": "annotation_stores"
     }
   ],
@@ -10,7 +10,7 @@
   "credentials_committed": false,
   "expected_username": "elvish.an",
   "identity": {
-    "account": "058514355412",
+    "account_last4": "5412",
     "arn_suffix": "le/WSParticipantRole/Participant"
   },
   "identity_matches_expected": false,

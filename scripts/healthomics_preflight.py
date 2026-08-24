@@ -5,9 +5,10 @@ Extends scripts/aws_preflight.py for the HealthOmics lane. Checks, in order:
 
   1. boto3 importable
   2. a resolvable AWS credential (env vars or ~/.aws, either is fine)
-  3. STS identity — masked; compared against the expected hackathon user
-  4. HealthOmics reachable in the region; annotation stores listed
-  5. whether the protein_hinge_clinvar store exists and its status
+  3. STS identity — masked to account last-4 and an ARN suffix
+  4. HealthOmics reachable in the region; stores, workflows and runs listed
+  5. whether the annotation-store API is permitted (it is SCP-denied in the
+     event account, and that denial is recorded as an abstention, not hidden)
 
 Writes model_trace/healthomics_status.json and site/assets/healthomics_status.json.
 No secret ever appears in either file. Every failure is a named abstention,
@@ -24,8 +25,6 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "model_trace" / "healthomics_status.json"
 SITE_ASSETS = ROOT / "site" / "assets"
 
-EXPECTED_USERNAME = "elvish.an"
-STORE_NAME = "protein_hinge_clinvar"
 DEFAULT_REGION = "us-east-1"
 
 
@@ -48,12 +47,8 @@ def main() -> int:
         "checked_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
         "credentials_committed": False,
         "region": region,
-        "expected_username": EXPECTED_USERNAME,
-        "store_name": STORE_NAME,
         "status": "unknown",
         "identity": None,
-        "identity_matches_expected": None,
-        "annotation_stores": [],
         "abstentions": [],
     }
 
@@ -80,7 +75,7 @@ def main() -> int:
         payload["abstentions"].append({
             "stage": "credentials",
             "reason": ("No AWS credentials found in the environment or ~/.aws. "
-                       f"Run `aws configure` as {EXPECTED_USERNAME} and re-run this script."),
+                       "Put event credentials in .env and re-run this script."),
         })
         return finish("missing_credentials")
 
@@ -88,10 +83,9 @@ def main() -> int:
         ident = session.client("sts").get_caller_identity()
         arn = str(ident.get("Arn", ""))
         payload["identity"] = {
-            "account": ident.get("Account"),
+            "account_last4": str(ident.get("Account", ""))[-4:],
             "arn_suffix": arn[-32:],
         }
-        payload["identity_matches_expected"] = EXPECTED_USERNAME in arn
     except botocore.exceptions.BotoCoreError as exc:
         payload["abstentions"].append({"stage": "sts", "reason": f"{type(exc).__name__}: {exc}"})
         return finish("identity_check_failed")

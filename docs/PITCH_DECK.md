@@ -51,7 +51,7 @@ a verifiable receipt on every row.
 
 | Phase | What happens | Tech |
 |---|---|---|
-| **GATHER** | Five public sources, one question each, every response hashed at capture: Open Targets (broken biology), ClinVar → **AWS HealthOmics** (patient genetics), ClinicalTrials.gov (prior attempts, with status), openFDA (approval), JUMP Cell Painting (phenotype evidence) | Python, GraphQL/REST, NCBI E-utilities, boto3 + S3 + IAM + HealthOmics annotation store |
+| **GATHER** | Five public sources, one question each, every response hashed at capture: Open Targets (broken biology), ClinVar → **AWS HealthOmics** (patient genetics), ClinicalTrials.gov (prior attempts, with status), openFDA (approval), JUMP Cell Painting (phenotype evidence) | Python, GraphQL/REST, NCBI E-utilities, boto3 + S3 + IAM + HealthOmics workflow run |
 | **GRADE** | Rules G000–G008 grade each pairing GAP / NOT_A_GAP / ABSTAIN; abstentions shown at equal weight | Plain Python — no ML in the decision |
 | **PROVE** | Every record content-addressed under one RFC 6962 Merkle root; verified client-side; live tamper demo | fcg.py, SQLite, sql.js (WASM), vanilla JS |
 

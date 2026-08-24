@@ -289,7 +289,7 @@
             <button class="go" id="omicsProbe">CHECK LIVE STORE STATE</button>
           </div>
           <div id="omicsLive"><p class="dim">Not probed yet. The button asks the
-            local server to list HealthOmics annotation stores with the
+            local server to list the HealthOmics surface reachable with the
             credentials on this machine.</p></div>
         </div>
       </div>
@@ -771,9 +771,9 @@ async function initOmics(){
     $('#omicsPreflight').innerHTML = `<table>
       <tr><td class="k">status</td><td>${esc(pf.status)}</td></tr>
       <tr><td class="k">region</td><td>${esc(pf.region||'')}</td></tr>
-      <tr><td class="k">expected user</td><td>${esc(pf.expected_username||'')}</td></tr>
+      <tr><td class="k">workflows visible</td><td>${esc((pf.workflows||[]).join(', ')||'none')}</td></tr>
       <tr><td class="k">identity</td><td>${pf.identity?esc(pf.identity.arn_suffix):'not checked'}</td></tr>
-      <tr><td class="k">store</td><td>${esc(pf.store_name||'')}</td></tr>
+      <tr><td class="k">runs recorded</td><td>${esc(String((pf.runs||[]).length))}</td></tr>
       <tr><td class="k">secret policy</td><td>${pf.credentials_committed===false?'not committed':'check required'}</td></tr>
       ${abst}</table>`;
   }catch(e){

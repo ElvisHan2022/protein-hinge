@@ -49,6 +49,9 @@ def main() -> int:
     session = boto3.session.Session(region_name=REGION)
     sts = session.client("sts")
     account = sts.get_caller_identity()["Account"]
+    # House rule: receipts never carry the raw account id.
+    def mask(text: str) -> str:
+        return str(text).replace(account, "ACCOUNT_REDACTED")
     bucket = f"omics-output-{REGION}-{account}"
     s3 = session.client("s3")
     omics = session.client("omics")
@@ -58,7 +61,7 @@ def main() -> int:
     receipt = {
         "schema": "protein_hinge.healthomics_workflow.v1",
         "started_at": now.replace(microsecond=0).isoformat(),
-        "account": account,
+        "account_last4": account[-4:],
         "region": REGION,
         "steps": [],
     }
@@ -75,7 +78,7 @@ def main() -> int:
         digest = hashlib.sha256(p.read_bytes()).hexdigest()
         key = f"protein-hinge/clinvar/{digest[:16]}/{p.name}"
         s3.upload_file(str(p), bucket, key)
-        uploads[p.name] = {"s3_uri": f"s3://{bucket}/{key}", "sha256": digest}
+        uploads[p.name] = {"s3_uri": mask(f"s3://{bucket}/{key}"), "sha256": digest}
         step("upload", uploads[p.name]["s3_uri"])
     receipt["evidence_uploads"] = uploads
 

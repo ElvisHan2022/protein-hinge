@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-"""Create and load the AWS HealthOmics annotation store for the ClinVar subset.
+"""Create and load an AWS HealthOmics annotation store for the ClinVar subset.
+
+SUPERSEDED IN THE HACKATHON EVENT ACCOUNT. That account's service control
+policy denies the annotation-store API, so this script cannot run there;
+scripts/run_healthomics_workflow.py is the path that does (S3 upload plus a
+VEP annotation run on the account workflow). This file is retained for AWS
+accounts where the annotation-store API is permitted.
 
 Prerequisites:
   - scripts/build_clinvar_evidence.py has produced data/healthomics/clinvar_subset.tsv
-  - AWS credentials resolvable (run `aws configure`; hackathon user: elvish.an)
+  - AWS credentials resolvable (run `aws configure`, or put event credentials in .env)
 
 What it does, idempotently:
   1. S3 bucket   protein-hinge-omics-<account>          (created if missing)
@@ -56,7 +62,7 @@ def main() -> int:
     region = os.environ.get("AWS_DEFAULT_REGION") or os.environ.get("AWS_REGION") or DEFAULT_REGION
     session = boto3.session.Session(region_name=region)
     if session.get_credentials() is None:
-        raise SystemExit("No AWS credentials. Run `aws configure` (user elvish.an) first.")
+        raise SystemExit("No AWS credentials. Run `aws configure`, or put event credentials in .env.")
 
     sts = session.client("sts")
     account = sts.get_caller_identity()["Account"]
