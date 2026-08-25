@@ -2,7 +2,7 @@
   "abstentions": [
     {
       "kind": "no_protein_notation",
-      "records": 116,
+      "records": 118,
       "stage": "variant_reconstruction"
     },
     {
@@ -12,7 +12,7 @@
     },
     {
       "kind": "residue_mismatch",
-      "records": 28,
+      "records": 32,
       "stage": "variant_reconstruction"
     },
     {
@@ -21,7 +21,7 @@
       "stage": "variant_reconstruction"
     }
   ],
-  "captured_at": "2026-08-24T21:46:12+00:00",
+  "captured_at": "2026-08-25T00:35:17+00:00",
   "claim_ceiling": "SEQUENCE_RECORD",
   "examples": [
     {
@@ -83,13 +83,13 @@
   ],
   "genes": [
     {
-      "abstained": 78,
+      "abstained": 84,
       "accession": "Q16635",
-      "applied": 22,
+      "applied": 25,
       "canonical_length": 262,
       "gene": "TAFAZZIN",
-      "missense": 13,
-      "nonsense": 9
+      "missense": 15,
+      "nonsense": 10
     },
     {
       "abstained": 0,
@@ -159,8 +159,8 @@
   "schema": "protein_hinge.fasta_lane.projection.v1",
   "variant_fasta": {
     "path": "data/fasta/variants.fasta",
-    "records": 95,
-    "sha256": "68a210de01e0f19ecc3f67e19a8c08b40ff783eda0f76bf0855a41bbf9ebfe8f"
+    "records": 98,
+    "sha256": "355d8e96bc6123427d6e05f305bb017cc09acaf3f6bdfc1255874a6ad561cd9d"
   },
   "wt_fasta": {
     "path": "data/fasta/consensus_genes.fasta",

@@ -17,7 +17,7 @@ whole chunk of a chromosome that happens to include PHB2 — like blaming one
 house for a city-wide blackout. Three of our eight genes were scoring entirely
 on events like this.
 
-**Did:** filter out multi-gene copy-number events. 642 → 355 records. PHB2,
+**Did:** filter out multi-gene copy-number events. 746 → 364 records. PHB2,
 CHCHD3 and PGS1 fell to an honest **zero**.
 
 ---
@@ -37,7 +37,7 @@ just be about the wrong protein, with no error anywhere.
 
 ### 3. Variant records numbered against a different protein
 
-**Noticed:** when rebuilding protein sequences from variant records, 28 of them
+**Noticed:** when rebuilding protein sequences from variant records, 32 of them
 named a starting amino acid that did not match the real sequence at that spot.
 
 **Why it matters:** this is the sharpest example we have. If you skip the check,
@@ -45,8 +45,8 @@ you produce a FASTA file that is perfectly valid, full of real amino acids, that
 any folding tool will happily accept — and the answer is about a protein nobody
 has. Nothing errors. Nothing warns.
 
-**Did:** only apply a substitution when the named residue matches. 28 refused,
-95 emitted and all 95 verified correct.
+**Did:** only apply a substitution when the named residue matches. 32 refused,
+98 emitted and all 98 verified correct.
 
 ---
 
@@ -119,23 +119,36 @@ are a counted abstention with a stated reason.
 
 ---
 
-### 9. …and the cause was us, not them
+### 9. I misdiagnosed it, and the error message was hiding
 
-**Noticed:** the failing batch retried four times and still came back empty —
-but tested on its own, with breathing room, it returned all 100 records fine.
+**First guess (wrong):** the batch retried four times and still came back empty,
+but tested on its own it returned all 100 records fine — so I concluded my own
+repeated re-runs had throttled the source, and widened the retry waits.
 
-**Why it matters:** the data source throttles sustained bursts and answers a
-throttled request with a normal-looking, empty reply. My repeated full re-runs
-caused it, and my retry waits (1.5–6 seconds) were too short to outlast the
-throttle. So the pipeline's own data collection is **non-deterministic under
-load** — and without the reconciliation check from note 8, we would never have
-known which run was complete.
+**What it actually was:** testing every batch individually, not just the first
+one, showed a specific batch failing every time with a real message:
 
-**Did:** widened the backoff to 2/5/15/30 seconds and slowed the batch cadence.
+> `Input XML size is 16503275 bytes, and cannot be transformed to JSON. the max size is 10MB`
 
-**For the paper:** this is the strongest self-referential example we have. The
-governance did not just catch bad upstream data — it caught *us*, twice, in a
-week.
+Some ClinVar records are enormous — a single copy-number entry can list over a
+thousand genes — and one of them pushed its batch past the source's 10 MB
+conversion limit. Structural and completely reproducible, not load at all.
+
+**Why I could not see it:** the source returns that message under a different
+key than the ones my error handler read, so my own log said only "response
+carried no result payload." **I had built a guard that noticed the loss but
+discarded the reason.**
+
+**Did:** read the real error key, and split a failing batch in half and retry
+until the oversized record is isolated on its own. Its neighbours are recovered
+instead of dying with it.
+
+**For the paper, two lessons:**
+1. *Detecting* a loss and *explaining* it are different jobs. We had the first
+   and thought we had the second.
+2. My first diagnosis was confidently wrong and would have shipped — the thing
+   that corrected it was testing every case rather than the first one that
+   looked representative.
 
 ---
 
@@ -150,3 +163,19 @@ answer.
 
 **Did:** flagged it. The paper must pin a corpus date and report the digest of
 the exact table the numbers came from — which the pipeline already records.
+
+
+---
+
+### 11. The oversized records are the ones we were already excluding
+
+**Noticed:** the batch that broke the size limit is full of copy-number records
+— the same multi-gene events the filter in note 1 throws out.
+
+**Why it matters:** two problems with one cause. Those records are enormous
+precisely *because* they span hundreds or thousands of genes, which is also
+exactly why they are not evidence about any single gene. The size crash was a
+symptom of the same thing the filter exists to remove.
+
+**Did:** nothing extra — but it is a satisfying consistency check, and worth a
+sentence in the paper.

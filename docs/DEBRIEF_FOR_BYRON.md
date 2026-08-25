@@ -13,7 +13,7 @@ and **`node site/verify_test.js` on Windows**.
 
 ## 1. Two new lanes
 
-**AWS HealthOmics is live.** 355 gene-specific pathogenic ClinVar records for
+**AWS HealthOmics is live.** 364 gene-specific pathogenic ClinVar records for
 the eight consensus genes, every query URL and response digest recorded,
 uploaded digest-keyed to the account's HealthOmics S3 bucket — and our own VEP
 annotation run **COMPLETED** on the account workflow. The event account's
@@ -24,7 +24,7 @@ that denial as a receipt beside the working surface rather than hiding it.
 produces the inputs your folding and SS-31 work needs:
 
 - 8 canonical sequences, all resolved from reviewed human UniProt
-- **95 reconstructed variant sequences** — 38 missense, 57 truncating
+- **98 reconstructed variant sequences** — 40 missense, 58 truncating
 - full provenance: every UniProt query URL + digest, plus the ClinVar input digest
 
 Remaining two of your three (in vitro protocol drafts, FDA information-readiness
@@ -42,12 +42,12 @@ different isoform, which would have emitted perfectly plausible FASTA and
 silently poisoned a folding run.
 
 This is the paper's result in miniature: *enforced abstention prevents a
-measurable, specific class of silent error.* Same shape as the CNV filter (287
+measurable, specific class of silent error.* Same shape as the CNV filter (382
 whole-chromosome events excluded from what a naive pipeline counts) and the
 terminated-trial distinction.
 
-260 records abstained overall, each with a named machine-readable reason. All 95
-emitted sequences were verified programmatically against their wild-types: 95
+266 records abstained overall, each with a named machine-readable reason. All 98
+emitted sequences were verified programmatically against their wild-types: 98
 correct, 0 incorrect.
 
 ---
@@ -73,7 +73,7 @@ normalises line endings first and passes: **OVERALL PASS**, root matches
 
 | Where | Was | Now |
 |---|---|---|
-| `workflow_dag.svg` | "642 records" | 355 |
+| `workflow_dag.svg` | "642 records" | 364 |
 | DAG, README, deck, video script | "loaded into an annotation store" | staged into HealthOmics / S3 upload + VEP run |
 | README | implied `setup_healthomics.py` works | states plainly it does **not** run in the event account; names the script that does |
 | Dashboard preflight | "expected user: elvish.an", "store: protein_hinge_clinvar" | workflows-visible / runs-recorded |

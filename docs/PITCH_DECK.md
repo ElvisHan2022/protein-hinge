@@ -72,11 +72,11 @@ wired, and we say so.
 
 ![HealthOmics tab](../output/playwright/07-healthomics-tab.png)
 
-- 355 gene-specific pathogenic-variant records pulled from ClinVar for the
+- 364 gene-specific pathogenic-variant records pulled from ClinVar for the
   eight consensus genes; every query URL and response digest recorded — and
-  287 whole-chromosome copy-number events that naive pipelines would count
+  382 whole-chromosome copy-number events that naive pipelines would count
   were excluded, with the exclusions recorded per gene.
-- TAFAZZIN: 100 pathogenic records, top condition *3-Methylglutaconic aciduria
+- TAFAZZIN: 109 pathogenic records, top condition *3-Methylglutaconic aciduria
   type 2* — which **is** Barth syndrome. The genetics independently agrees
   with the disease biology. Four of the eight genes honestly show zero.
 - The evidence is **live in AWS**: the subset TSV and its provenance are

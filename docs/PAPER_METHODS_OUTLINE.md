@@ -59,7 +59,7 @@ transferable to any evidence-assembling pipeline, LLM-driven or not.
 
 ### The measurements (verified, from the repo)
 
-**G1 — residue verification.** Of 355 records, 239 carry protein-level
+**G1 — residue verification.** Of 364 records, 239 carry protein-level
 notation; 113 of those are frameshifts that cannot be reconstructed from the
 record at all, leaving **126 substitution-eligible**. A naive pipeline emits
 **123** of them (3 fail on array bounds — a *loud* error, not a silent one).
@@ -67,10 +67,10 @@ record at all, leaving **126 substitution-eligible**. A naive pipeline emits
 match the canonical sequence, i.e. the record is numbered against a different
 isoform.
 
-> **Silent error rate without G1: 28/123 = 22.8%.**
+> **Silent error rate without G1: 32/130 = 24.6%.**
 
-**G2 — copy-number exclusion.** Of 642 summarised ClinVar records, **287 are
-multi-gene copy-number events** (44.7%). The per-gene effect is not uniform,
+**G2 — copy-number exclusion.** Of 746 fetched ClinVar records, **382 are
+multi-gene copy-number events** (51.2%). The per-gene effect is not uniform,
 which is the interesting part:
 
 | Gene | naive count | after G2 | what the naive count was actually counting |
@@ -79,7 +79,7 @@ which is the interesting part:
 | CHCHD3 | 32 | **0** | Ring chromosome 7 |
 | PGS1 | 14 | **0** | whole-region events |
 | CRLS1 | 33 | 3 | mostly regional |
-| TAFAZZIN | 237 | 100 | |
+| TAFAZZIN | 339 | 109 | |
 | HADHA | 267 | 251 | |
 
 Three of eight genes go from apparent evidence to **honest zero**. A naive
@@ -105,23 +105,32 @@ experimental finding. Overclaiming here is the fastest way to lose a reviewer.
 
 ---
 
-## ⚠️ Open item found while verifying these numbers
+## Resolved while verifying these numbers
 
-**The genetics lane silently drops records.** 742 record IDs are fetched, but
-only 642 are accounted for downstream (355 kept + 287 excluded). **100 TAFAZZIN
-records — exactly one 100-record batch — produced no summary and were skipped
-by a bare `continue`, with nothing recorded.**
+**The genetics lane was silently dropping records, and fixing it changed the
+corpus.** 746 record ids were fetched but only 642 accounted for; exactly one
+100-record batch vanished through a bare `continue` with nothing recorded.
 
-This is precisely the failure the paper is about, in our own code. It must be
-fixed before any of these numbers go in: the drop needs to become a counted
-abstention. The G1 and G2 rates above are unaffected (they are computed over
-the records that *were* processed), but the lane-level accounting is not
-currently complete, and a reviewer who adds up the columns will notice.
+Diagnosis went wrong once before it went right, which is worth reporting in the
+paper. The batch failed every retry, but tested alone it succeeded, so the first
+conclusion was throttling. Testing *every* batch rather than the first one
+showed a specific batch failing reproducibly with a real message: the source
+refuses to convert a response over 10 MB to JSON, and a single copy-number
+record listing over a thousand genes pushed the batch past that limit. Our own
+error handler read three possible error keys and the source uses a fourth — so
+the guard noticed the loss but discarded the explanation.
 
-*Fixing this is ~30 minutes and makes the paper's central claim honest about
-itself. I'd do it before writing prose.*
+**Now:** a failing batch is split and retried until the oversized record is
+isolated, so its neighbours survive. Every fetched id lands in exactly one
+bucket and the run asserts the balance. Result: **746 fetched = 364 kept + 382
+excluded + 0 unavailable**, and the 100 records came back — 9 gene-specific,
+91 copy-number.
 
----
+Two consequences for the paper:
+1. **The numbers above are the post-fix ones.** The pre-fix corpus was
+   incomplete, and every earlier figure was quietly wrong.
+2. **The oversized records are the copy-number records** — the same class G2
+   exists to exclude. The size failure and the misattribution have one cause.
 
 ## Methods — section outline
 
@@ -168,12 +177,12 @@ same corpus snapshot.
 **4.2 Metric.** Silent error rate, defined as above. Justify why *silent* is
 the right qualifier and why loud failures are excluded from the numerator.
 
-**4.3 Results.** The table (G1 22.8%; G2 44.7% of records, three genes from
+**4.3 Results.** The table (G1 24.6%; G2 51.2% of records, three genes from
 apparent evidence to zero; G3 as a worked example). Absolute counts always
 shown beside rates — the denominators are small and hiding that would be
 dishonest.
 
-**4.4 Cost.** What enforcement costs: 260 of 355 records declined in the
+**4.4 Cost.** What enforcement costs: 266 of 364 records declined in the
 sequence lane. State plainly that the system's answer is "I don't know" far more
 often than not, and argue that this is the correct behaviour for the setting.
 

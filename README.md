@@ -67,7 +67,7 @@ verifiable receipt on every row.
    browser**; a tamper button shows a one-byte edit being caught live.
    *Tech: fcg.py, SQLite, sql.js (WebAssembly), vanilla JS.*
 
-**AWS HealthOmics status, honestly:** the ClinVar subset (355 gene-specific
+**AWS HealthOmics status, honestly:** the ClinVar subset (364 gene-specific
 pathogenic-variant records for the eight consensus genes, all query digests
 recorded, large multi-gene copy-number events excluded rather than counted)
 is uploaded digest-keyed to the event account's HealthOmics S3 bucket, and
@@ -116,8 +116,8 @@ pathogenic ClinVar variants already in the ledger. A substitution is applied
 sequence at that position; a mismatch means the record is numbered against a
 different isoform, so it abstains rather than emitting a plausible-but-wrong
 sequence. Writes `data/fasta/consensus_genes.fasta` (8 canonical sequences),
-`data/fasta/variants.fasta` (95 reconstructed variants), and per-reason
-abstention counts for the 260 records it would not rebuild. Claim ceiling
+`data/fasta/variants.fasta` (98 reconstructed variants), and per-reason
+abstention counts for the 266 records it would not rebuild. Claim ceiling
 `SEQUENCE_RECORD`: these are folding and assay *inputs*, not structures,
 binding claims, or predictions of pathogenicity.
 

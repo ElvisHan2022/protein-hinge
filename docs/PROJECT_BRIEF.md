@@ -52,15 +52,15 @@ on Windows at all).
 | Lane | Live? | What it produces |
 |---|---|---|
 | Open Targets (`fto/`) | live, by gene | tractability — all 8 consensus genes return **zero** small-molecule chemistry, EGFR positive control returns 5 buckets |
-| ClinVar → AWS (`scripts/build_clinvar_evidence.py`) | live | **355** gene-specific pathogenic records, 287 whole-chromosome CNVs excluded |
+| ClinVar → AWS (`scripts/build_clinvar_evidence.py`) | live | **364** gene-specific pathogenic records, 382 multi-gene copy-number events excluded |
 | ClinicalTrials.gov | live probe + captures | trial existence **with status and phase**, so terminated ≠ untried |
 | openFDA | captures | approval status, label |
 | JUMP Cell Painting | pinned artifacts | phenotype restoration ranking |
 | Convoke | **not wired** | drawn dashed everywhere; no verifiable query surface |
 
 **Sequence lane** (`scripts/build_fasta_lane.py`) — 8 canonical UniProt
-sequences + **95 reconstructed variant sequences**, with the residue guard that
-caught **28 isoform-mismatched records** out of 123.
+sequences + **98 reconstructed variant sequences**, with the residue guard that
+caught **32 isoform-mismatched records** out of 123.
 
 **AWS HealthOmics** — evidence uploaded digest-keyed to S3; our own **VEP
 annotation run COMPLETED** on the account workflow. Annotation-store API is

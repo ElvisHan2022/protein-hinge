@@ -42,7 +42,7 @@
   <text x="431" y="240" font-size="13" font-weight="700" fill="#1e6b45" text-anchor="middle">CLINVAR → AWS HEALTHOMICS</text>
   <text x="431" y="260" font-size="11.5" fill="#4a5560" text-anchor="middle">pathogenic variants per gene,</text>
   <text x="431" y="276" font-size="11.5" fill="#4a5560" text-anchor="middle">uploaded to S3; VEP workflow run</text>
-  <text x="431" y="291" font-size="10.5" font-weight="600" fill="#2f7a52" text-anchor="middle">wired · 355 records · digests recorded</text>
+  <text x="431" y="291" font-size="10.5" font-weight="600" fill="#2f7a52" text-anchor="middle">wired · 364 records · digests recorded</text>
 
   <!-- ClinicalTrials.gov -->
   <rect x="306" y="336" width="250" height="84" rx="8" fill="#f4eee6" stroke="#d0b58c"/>

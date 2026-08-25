@@ -17,7 +17,7 @@ story: top of `README.md`. Pitch arc: `docs/PITCH_DECK.md`.
 - Branch `healthomics-lane`, ahead of `main`. Do not push without asking.
 - Dashboard works offline: committed `site/biocustody.db`, prescripted Barth
   syndrome case, live ClinicalTrials.gov probe.
-- HealthOmics lane: ClinVar subset built (355 gene-specific records after
+- HealthOmics lane: ClinVar subset built (364 gene-specific records after
   CNV filtering, digests recorded) and **uploaded to the event's HealthOmics
   S3 bucket**; our VEP run launched on the account's workflow
   (`scripts/run_healthomics_workflow.py`). The event SCP denies the
@@ -26,7 +26,7 @@ story: top of `README.md`. Pitch arc: `docs/PITCH_DECK.md`.
   (plain `KEY=value`, no `$Env:`), they expire — refresh from the event
   portal when AWS calls fail with ExpiredToken.
 - Sequence lane: `scripts/build_fasta_lane.py` writes `data/fasta/`
-  (8 canonical + 95 variant sequences, 260 abstained with named reasons)
+  (8 canonical + 98 variant sequences, 266 abstained with named reasons)
   and the `Sequences` dashboard tab. Feeds folding/synthesis work.
 - `db/serve.py` is threaded — a slow AWS probe must never freeze the
   dashboard's own asset fetches (it did, before).

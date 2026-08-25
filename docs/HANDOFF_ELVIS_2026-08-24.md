@@ -16,13 +16,13 @@ and **`node site/verify_test.js` on Windows**.
 `scripts/build_clinvar_evidence.py` · `scripts/run_healthomics_workflow.py` ·
 `scripts/healthomics_preflight.py` · `/api/healthomics` · dashboard tab
 
-- **355 gene-specific pathogenic ClinVar records** for the eight consensus
+- **364 gene-specific pathogenic ClinVar records** for the eight consensus
   genes, every query URL and response digest recorded.
-- **287 multi-gene copy-number events excluded** rather than counted. Whole-arm
+- **382 multi-gene copy-number events excluded** rather than counted. Whole-arm
   deletions were inflating per-gene totals (PHB2 was scoring on *Chromosome
-  4q21 deletion syndrome*). Raw 642 → 355 after filtering; exclusions receipted
+  4q21 deletion syndrome*). Raw 746 → 364 after filtering; exclusions receipted
   per gene.
-- TAFAZZIN: 100 records, top condition *3-methylglutaconic aciduria type 2* —
+- TAFAZZIN: 109 records, top condition *3-methylglutaconic aciduria type 2* —
   Barth syndrome itself. Four of the eight genes honestly return **zero**.
 - Evidence uploaded digest-keyed to the account's HealthOmics S3 bucket; our
   own **VEP annotation run completed** on the account workflow.
@@ -38,17 +38,17 @@ Your folding / SS-31 work needs inputs; this produces them.
 | Output | Contents |
 |---|---|
 | `consensus_genes.fasta` | 8 canonical sequences, all resolved from reviewed human UniProt |
-| `variants.fasta` | **95 reconstructed variant sequences** — 38 missense, 57 truncating |
+| `variants.fasta` | **98 reconstructed variant sequences** — 40 missense, 58 truncating |
 | `fasta_provenance.json` | every UniProt query URL + digest, plus the ClinVar input digest |
 
 **The guard worth knowing about:** a substitution is applied *only* when the
 wild-type residue ClinVar names matches the canonical sequence at that
-position. That caught **28 records numbered against a different isoform** —
+position. That caught **32 records numbered against a different isoform** —
 sequences that would have looked perfectly plausible in a FASTA file and
-silently poisoned a folding run. 260 records abstained overall, each with a
+silently poisoned a folding run. 266 records abstained overall, each with a
 named reason (116 no protein-level notation, 113 frameshifts not
 reconstructable from a ClinVar title, 28 isoform mismatches, 3 out of range).
-All 95 outputs were verified programmatically against their wild-types: 95
+All 95 outputs were verified programmatically against their wild-types: 98
 correct, 0 incorrect.
 
 Claim ceiling `SEQUENCE_RECORD` — folding and assay *inputs*, not structures,
@@ -77,7 +77,7 @@ this branch.
 
 | Where | Was | Now |
 |---|---|---|
-| `figures/workflow_dag.svg` | "642 records" | 355 |
+| `figures/workflow_dag.svg` | "642 records" | 364 |
 | `workflow_dag.svg`, README, pitch deck, video script | "loaded into an annotation store" | staged into HealthOmics / S3 upload + VEP workflow run |
 | README | implied `setup_healthomics.py` is the working path | states plainly it does **not** run in the event account; names `run_healthomics_workflow.py` as the one that does |
 | `setup_healthomics.py` | looked current | `SUPERSEDED` header; retained for accounts that permit the annotation-store API |

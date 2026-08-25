@@ -782,7 +782,13 @@ async function initOmics(){
   }
   try{
     const ev = await (await fetch('assets/clinvar_evidence.json')).json();
-    $('#omicsEvidence').innerHTML = `<div class="callout">${esc(ev.note)}</div>` +
+    const rec = ev.reconciliation;
+    const recLine = rec ? `<p class="${rec.balanced ? 'ok' : 'bad'}" style="margin:8px 0">
+        <b>${rec.balanced ? 'Balanced' : 'UNBALANCED'}:</b> ${rec.ids_fetched} records fetched =
+        ${rec.kept} kept + ${rec.excluded_large_cnv} copy-number events excluded +
+        ${rec.no_summary_returned} unavailable from the source.
+        ${rec.no_summary_returned ? 'Unavailable records are counted, not dropped.' : ''}</p>` : '';
+    $('#omicsEvidence').innerHTML = `<div class="callout">${esc(ev.note)}</div>` + recLine +
       tbl((ev.genes||[]).map(g=>({
         'Gene': g.gene,
         'Pathogenic / likely pathogenic records': g.pathogenic_or_likely,

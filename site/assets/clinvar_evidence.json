@@ -1,17 +1,22 @@
 {
-  "captured_at": "2026-08-13T23:35:27+00:00",
+  "captured_at": "2026-08-25T00:33:29+00:00",
   "claim_boundary": "PATHOGENIC_VARIANT_REPORTED",
   "genes": [
     {
-      "clinvar_total_before_filter": 337,
-      "excluded_large_cnv": 137,
+      "clinvar_total_before_filter": 339,
+      "excluded_large_cnv": 230,
       "gene": "TAFAZZIN",
-      "pathogenic_or_likely": 100,
-      "records_fetched": 337,
+      "no_summary_returned": 0,
+      "pathogenic_or_likely": 109,
+      "records_fetched": 339,
       "top_conditions": [
         {
           "condition": "3-Methylglutaconic aciduria type 2",
-          "records": 83
+          "records": 91
+        },
+        {
+          "condition": "Primary dilated cardiomyopathy",
+          "records": 3
         },
         {
           "condition": "TAFAZZIN-related disorder",
@@ -24,10 +29,6 @@
         {
           "condition": "Cardiomyopathy",
           "records": 2
-        },
-        {
-          "condition": "Left ventricular noncompaction cardiomyopathy",
-          "records": 1
         }
       ]
     },
@@ -35,6 +36,7 @@
       "clinvar_total_before_filter": 33,
       "excluded_large_cnv": 30,
       "gene": "CRLS1",
+      "no_summary_returned": 0,
       "pathogenic_or_likely": 3,
       "records_fetched": 33,
       "top_conditions": [
@@ -48,6 +50,7 @@
       "clinvar_total_before_filter": 14,
       "excluded_large_cnv": 14,
       "gene": "PGS1",
+      "no_summary_returned": 0,
       "pathogenic_or_likely": 0,
       "records_fetched": 14,
       "top_conditions": []
@@ -56,6 +59,7 @@
       "clinvar_total_before_filter": 13,
       "excluded_large_cnv": 12,
       "gene": "PTPMT1",
+      "no_summary_returned": 0,
       "pathogenic_or_likely": 1,
       "records_fetched": 13,
       "top_conditions": [
@@ -69,6 +73,7 @@
       "clinvar_total_before_filter": 267,
       "excluded_large_cnv": 16,
       "gene": "HADHA",
+      "no_summary_returned": 0,
       "pathogenic_or_likely": 251,
       "records_fetched": 267,
       "top_conditions": [
@@ -98,6 +103,7 @@
       "clinvar_total_before_filter": 0,
       "excluded_large_cnv": 0,
       "gene": "PHB",
+      "no_summary_returned": 0,
       "pathogenic_or_likely": 0,
       "records_fetched": 0,
       "top_conditions": []
@@ -106,20 +112,39 @@
       "clinvar_total_before_filter": 46,
       "excluded_large_cnv": 46,
       "gene": "PHB2",
+      "no_summary_returned": 0,
       "pathogenic_or_likely": 0,
       "records_fetched": 46,
       "top_conditions": []
     },
     {
-      "clinvar_total_before_filter": 32,
-      "excluded_large_cnv": 32,
+      "clinvar_total_before_filter": 34,
+      "excluded_large_cnv": 34,
       "gene": "CHCHD3",
+      "no_summary_returned": 0,
       "pathogenic_or_likely": 0,
-      "records_fetched": 32,
+      "records_fetched": 34,
       "top_conditions": []
     }
   ],
   "note": "Counts are ClinVar submitter classifications (pathogenic or likely pathogenic), fetched live from NCBI and re-fetchable from the recorded query URLs. Large copy-number events spanning many genes are excluded, so each count reflects gene-specific variants only; the excluded totals are recorded per gene. This is genetic association evidence, not measured rescue and not diagnosis.",
+  "reconciliation": {
+    "accounted": 746,
+    "balanced": true,
+    "batch_failures": [
+      {
+        "action": "split and retried",
+        "gene": "TAFAZZIN",
+        "ids": 100,
+        "reason": "no usable summaries after 4 attempts: Input XML size is 16503275 bytes, and cannot be transformed to JSON. the max size is 10MB",
+        "recoverable": true
+      }
+    ],
+    "excluded_large_cnv": 382,
+    "ids_fetched": 746,
+    "kept": 364,
+    "no_summary_returned": 0
+  },
   "schema": "protein_hinge.clinvar_evidence.v1",
-  "tsv_sha256": "6bdf8a0e2478c29a29fcb757609bef149bfda8af4a5f3886425c0da48d7f9dc3"
+  "tsv_sha256": "3aa5e6723563a567fc2b77733a2ee1bd4707c5d254b2537192851c143c1fc2ec"
 }

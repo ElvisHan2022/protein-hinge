@@ -57,6 +57,79 @@ def fetch(url: str) -> bytes:
         return resp.read()
 
 
+# E-utilities throttles sustained bursts even below its documented 3 req/s,
+# and answers a throttled request with HTTP 200 and a body carrying no
+# "result" key. Backoff has to outlast the throttle window, so it is measured
+# in tens of seconds, not seconds.
+RETRY_WAITS = (2, 5, 15, 30)
+
+
+def fetch_summaries(url: str, waits=RETRY_WAITS):
+    """Return (summaries, raw, note).
+
+    Treating a throttled response as an empty page silently discards every
+    record in the batch. Retry with generous backoff and, if it still fails,
+    hand back a note the caller must record as an abstention.
+    """
+    raw = b""
+    note = "not attempted"
+    for attempt, wait in enumerate(waits):
+        try:
+            raw = fetch(url)
+            payload = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            note = f"undecodable response: {exc}"
+        except Exception as exc:  # transient HTTP/network failure
+            note = f"{type(exc).__name__}: {exc}"
+        else:
+            result = payload.get("result")
+            if isinstance(result, dict) and result:
+                return result, raw, None
+            note = str((payload.get("eutilsresult") or {}).get("ERROR")
+                       or payload.get("error") or payload.get("esummaryresult")
+                       or "response carried no result payload")
+        if attempt < len(waits) - 1:
+            time.sleep(wait)
+    return {}, raw, f"no usable summaries after {len(waits)} attempts: {note}"
+
+
+def collect_summaries(ids, gene, provenance, batch_failures):
+    """Return {uid: record} for these ids, splitting the batch when needed.
+
+    E-utilities refuses to convert a response over 10 MB to JSON, and a few
+    ClinVar records are enormous (a single copy-number entry can list over a
+    thousand genes). One such record used to take its entire 100-id batch with
+    it, silently. Splitting on failure isolates the oversized record instead of
+    losing its neighbours; only a single id that still fails is unrecoverable,
+    and that one is recorded as an abstention.
+    """
+    if not ids:
+        return {}
+    url = f"{EUTILS}/esummary.fcgi?" + urllib.parse.urlencode({
+        "db": "clinvar", "id": ",".join(ids), "retmode": "json",
+    })
+    summaries, raw, note = fetch_summaries(url)
+    provenance["queries"].append({
+        "gene": gene, "stage": "esummary", "ids": len(ids), "url": url,
+        "sha256": hashlib.sha256(raw).hexdigest(), "bytes": len(raw),
+        **({"failed": note} if note else {}),
+    })
+    if summaries:
+        return summaries
+    if len(ids) == 1:
+        batch_failures.append({"gene": gene, "ids": 1, "uid": ids[0],
+                               "reason": note, "recoverable": False})
+        return {}
+    batch_failures.append({"gene": gene, "ids": len(ids), "reason": note,
+                           "recoverable": True, "action": "split and retried"})
+    mid = len(ids) // 2
+    time.sleep(0.5)
+    left = collect_summaries(ids[:mid], gene, provenance, batch_failures)
+    time.sleep(0.5)
+    right = collect_summaries(ids[mid:], gene, provenance, batch_failures)
+    return {**left, **right}
+
+
 def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     SITE_ASSETS.mkdir(parents=True, exist_ok=True)
@@ -71,6 +144,7 @@ def main() -> int:
     }
     rows: list[dict] = []
     per_gene: dict[str, dict] = {}
+    batch_failures: list[dict] = []
 
     for gene in GENES:
         term = f"{gene}[gene] AND {PATHOGENIC}"
@@ -87,6 +161,7 @@ def main() -> int:
         total = int(result.get("count", "0"))
         kept = 0
         excluded_cnv = 0
+        no_summary = 0
         conditions: dict[str, int] = {}
 
         for i in range(0, len(ids), 100):
@@ -94,15 +169,11 @@ def main() -> int:
             summary_url = f"{EUTILS}/esummary.fcgi?" + urllib.parse.urlencode({
                 "db": "clinvar", "id": ",".join(chunk), "retmode": "json",
             })
-            raw = fetch(summary_url)
-            provenance["queries"].append({
-                "gene": gene, "stage": "esummary", "url": summary_url,
-                "sha256": hashlib.sha256(raw).hexdigest(), "bytes": len(raw),
-            })
-            summaries = json.loads(raw).get("result", {})
+            summaries = collect_summaries(chunk, gene, provenance, batch_failures)
             for uid in chunk:
                 rec = summaries.get(uid)
                 if not rec:
+                    no_summary += 1
                     continue
                 if not gene_specific(rec):
                     excluded_cnv += 1
@@ -123,7 +194,7 @@ def main() -> int:
                     "review_status": classification.get("review_status", ""),
                     "conditions": "; ".join(sorted(set(traits))[:6]),
                 })
-            time.sleep(0.4)  # E-utilities courtesy limit, no API key
+            time.sleep(0.5)  # E-utilities courtesy limit, no API key
 
         top = sorted(conditions.items(), key=lambda kv: -kv[1])[:5]
         per_gene[gene] = {
@@ -131,6 +202,7 @@ def main() -> int:
             "records_fetched": len(ids),
             "clinvar_total_before_filter": total,
             "excluded_large_cnv": excluded_cnv,
+            "no_summary_returned": no_summary,
             "top_conditions": [{"condition": c, "records": n} for c, n in top],
         }
         time.sleep(0.4)
@@ -141,6 +213,20 @@ def main() -> int:
         f.write("\t".join(cols) + "\n")
         for r in rows:
             f.write("\t".join(str(r[c]).replace("\t", " ").replace("\n", " ") for c in cols) + "\n")
+    # Reconciliation: every fetched id must land in exactly one bucket.
+    fetched = sum(g["records_fetched"] for g in per_gene.values())
+    accounted = sum(g["pathogenic_or_likely"] + g["excluded_large_cnv"]
+                    + g["no_summary_returned"] for g in per_gene.values())
+    provenance["reconciliation"] = {
+        "ids_fetched": fetched,
+        "kept": sum(g["pathogenic_or_likely"] for g in per_gene.values()),
+        "excluded_large_cnv": sum(g["excluded_large_cnv"] for g in per_gene.values()),
+        "no_summary_returned": sum(g["no_summary_returned"] for g in per_gene.values()),
+        "accounted": accounted,
+        "balanced": fetched == accounted,
+        "batch_failures": batch_failures,
+    }
+
     tsv_digest = hashlib.sha256(tsv_path.read_bytes()).hexdigest()
     provenance["tsv"] = {"path": "data/healthomics/clinvar_subset.tsv",
                          "sha256": tsv_digest, "rows": len(rows)}
@@ -158,12 +244,15 @@ def main() -> int:
                  "are recorded per gene. This is genetic association evidence, not "
                  "measured rescue and not diagnosis."),
         "tsv_sha256": tsv_digest,
+        "reconciliation": provenance["reconciliation"],
         "genes": [{"gene": g, **per_gene[g]} for g in GENES],
     }
     (SITE_ASSETS / "clinvar_evidence.json").write_text(
         json.dumps(evidence, indent=2, sort_keys=True) + "\n")
 
     print(f"rows {len(rows)}")
+    print(f"reconciliation: {fetched} fetched = {accounted} accounted "
+          f"({'BALANCED' if fetched == accounted else 'UNBALANCED'})")
     print(f"tsv  {tsv_path.relative_to(ROOT)}  sha256 {tsv_digest[:16]}…")
     print("wrote site/assets/clinvar_evidence.json")
     return 0

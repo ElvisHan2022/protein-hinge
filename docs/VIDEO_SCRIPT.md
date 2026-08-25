@@ -15,7 +15,7 @@ can be pre-staged as bookmarks.
 > Targets GraphQL: what biology is broken? NCBI ClinVar, pulled through
 > E-utilities and staged into AWS HealthOmics — via boto3, S3, and IAM:
 > do patients really carry pathogenic variants in these genes?
-> 355 gene-specific records say yes. ClinicalTrials.gov's REST API: has this pairing been
+> 364 gene-specific records say yes. ClinicalTrials.gov's REST API: has this pairing been
 > tried? openFDA: is the drug approved? Convoke is dashed out — listed,
 > deliberately not wired, and we say so.
 >
@@ -57,9 +57,9 @@ DO: open the HealthOmics tab, point to the evidence table, click
 **CHECK LIVE STORE STATE**.
 
 > The genetic second opinion. We pulled every pathogenic variant ClinVar
-> reports for our eight genes — 355 gene-specific records, every query
-> digest-recorded, after throwing out 287 whole-chromosome events that a
-> naive pipeline would have counted. Look at TAFAZZIN: 100 pathogenic
+> reports for our eight genes — 364 gene-specific records, every query
+> digest-recorded, after throwing out 382 multi-gene copy-number events that a
+> naive pipeline would have counted. Look at TAFAZZIN: 109 pathogenic
 > records, top condition 3-Methylglutaconic aciduria type 2 — that *is*
 > Barth syndrome. The genetics independently agrees with the disease
 > biology, and four of the eight genes honestly show zero.

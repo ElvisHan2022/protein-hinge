@@ -1,0 +1,133 @@
+{
+  "corpus": {
+    "canonical_fasta_sha256": "98f31f1ce20f4f919e6463b026ab321ee3617acaf3c1e1e02a555ae289ed4565",
+    "captured_at": "2026-08-25T00:33:29+00:00",
+    "clinvar_subset_sha256": "3aa5e6723563a567fc2b77733a2ee1bd4707c5d254b2537192851c143c1fc2ec",
+    "reconciliation": {
+      "accounted": 746,
+      "balanced": true,
+      "batch_failures": [
+        {
+          "action": "split and retried",
+          "gene": "TAFAZZIN",
+          "ids": 100,
+          "reason": "no usable summaries after 4 attempts: Input XML size is 16503275 bytes, and cannot be transformed to JSON. the max size is 10MB",
+          "recoverable": true
+        }
+      ],
+      "excluded_large_cnv": 382,
+      "ids_fetched": 746,
+      "kept": 364,
+      "no_summary_returned": 0
+    },
+    "variants_fasta_sha256": "355d8e96bc6123427d6e05f305bb017cc09acaf3f6bdfc1255874a6ad561cd9d"
+  },
+  "generated_at": "2026-08-25T00:36:42+00:00",
+  "guards": {
+    "G1_residue_verification": {
+      "enforced_emits": 98,
+      "enforced_emits_verified_correct": 98,
+      "excluded_loud_failures": 3,
+      "guard": "residue verification",
+      "missense": 40,
+      "naive_emits": 130,
+      "question": "does the wild-type residue the record names match the canonical sequence at that position?",
+      "rate": 0.2462,
+      "records_processed": 364,
+      "silently_wrong": 32,
+      "substitution_eligible": 133,
+      "truncating": 58,
+      "why_silent": "the FASTA is valid and the residues are real; a folding tool accepts it without complaint and returns a structure for a protein nobody has",
+      "with_protein_notation": 246
+    },
+    "G2_copy_number_exclusion": {
+      "enforced_emits": 364,
+      "genes_reduced_to_zero": [
+        "PGS1",
+        "PHB2",
+        "CHCHD3"
+      ],
+      "guard": "copy-number exclusion",
+      "naive_emits": 746,
+      "per_gene": [
+        {
+          "enforced": 109,
+          "excluded": 230,
+          "gene": "TAFAZZIN",
+          "naive": 339
+        },
+        {
+          "enforced": 3,
+          "excluded": 30,
+          "gene": "CRLS1",
+          "naive": 33
+        },
+        {
+          "enforced": 0,
+          "excluded": 14,
+          "gene": "PGS1",
+          "naive": 14
+        },
+        {
+          "enforced": 1,
+          "excluded": 12,
+          "gene": "PTPMT1",
+          "naive": 13
+        },
+        {
+          "enforced": 251,
+          "excluded": 16,
+          "gene": "HADHA",
+          "naive": 267
+        },
+        {
+          "enforced": 0,
+          "excluded": 0,
+          "gene": "PHB",
+          "naive": 0
+        },
+        {
+          "enforced": 0,
+          "excluded": 46,
+          "gene": "PHB2",
+          "naive": 46
+        },
+        {
+          "enforced": 0,
+          "excluded": 34,
+          "gene": "CHCHD3",
+          "naive": 34
+        }
+      ],
+      "question": "is this record gene-specific, or a multi-gene chromosomal event?",
+      "rate": 0.5121,
+      "silently_wrong": 382,
+      "why_silent": "a per-gene count is just a number; it looks identical whether or not it credits a whole-arm deletion to one gene"
+    }
+  },
+  "not_measured": [
+    "whether any proposed drug-disease pairing is biologically correct",
+    "generalisation beyond the validation disease",
+    "efficacy, treatment value, or clinical utility",
+    "closed-vocabulary resolution (G3) -- reported as a worked example; n=1 in this corpus, no rate claimed"
+  ],
+  "retention": {
+    "genetics_lane": {
+      "declined": 382,
+      "emitted": 364
+    },
+    "note": "The trivial policy -- refuse everything -- also yields a zero silent error rate and is useless. These figures show the guards decline specifically what fails a stated check.",
+    "sequence_lane": {
+      "declined": 266,
+      "declined_reasons": {
+        "frameshift": 113,
+        "no_protein_notation": 118,
+        "position_out_of_range": 3,
+        "residue_mismatch": 32
+      },
+      "emitted": 98,
+      "emitted_verified_correct": 98
+    }
+  },
+  "schema": "protein_hinge.paper_metrics.v1"
+}
