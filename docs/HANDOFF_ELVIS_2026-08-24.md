@@ -43,11 +43,11 @@ Your folding / SS-31 work needs inputs; this produces them.
 
 **The guard worth knowing about:** a substitution is applied *only* when the
 wild-type residue ClinVar names matches the canonical sequence at that
-position. That caught **32 records numbered against a different isoform** —
+position. That caught **16 records numbered against a different isoform** —
 sequences that would have looked perfectly plausible in a FASTA file and
 silently poisoned a folding run. 266 records abstained overall, each with a
-named reason (118 no protein-level notation, 113 frameshifts not
-reconstructable from a ClinVar title, 32 isoform mismatches, 3 out of range).
+named reason (118 no protein-level notation, 131 frameshifts not
+reconstructable from a ClinVar title, 16 isoform mismatches, 1 out of range).
 All 98 outputs were verified programmatically against their wild-types: 98
 correct, 0 incorrect.
 

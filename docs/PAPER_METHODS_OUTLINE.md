@@ -60,14 +60,14 @@ transferable to any evidence-assembling pipeline, LLM-driven or not.
 ### The measurements (verified, from the repo)
 
 **G1 — residue verification.** Of 364 records, 246 carry protein-level
-notation; 113 of those are frameshifts that cannot be reconstructed from the
-record at all, leaving **133 substitution-eligible**. A naive pipeline emits
-**130** of them (3 fail on array bounds — a *loud* error, not a silent one).
-**32 of those 130 are silently wrong** — the named wild-type residue does not
+notation; 131 of those are frameshifts that cannot be reconstructed from the
+record at all, leaving **115 substitution-eligible**. A naive pipeline emits
+**114** of them (1 fails on array bounds — a *loud* error, not a silent one).
+**16 of those 114 are silently wrong** — the named wild-type residue does not
 match the canonical sequence, i.e. the record is numbered against a different
 isoform.
 
-> **Silent error rate without G1: 32/130 = 24.6%.**
+> **Silent error rate without G1: 16/114 = 14.0%.**
 
 **G2 — copy-number exclusion.** Of 746 fetched ClinVar records, **382 are
 multi-gene copy-number events** (51.2%). The per-gene effect is not uniform,
@@ -76,7 +76,7 @@ which is the interesting part:
 | Gene | naive count | after G2 | what the naive count was actually counting |
 |---|---|---|---|
 | PHB2 | 46 | **0** | Chromosome 4q21 deletion syndrome |
-| CHCHD3 | 32 | **0** | Ring chromosome 7 |
+| CHCHD3 | 32 | **0** | Ring chromosome 7 |  <!-- numbers-ok: gene count -->
 | PGS1 | 14 | **0** | whole-region events |
 | CRLS1 | 33 | 3 | mostly regional |
 | TAFAZZIN | 339 | 109 | |

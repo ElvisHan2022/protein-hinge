@@ -1,27 +1,27 @@
 {
   "abstentions": [
     {
+      "kind": "frameshift",
+      "records": 131,
+      "stage": "variant_reconstruction"
+    },
+    {
       "kind": "no_protein_notation",
       "records": 118,
       "stage": "variant_reconstruction"
     },
     {
-      "kind": "frameshift",
-      "records": 113,
-      "stage": "variant_reconstruction"
-    },
-    {
       "kind": "residue_mismatch",
-      "records": 32,
+      "records": 16,
       "stage": "variant_reconstruction"
     },
     {
       "kind": "position_out_of_range",
-      "records": 3,
+      "records": 1,
       "stage": "variant_reconstruction"
     }
   ],
-  "captured_at": "2026-08-25T00:35:17+00:00",
+  "captured_at": "2026-08-25T17:43:13+00:00",
   "claim_ceiling": "SEQUENCE_RECORD",
   "clinvar_input": {
     "path": "data/healthomics/clinvar_subset.tsv",

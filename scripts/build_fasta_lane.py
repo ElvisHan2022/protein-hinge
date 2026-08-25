@@ -119,6 +119,13 @@ def apply_variant(seq: str, title: str):
     if wt is None:
         return None, {"kind": "unknown_residue", "hgvs_p": hgvs_p,
                       "reason": f"unrecognised residue code {wt3}"}
+    # Classify the variant BEFORE checking the residue. A frameshift is
+    # unreconstructable whatever the residue says, so counting it as a residue
+    # mismatch would inflate that bucket with records no substituting pipeline
+    # could ever emit -- and the mismatch count is a reported metric.
+    if alt == "fs":
+        return None, {"kind": "frameshift", "hgvs_p": hgvs_p,
+                      "reason": "downstream sequence not reconstructable from ClinVar title"}
     if pos < 1 or pos > len(seq):
         return None, {"kind": "position_out_of_range", "hgvs_p": hgvs_p,
                       "reason": f"position {pos} exceeds canonical length {len(seq)}"}
@@ -126,9 +133,6 @@ def apply_variant(seq: str, title: str):
         return None, {"kind": "residue_mismatch", "hgvs_p": hgvs_p,
                       "reason": (f"canonical residue at {pos} is {seq[pos-1]}, "
                                  f"ClinVar names {wt} - different isoform numbering")}
-    if alt == "fs":
-        return None, {"kind": "frameshift", "hgvs_p": hgvs_p,
-                      "reason": "downstream sequence not reconstructable from ClinVar title"}
     if alt in ("Ter", "*"):
         truncated = seq[:pos - 1]
         if not truncated:
@@ -204,6 +208,12 @@ def main() -> int:
         gene = row.get("gene", "")
         rec = canon.get(gene)
         if not rec:
+            # Same shape as the bug that lost 100 records in the genetics lane:
+            # a record skipped because its gene never resolved must be counted,
+            # not dropped. Latent while all eight genes resolve; not silent.
+            abstain_kinds["gene_unresolved"] = abstain_kinds.get("gene_unresolved", 0) + 1
+            if gene in per_gene:
+                per_gene[gene]["abstained"] += 1
             continue
         seq, info = apply_variant(rec["sequence"], row.get("title", ""))
         if seq is None:
@@ -267,8 +277,18 @@ def main() -> int:
                         if a["stage"] == "variant_reconstruction"],
         "examples": examples,
     }
+    applied_total = sum(g["applied"] for g in per_gene.values())
+    seen = applied_total + sum(abstain_kinds.values())
+    lane["reconciliation"] = {
+        "records_in": len(rows), "emitted": applied_total,
+        "abstained": sum(abstain_kinds.values()), "accounted": seen,
+        "balanced": seen == len(rows),
+    }
     (SITE_ASSETS / "fasta_lane.json").write_text(
         json.dumps(lane, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+    print(f"reconciliation      : {len(rows)} in = {seen} accounted "
+          f"({'BALANCED' if seen == len(rows) else 'UNBALANCED'})")
 
     print(f"canonical sequences : {len(wt_lines)} / {len(GENES)} genes")
     print(f"variant sequences   : {len(var_lines)} written")

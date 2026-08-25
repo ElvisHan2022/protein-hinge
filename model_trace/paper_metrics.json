@@ -22,20 +22,20 @@
     },
     "variants_fasta_sha256": "355d8e96bc6123427d6e05f305bb017cc09acaf3f6bdfc1255874a6ad561cd9d"
   },
-  "generated_at": "2026-08-25T17:24:58+00:00",
+  "generated_at": "2026-08-25T17:43:21+00:00",
   "guards": {
     "G1_residue_verification": {
       "enforced_emits": 98,
       "enforced_emits_verified_correct": 98,
-      "excluded_loud_failures": 3,
+      "excluded_loud_failures": 1,
       "guard": "residue verification",
       "missense": 40,
-      "naive_emits": 130,
+      "naive_emits": 114,
       "question": "does the wild-type residue the record names match the canonical sequence at that position?",
-      "rate": 0.2462,
+      "rate": 0.1404,
       "records_processed": 364,
-      "silently_wrong": 32,
-      "substitution_eligible": 133,
+      "silently_wrong": 16,
+      "substitution_eligible": 115,
       "truncating": 58,
       "why_silent": "the FASTA is valid and the residues are real; a folding tool accepts it without complaint and returns a structure for a protein nobody has",
       "with_protein_notation": 246
@@ -107,9 +107,9 @@
   },
   "headline": {
     "g1_enforced_emits": 98,
-    "g1_naive_emits": 130,
-    "g1_silently_wrong": 32,
-    "g1_substitution_eligible": 133,
+    "g1_naive_emits": 114,
+    "g1_silently_wrong": 16,
+    "g1_substitution_eligible": 115,
     "g1_with_protein_notation": 246,
     "g2_enforced_emits": 364,
     "g2_naive_emits": 746,
@@ -130,10 +130,10 @@
     "sequence_lane": {
       "declined": 266,
       "declined_reasons": {
-        "frameshift": 113,
+        "frameshift": 131,
         "no_protein_notation": 118,
-        "position_out_of_range": 3,
-        "residue_mismatch": 32
+        "position_out_of_range": 1,
+        "residue_mismatch": 16
       },
       "emitted": 98,
       "emitted_verified_correct": 98
@@ -144,13 +144,16 @@
       95
     ],
     "g1_naive_emits": [
-      123
+      123,
+      130
     ],
     "g1_silently_wrong": [
-      28
+      28,
+      32
     ],
     "g1_substitution_eligible": [
-      126
+      126,
+      133
     ],
     "g1_with_protein_notation": [
       239

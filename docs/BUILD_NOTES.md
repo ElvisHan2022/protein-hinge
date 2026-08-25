@@ -37,7 +37,7 @@ just be about the wrong protein, with no error anywhere.
 
 ### 3. Variant records numbered against a different protein
 
-**Noticed:** when rebuilding protein sequences from variant records, 32 of them
+**Noticed:** when rebuilding protein sequences from variant records, 16 of them
 named a starting amino acid that did not match the real sequence at that spot.
 
 **Why it matters:** this is the sharpest example we have. If you skip the check,
@@ -45,7 +45,7 @@ you produce a FASTA file that is perfectly valid, full of real amino acids, that
 any folding tool will happily accept — and the answer is about a protein nobody
 has. Nothing errors. Nothing warns.
 
-**Did:** only apply a substitution when the named residue matches. 32 refused,
+**Did:** only apply a substitution when the named residue matches. 16 refused,
 98 emitted and all 98 verified correct.
 
 ---
@@ -179,3 +179,67 @@ symptom of the same thing the filter exists to remove.
 
 **Did:** nothing extra — but it is a satisfying consistency check, and worth a
 sentence in the paper.
+
+
+---
+
+### 12. The audit found a bug in my own headline number
+
+**Noticed:** running the six audit questions, an independent recount of the
+mismatches gave 17; the pipeline reported 32.
+
+**Why it matters:** the pipeline checked "does the residue match?" *before*
+"is this a frameshift?". Frameshifts cannot be rebuilt at all, so a frameshift
+that also mismatched was filed under *mismatch*. That inflated the headline
+figure with 16 records **no substituting pipeline could ever emit**.
+
+The reported silent-error rate was **24.6%**. The true rate is **14.0%** —
+overstated by more than ten points, in the direction that flattered us. The
+sequences we emit never changed: the guard rejected exactly the same records.
+Only the reasons were wrong. **A measurement bug, not a behaviour bug** — which
+is precisely why nothing looked broken.
+
+**Did:** classify the variant before checking the residue. 16/114 = 14.0%.
+
+---
+
+### 13. The rejected records are not garbage — they are correctly numbered against a different transcript
+
+**Noticed:** the guard rejects because "the residue does not match", but I had
+never checked *why*. That is asserting a cause, not measuring one.
+
+**Why it matters:** testing the failing records (rather than the passing ones)
+showed a single constant offset of **+30 reconciles all 16 exactly**. ClinVar
+numbers these against the longer TAFAZZIN transcript; UniProt canonical is 30
+residues shorter.
+
+So the records are valid — in their own frame. Applied to the canonical
+sequence they are silently wrong, so the error is real. But they are
+**recoverable**, and right now we throw them away. Abstention is the safe
+answer, not the best one.
+
+---
+
+### 14. The whole effect comes from one gene
+
+**Noticed:** all 16 mismatches are TAFAZZIN. HADHA contributes 69 emitted
+sequences and **zero** mismatches; CRLS1 and PTPMT1 zero.
+
+**Why it matters:** the measured G1 result is not "eight genes show this" — it
+is one gene with one transcript-numbering convention. n = 1, not 8. A reviewer
+will find this in a minute, so we state it in Limitations ourselves.
+
+**Did:** nothing to the code. It goes in the paper as a threat to validity.
+
+---
+
+### 15. The same silent-drop shape was still in my own code
+
+**Noticed:** auditing every error path found `if not rec: continue` in the
+sequence lane — a record whose gene failed to resolve would vanish uncounted.
+
+**Why it matters:** identical in shape to the bug that lost 100 records. It had
+not fired only because all eight genes happen to resolve. Latent, not absent.
+
+**Did:** counted as `gene_unresolved`, and the sequence lane now asserts its own
+balance: 364 in = 364 accounted.

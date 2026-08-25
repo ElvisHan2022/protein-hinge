@@ -1,27 +1,27 @@
 {
   "abstentions": [
     {
+      "kind": "frameshift",
+      "records": 131,
+      "stage": "variant_reconstruction"
+    },
+    {
       "kind": "no_protein_notation",
       "records": 118,
       "stage": "variant_reconstruction"
     },
     {
-      "kind": "frameshift",
-      "records": 113,
-      "stage": "variant_reconstruction"
-    },
-    {
       "kind": "residue_mismatch",
-      "records": 32,
+      "records": 16,
       "stage": "variant_reconstruction"
     },
     {
       "kind": "position_out_of_range",
-      "records": 3,
+      "records": 1,
       "stage": "variant_reconstruction"
     }
   ],
-  "captured_at": "2026-08-25T00:35:17+00:00",
+  "captured_at": "2026-08-25T17:43:13+00:00",
   "claim_ceiling": "SEQUENCE_RECORD",
   "examples": [
     {
@@ -156,6 +156,13 @@
     }
   ],
   "note": "Canonical sequences from UniProt, plus protein sequences reconstructed from the pathogenic ClinVar records this project already holds. A substitution is applied only when the wild-type residue matches the canonical sequence at that position; everything else abstains with a named reason. These are folding and assay inputs - not structures, not binding claims, not predictions of pathogenicity.",
+  "reconciliation": {
+    "abstained": 266,
+    "accounted": 364,
+    "balanced": true,
+    "emitted": 98,
+    "records_in": 364
+  },
   "schema": "protein_hinge.fasta_lane.projection.v1",
   "variant_fasta": {
     "path": "data/fasta/variants.fasta",

@@ -36,8 +36,8 @@ scaffold your lab reviews, we never issue lab instructions.
 ## 2. The finding worth your attention
 
 A substitution is applied **only** when the wild-type residue ClinVar names
-matches the canonical sequence at that position. That guard **caught 32 records
-out of 130** with usable protein-level notation — records numbered against a
+matches the canonical sequence at that position. That guard **caught 16 records
+out of 114** that a substituting pipeline would emit — records numbered against a
 different isoform, which would have emitted perfectly plausible FASTA and
 silently poisoned a folding run.
 

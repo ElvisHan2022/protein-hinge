@@ -83,7 +83,7 @@ Already measured, reproducible from the repo:
 
 | Guard | Effect |
 |---|---|
-| Residue verification (FASTA lane) | **32 of 130** records with usable notation caught as isoform-mismatched — would have emitted plausible-but-wrong sequences |
+| Residue verification (FASTA lane) | **16 of 114** records a substituting pipeline would emit, caught as isoform-mismatched — plausible-but-wrong sequences |
 | CNV filter (ClinVar lane) | **382** multi-gene copy-number events excluded from per-gene counts a naive pipeline would credit |
 | Abstention accounting | **266** records declined, each with a named machine-readable reason |
 | Output verification | 98 emitted sequences checked against wild-type: **98 correct, 0 incorrect** |

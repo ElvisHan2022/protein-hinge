@@ -60,7 +60,7 @@ on Windows at all).
 
 **Sequence lane** (`scripts/build_fasta_lane.py`) — 8 canonical UniProt
 sequences + **98 reconstructed variant sequences**, with the residue guard that
-caught **32 isoform-mismatched records** out of 130.
+caught **16 isoform-mismatched records** out of 114.
 
 **AWS HealthOmics** — evidence uploaded digest-keyed to S3; our own **VEP
 annotation run COMPLETED** on the account workflow. Annotation-store API is

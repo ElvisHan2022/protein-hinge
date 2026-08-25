@@ -16,7 +16,7 @@ Reconciliation: 746 records fetched =
 
 | Guard | Naive pipeline emits | Silently wrong | Rate | Enforced emits |
 |---|---:|---:|---:|---:|
-| G1 residue verification | 130 | **32** | **24.6%** | 98 (all verified correct) |
+| G1 residue verification | 114 | **16** | **14.0%** | 98 (all verified correct) |
 | G2 copy-number exclusion | 746 | **382** | **51.2%** | 364 |
 
 G2 additionally takes **3 of 8 genes**
@@ -31,10 +31,10 @@ zero silent errors, so the reasons matter:
 
 | Reason declined | Records |
 |---|---:|
+| frameshift | 131 |
 | no protein notation | 118 |
-| frameshift | 113 |
-| residue mismatch | 32 |
-| position out of range | 3 |
+| residue mismatch | 16 |
+| position out of range | 1 |
 
 ## Per-gene effect of G2
 
