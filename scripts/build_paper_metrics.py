@@ -142,6 +142,39 @@ def main() -> int:
              "n=1 in this corpus, no rate claimed"),
         ],
     }
+    # Carry forward the values these figures used to have. Numbers move when a
+    # lane is rebuilt, and prose citing the old ones goes stale silently --
+    # exactly the failure this project is about. scripts/check_cited_numbers.py
+    # reads this list and refuses to let a retired value survive in the docs.
+    headline = {
+        "g1_naive_emits": g1["naive_emits"],
+        "g1_silently_wrong": g1["silently_wrong"],
+        "g1_enforced_emits": g1["enforced_emits"],
+        "g1_with_protein_notation": g1["with_protein_notation"],
+        "g1_substitution_eligible": g1["substitution_eligible"],
+        "g2_naive_emits": g2["naive_emits"],
+        "g2_silently_wrong": g2["silently_wrong"],
+        "g2_enforced_emits": g2["enforced_emits"],
+    }
+    metrics["headline"] = headline
+    retired = {}
+    if OUT_JSON.exists():
+        try:
+            prev = json.loads(OUT_JSON.read_text(encoding="utf-8"))
+            retired = {k: list(v) for k, v in (prev.get("retired_values") or {}).items()}
+            for key, was in (prev.get("headline") or {}).items():
+                now = headline.get(key)
+                if now is not None and was != now:
+                    retired.setdefault(key, [])
+                    if was not in retired[key]:
+                        retired[key].append(was)
+        except json.JSONDecodeError:
+            pass
+    live = set(headline.values())
+    metrics["retired_values"] = {
+        k: [v for v in vs if v not in live] for k, vs in retired.items()
+    }
+
     OUT_JSON.parent.mkdir(exist_ok=True)
     OUT_JSON.write_text(json.dumps(metrics, indent=2, sort_keys=True) + "\n",
                         encoding="utf-8")

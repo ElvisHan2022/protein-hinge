@@ -22,7 +22,7 @@
     },
     "variants_fasta_sha256": "355d8e96bc6123427d6e05f305bb017cc09acaf3f6bdfc1255874a6ad561cd9d"
   },
-  "generated_at": "2026-08-25T00:36:42+00:00",
+  "generated_at": "2026-08-25T17:24:58+00:00",
   "guards": {
     "G1_residue_verification": {
       "enforced_emits": 98,
@@ -105,6 +105,16 @@
       "why_silent": "a per-gene count is just a number; it looks identical whether or not it credits a whole-arm deletion to one gene"
     }
   },
+  "headline": {
+    "g1_enforced_emits": 98,
+    "g1_naive_emits": 130,
+    "g1_silently_wrong": 32,
+    "g1_substitution_eligible": 133,
+    "g1_with_protein_notation": 246,
+    "g2_enforced_emits": 364,
+    "g2_naive_emits": 746,
+    "g2_silently_wrong": 382
+  },
   "not_measured": [
     "whether any proposed drug-disease pairing is biologically correct",
     "generalisation beyond the validation disease",
@@ -128,6 +138,34 @@
       "emitted": 98,
       "emitted_verified_correct": 98
     }
+  },
+  "retired_values": {
+    "g1_enforced_emits": [
+      95
+    ],
+    "g1_naive_emits": [
+      123
+    ],
+    "g1_silently_wrong": [
+      28
+    ],
+    "g1_substitution_eligible": [
+      126
+    ],
+    "g1_with_protein_notation": [
+      239
+    ],
+    "g2_enforced_emits": [
+      355
+    ],
+    "g2_naive_emits": [
+      642,
+      742
+    ],
+    "g2_silently_wrong": [
+      287,
+      291
+    ]
   },
   "schema": "protein_hinge.paper_metrics.v1"
 }

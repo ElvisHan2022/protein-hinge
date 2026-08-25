@@ -35,7 +35,7 @@ that produces the numbers in the paper.
 | # | Item | Owner | Notes |
 |---|---|---|---|
 | A1 | **Get Byron's existing draft** | Elvis → Byron | He said he has most of it ready. **The single biggest unblock.** Everything below is cheaper once we see it. |
-| A2 | **OpenReview account** | each author | Account creation can take time to be activated — do it today, not on the 28th |
+| A2 | **OpenReview account** | each author | Account creation can take time to be activated — do it today, not at the deadline |
 | A3 | **Author list + eligibility check** | Byron | Does the eligibility rule bind all authors? |
 | A4 | **Overleaf project from the NeurIPS 2026 template** | Byron or Elvis | Template link already circulated |
 | A5 | **Click submit** | one author | Do it a day early; portals get slow at deadline |

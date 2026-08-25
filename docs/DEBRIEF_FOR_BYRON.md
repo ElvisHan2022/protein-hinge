@@ -36,8 +36,8 @@ scaffold your lab reviews, we never issue lab instructions.
 ## 2. The finding worth your attention
 
 A substitution is applied **only** when the wild-type residue ClinVar names
-matches the canonical sequence at that position. That guard **caught 28 records
-out of 123** with usable protein-level notation — records numbered against a
+matches the canonical sequence at that position. That guard **caught 32 records
+out of 130** with usable protein-level notation — records numbered against a
 different isoform, which would have emitted perfectly plausible FASTA and
 silently poisoned a folding run.
 
@@ -73,7 +73,7 @@ normalises line endings first and passes: **OVERALL PASS**, root matches
 
 | Where | Was | Now |
 |---|---|---|
-| `workflow_dag.svg` | "642 records" | 364 |
+| `workflow_dag.svg` | "642 records" | 364 |  <!-- numbers-ok: historical was/now -->
 | DAG, README, deck, video script | "loaded into an annotation store" | staged into HealthOmics / S3 upload + VEP run |
 | README | implied `setup_healthomics.py` works | states plainly it does **not** run in the event account; names the script that does |
 | Dashboard preflight | "expected user: elvish.an", "store: protein_hinge_clinvar" | workflows-visible / runs-recorded |

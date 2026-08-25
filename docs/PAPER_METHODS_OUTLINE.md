@@ -59,11 +59,11 @@ transferable to any evidence-assembling pipeline, LLM-driven or not.
 
 ### The measurements (verified, from the repo)
 
-**G1 — residue verification.** Of 364 records, 239 carry protein-level
+**G1 — residue verification.** Of 364 records, 246 carry protein-level
 notation; 113 of those are frameshifts that cannot be reconstructed from the
-record at all, leaving **126 substitution-eligible**. A naive pipeline emits
-**123** of them (3 fail on array bounds — a *loud* error, not a silent one).
-**28 of those 123 are silently wrong** — the named wild-type residue does not
+record at all, leaving **133 substitution-eligible**. A naive pipeline emits
+**130** of them (3 fail on array bounds — a *loud* error, not a silent one).
+**32 of those 130 are silently wrong** — the named wild-type residue does not
 match the canonical sequence, i.e. the record is numbered against a different
 isoform.
 
@@ -108,7 +108,7 @@ experimental finding. Overclaiming here is the fastest way to lose a reviewer.
 ## Resolved while verifying these numbers
 
 **The genetics lane was silently dropping records, and fixing it changed the
-corpus.** 746 record ids were fetched but only 642 accounted for; exactly one
+corpus.** 746 record ids were fetched but only 642 accounted for <!-- numbers-ok: historical -->; exactly one
 100-record batch vanished through a bare `continue` with nothing recorded.
 
 Diagnosis went wrong once before it went right, which is worth reporting in the

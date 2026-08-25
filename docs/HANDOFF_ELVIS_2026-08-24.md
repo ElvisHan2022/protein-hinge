@@ -46,9 +46,9 @@ wild-type residue ClinVar names matches the canonical sequence at that
 position. That caught **32 records numbered against a different isoform** —
 sequences that would have looked perfectly plausible in a FASTA file and
 silently poisoned a folding run. 266 records abstained overall, each with a
-named reason (116 no protein-level notation, 113 frameshifts not
-reconstructable from a ClinVar title, 28 isoform mismatches, 3 out of range).
-All 95 outputs were verified programmatically against their wild-types: 98
+named reason (118 no protein-level notation, 113 frameshifts not
+reconstructable from a ClinVar title, 32 isoform mismatches, 3 out of range).
+All 98 outputs were verified programmatically against their wild-types: 98
 correct, 0 incorrect.
 
 Claim ceiling `SEQUENCE_RECORD` — folding and assay *inputs*, not structures,
@@ -77,7 +77,7 @@ this branch.
 
 | Where | Was | Now |
 |---|---|---|
-| `figures/workflow_dag.svg` | "642 records" | 364 |
+| `figures/workflow_dag.svg` | "642 records" | 364 |  <!-- numbers-ok: historical was/now -->
 | `workflow_dag.svg`, README, pitch deck, video script | "loaded into an annotation store" | staged into HealthOmics / S3 upload + VEP workflow run |
 | README | implied `setup_healthomics.py` is the working path | states plainly it does **not** run in the event account; names `run_healthomics_workflow.py` as the one that does |
 | `setup_healthomics.py` | looked current | `SUPERSEDED` header; retained for accounts that permit the annotation-store API |
