@@ -3,10 +3,19 @@
 % NeurIPS 2026 workshop style. Drop neurips_2026.sty beside this file (it ships
 % with the official Overleaf template). Keep the anonymous default for
 % submission: do NOT add [final] until the paper is accepted.
-\usepackage{neurips_2026}
+% Without that file the paper still compiles, in an approximation of the
+% NeurIPS single-column layout, so the draft can be read before the official
+% style is dropped in. Close but not exact -- do not judge page count by it.
+\IfFileExists{neurips_2026.sty}{%
+  \usepackage{neurips_2026}%
+}{%
+  \usepackage[letterpaper,margin=1.4in,top=1.2in,bottom=1.2in]{geometry}%
+  \usepackage{natbib}%
+}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{lmodern}   % scalable fonts, required by microtype expansion
 \usepackage{hyperref}
 \usepackage{url}
 \usepackage{booktabs}
@@ -28,61 +37,69 @@ Measuring the Silent Errors an Evidence Pipeline Would Otherwise Ship}
 \maketitle
 
 \begin{abstract}
-Pipelines that assemble public evidence into scientific claims fail quietly.
-A record numbered against a different reference sequence, or a
-chromosome-scale event credited to a single gene, produces output that is
-well-formed, raises no exception, and is indistinguishable downstream from a
-correct result. We describe a rare-disease drug-repurposing pipeline built on
-one rule---every stage must verify its input or decline it, and declining is a
-counted output---and we measure what that rule buys. Ablating two verification
-guards over the same real public records, the unguarded pipeline emits
-\GOneWrong{} of \GOneNaive{} protein sequences that are silently wrong
-(\GOneRate{}) and credits \GTwoWrong{} of \GTwoNaive{} variant records
-(\GTwoRate{}) to genes they are not evidence about, taking \GTwoZeroed{} of
-\NumGenes{} genes from apparent support to zero. We report the cost as well as
-the benefit: the sequence lane declines \SeqDeclined{} of \GOneProcessed{}
-records. We also report an uncomfortable result. A reconciliation check we
-added for this paper found that our own pipeline had been discarding 100
-records without counting them, and a subsequent audit found that our first
-published version of the headline rate was itself overstated by ten
-percentage points because the instrument mislabelled its own rejections. Both
-failures had the exact shape the paper argues against, and neither was visible
-without a mechanical check.
+Pipelines that assemble public biomedical records into candidate scientific
+claims are evaluated on what they output, not on what they decline. Yet in
+this setting the dominant failure is not a wrong ranking but a \emph{silent
+error}: an output that is wrong, well-formed, raises no exception, and is
+indistinguishable downstream from a correct result. A variant record numbered
+against a different reference transcript, or a chromosome-scale event credited
+to a single gene, propagates without any signal that something is wrong. We
+introduce \emph{silent-error ablation}, a protocol that evaluates an evidence
+pipeline by removing its verification guards and counting what the unguarded
+pipeline would emit over identical inputs. We apply it to a rare-disease drug
+repurposing pipeline built on one rule: every stage must verify its input
+against a stated precondition or decline it, and declining is a counted
+output. Over \CorpusFetched{} clinical variant records for \NumGenes{} genes,
+removing residue verification causes \GOneWrong{} of \GOneNaive{} emitted
+protein sequences to be silently wrong (\GOneRate{}), and removing
+copy-number exclusion causes \GTwoWrong{} of \GTwoNaive{} records
+(\GTwoRate{}) to be credited to genes they are not evidence about, moving
+\GTwoZeroed{} of \NumGenes{} genes from apparent support to zero. We report
+the cost alongside the benefit: the sequence lane declines \SeqDeclined{} of
+\GOneProcessed{} records. Finally, we report two defects the protocol found in
+our own instrumentation, including a headline rate we had overstated by ten
+percentage points; both had the failure shape the protocol targets, and
+neither was visible without a mechanical check.
 \end{abstract}
 
 \section{Introduction}
 
 Computational drug repurposing produces rankings. Recent systems score
 millions of drug--disease pairs \citep{txgnn}, and commercial databases sell
-curated competitive landscapes. What they generally do not produce is a record
-of which evidence produced a score, or a principled way to say ``we cannot
-tell.'' A confident guess and an auditable finding are rendered identically.
+curated competitive landscapes. These systems are evaluated on the quality of
+what they emit. What they generally do not produce is a record of which
+evidence produced a score, or a principled way to report that the evidence
+was insufficient; a confident guess and an auditable finding are rendered
+identically.
 
-This matters more than it appears, because the dominant failure mode in an
-evidence-assembling pipeline is not a crash. It is a \emph{silent error}: an
+This matters because the dominant failure mode in an evidence-assembling
+pipeline is not a crash or a mis-ranking. It is a \emph{silent error}: an
 output that is (i)~wrong, (ii)~syntactically well-formed, (iii)~raises no
 exception or warning, and (iv)~cannot be distinguished by a downstream
 consumer from a correct output. Silent errors are the non-statistical analogue
 of hallucination---plausible, confident, and undetectable at the point of use.
+They are also, by construction, invisible to any evaluation that scores only
+the outputs a pipeline chooses to produce.
 
 We take a narrow position. We do not claim to rank better. We claim that a
 pipeline can be built so that each stage must either \emph{verify} its input
 against a stated precondition or \emph{decline} it, with declining recorded as
-a first-class, counted output; and that this discipline prevents a measurable
+a first-class, counted output, and that this discipline prevents a measurable
 class of silent error. Our contributions:
 
 \begin{enumerate}
-\item A verify-or-abstain architecture for evidence assembly in which the
-decision logic is a small set of readable rules, no model output can set a
-verdict, and every record is content-addressed under a single Merkle root that
-a reader re-verifies client-side.
-\item An \textbf{ablation methodology}: rather than evaluating the pipeline's
-recommendations---which would require wet-lab validation we have not done---we
-evaluate its \emph{refusals}, by removing each guard and counting what the
-resulting pipeline would emit.
-\item \textbf{Measured results} on real public records, reported with their
-cost and their limits, including the finding that our own instrumentation
-exhibited the failure we describe, twice.
+\item \textbf{Silent-error ablation}, an evaluation protocol for evidence
+pipelines. Rather than scoring the pipeline's recommendations---which here
+would require wet-lab validation we have not performed---we score its
+\emph{refusals}, by removing each verification guard and counting what the
+resulting pipeline emits over identical inputs.
+\item A \textbf{verify-or-abstain architecture} in which the decision logic is
+a small set of readable rules, no model output may set a verdict, and every
+record is content-addressed under a single Merkle root that a reader
+re-derives client-side.
+\item \textbf{Measurements} on \CorpusFetched{} real public records, reported
+with their cost and their limits, including two defects the protocol exposed
+in our own instrumentation.
 \end{enumerate}
 
 \section{Related work}
@@ -232,9 +249,9 @@ a record a substituting pipeline would otherwise have emitted.}
 
 \section{What the audit found}
 
-We ran an adversarial self-audit before submission. Two findings bear directly
-on the paper's claim, and we report them because omitting them would be the
-error the paper argues against.
+We applied the protocol to our own instrumentation before submission. Two
+findings bear directly on the results above. We report them because omitting
+them would be an instance of the failure the paper describes.
 
 \textbf{The pipeline was discarding records without counting them.} A
 reconciliation check---fetched records must equal admitted plus excluded plus
@@ -313,7 +330,9 @@ Future work: extending custody to the turn level of the model interactions
 that assist the pipeline, so that assistance itself carries receipts; and
 recovering rather than merely declining the transcript-offset records.
 
-\paragraph{Reproducibility.} Every figure in this paper is generated from the
+\section*{Reproducibility statement}
+
+Every figure in this paper is generated from the
 pipeline outputs by a script; no number is typed by hand. A second script
 refuses to let a superseded figure survive in the prose. An anonymised
 artifact containing the code, the captured corpus with digests, and a

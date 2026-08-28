@@ -17,3 +17,11 @@ node_modules/
 # COMMITTED: without the bytes, a reader can only take the digests on trust.
 # Large upstream files (the 13 MB parquets, the JUMP metadata) are never
 # vendored here — they are attested by digest and re-fetched from origin.
+
+# LaTeX build artifacts
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/*.synctex.gz
