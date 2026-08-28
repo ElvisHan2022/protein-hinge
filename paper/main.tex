@@ -121,56 +121,10 @@ inclusion proofs and makes any post-hoc edit detectable.
 probability of a record being dropped was a function of its own size, which
 correlated with its class.
 
-\section{System}
-
-\textbf{Input and output.} The input is a rare-disease name. The output is a
-set of (disease, target, drug-programme) rows, each carrying a verdict in
-$\{\textsc{gap}, \textsc{not\_a\_gap}, \textsc{abstain}\}$, the identifier of
-the rule that produced it, and a receipt: the content digests of every record
-the verdict consumed.
-
-\textbf{Evidence acquisition.} Five public sources are queried, one question
-each: disease biology and target tractability; clinical variant records;
-registered trials, retaining status and phase so that a terminated trial is
-not read as an untried opportunity; regulatory approval; and cell-morphology
-profiles. Every response is hashed at capture and its query URL recorded, so a
-third party can re-issue the query and compare. A source whose responses
-cannot be re-obtained by a third party is inadmissible; one candidate source
-is excluded on exactly this ground and is reported as excluded rather than
-quietly omitted.
-
-\textbf{Identity normalisation.} Symbols resolve by exact match or an explicit
-alias table; there is no fuzzy matching. This matters because collisions are
-real: one symbol in our corpus denotes two unrelated proteins, and a
-similarity match would return a valid gene, succeed at every downstream step,
-and answer a question about the wrong molecule.
-
-\textbf{Decision.} Nine first-match rules assign the verdict. No model output
-may set a verdict, resolve a symbol, or choose a threshold; a language model
-is used only to phrase already-decided rows.
-
-\textbf{Custody.} Every record is content-addressed and committed under one
-RFC~6962 Merkle root \citep{rfc6962}. Verification re-derives the root in the
-reader's browser from the record bytes; a single-byte edit moves the root and
-the first divergent node is named. This is a property of the construction, not
-an experimental result, and we report it as such.
-
-\subsection{The verification guards}
-
-Two guards carry the measurements in this paper.
-
-\textbf{G1, residue verification.} A variant record names a wild-type residue
-and a position. Before applying the substitution to a canonical protein
-sequence, the pipeline checks that the named residue is what the canonical
-sequence actually has at that position. If not, the record is numbered against
-a different transcript, and the row abstains.
-
-\textbf{G2, copy-number exclusion.} A variant record is admitted as evidence
-about a gene only if it is gene-specific. Records typed as copy-number events,
-or spanning more than a small number of genes, are excluded: a deletion
-covering hundreds of genes is not evidence about any one of them.
+\input{sections/approach}
 
 \section{Evaluation}
+\label{sec:eval}
 
 \subsection{Setup and metric}
 
@@ -244,6 +198,7 @@ a record a substituting pipeline would otherwise have emitted.}
 \end{table}
 
 \section{What the audit found}
+\label{sec:audit}
 
 We applied the protocol to our own instrumentation before submission. Two
 findings bear directly on the results above. We report them because omitting
