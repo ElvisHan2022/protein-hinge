@@ -1,0 +1,73 @@
+% Verification status is recorded per entry. VERIFIED means the DOI was
+% resolved against Crossref and the returned title, first author, year and
+% container all matched the entry below.
+%
+% UNVERIFIED entries could not be machine-checked because the venue does not
+% register DOIs with Crossref (JMLR and NeurIPS proceedings frequently do not).
+% They must be confirmed by hand against the venue's own site before
+% submission. Do not remove these markers until that is done.
+
+% --- VERIFIED (Crossref, title+author+year+container all matched) ---
+
+@article{txgnn,
+  title   = {A foundation model for clinician-centered drug repurposing},
+  author  = {Huang, Kexin and Chandak, Payal and Wang, Qianwen and Havaldar,
+             Shreyas and Vaid, Akhil and Leskovec, Jure and Nadkarni, Girish N.
+             and Glicksberg, Benjamin S. and Gehlenborg, Nils and Zitnik, Marinka},
+  journal = {Nature Medicine},
+  year    = {2024},
+  doi     = {10.1038/s41591-024-03233-x}
+}
+
+@article{chow,
+  title   = {On optimum recognition error and reject tradeoff},
+  author  = {Chow, C. K.},
+  journal = {IEEE Transactions on Information Theory},
+  volume  = {16},
+  number  = {1},
+  pages   = {41--46},
+  year    = {1970},
+  doi     = {10.1109/tit.1970.1054406}
+}
+
+@article{rubin,
+  title   = {Inference and missing data},
+  author  = {Rubin, Donald B.},
+  journal = {Biometrika},
+  volume  = {63},
+  number  = {3},
+  pages   = {581--592},
+  year    = {1976},
+  doi     = {10.1093/biomet/63.3.581}
+}
+
+% --- VERIFIED by document (IETF publishes RFCs directly, not via Crossref) ---
+
+@techreport{rfc6962,
+  title       = {Certificate Transparency},
+  author      = {Laurie, Ben and Langley, Adam and Kasper, Emilia},
+  institution = {Internet Engineering Task Force},
+  type        = {RFC},
+  number      = {6962},
+  year        = {2013},
+  url         = {https://www.rfc-editor.org/rfc/rfc6962.html}
+}
+
+% --- NOT MACHINE-CHECKED: confirm author list, volume and pages by hand ---
+
+@article{elyaniv,
+  title   = {On the foundations of noise-free selective classification},
+  author  = {El-Yaniv, Ran and Wiener, Yair},
+  journal = {Journal of Machine Learning Research},
+  year    = {2010},
+  note    = {UNVERIFIED -- JMLR does not register DOIs with Crossref; confirm
+             volume and pages at jmlr.org before submission}
+}
+
+@inproceedings{geifman,
+  title     = {Selective classification for deep neural networks},
+  author    = {Geifman, Yonatan and El-Yaniv, Ran},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2017},
+  note      = {UNVERIFIED -- confirm at proceedings.neurips.cc before submission}
+}
