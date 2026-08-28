@@ -37,29 +37,24 @@ Measuring the Silent Errors an Evidence Pipeline Would Otherwise Ship}
 \maketitle
 
 \begin{abstract}
-Pipelines that assemble public biomedical records into candidate scientific
-claims are evaluated on what they output, not on what they decline. Yet in
-this setting the dominant failure is not a wrong ranking but a \emph{silent
-error}: an output that is wrong, well-formed, raises no exception, and is
-indistinguishable downstream from a correct result. A variant record numbered
-against a different reference transcript, or a chromosome-scale event credited
-to a single gene, propagates without any signal that something is wrong. We
-introduce \emph{silent-error ablation}, a protocol that evaluates an evidence
-pipeline by removing its verification guards and counting what the unguarded
-pipeline would emit over identical inputs. We apply it to a rare-disease drug
-repurposing pipeline built on one rule: every stage must verify its input
-against a stated precondition or decline it, and declining is a counted
-output. Over \CorpusFetched{} clinical variant records for \NumGenes{} genes,
-removing residue verification causes \GOneWrong{} of \GOneNaive{} emitted
-protein sequences to be silently wrong (\GOneRate{}), and removing
-copy-number exclusion causes \GTwoWrong{} of \GTwoNaive{} records
-(\GTwoRate{}) to be credited to genes they are not evidence about, moving
+Pipelines that assemble public biomedical records into scientific claims are
+evaluated on what they emit, not on what they decline. We show that this
+misses the dominant failure mode. A \emph{silent error} is an output that is
+wrong, well-formed, raises no exception, and is indistinguishable downstream
+from a correct result. We introduce \emph{silent-error ablation}, a protocol
+that removes a pipeline's verification guards and counts what the unguarded
+pipeline then emits over identical inputs. We apply it to a rare-disease drug
+repurposing pipeline in which every stage must verify its input or decline it,
+and declining is a counted output. Over \CorpusFetched{} clinical variant
+records for \NumGenes{} genes, we find that removing residue verification
+makes \GOneWrong{} of \GOneNaive{} emitted protein sequences silently wrong
+(\GOneRate{}). Removing copy-number exclusion misattributes \GTwoWrong{} of
+\GTwoNaive{} records to genes they are not evidence about, moving
 \GTwoZeroed{} of \NumGenes{} genes from apparent support to zero. We report
-the cost alongside the benefit: the sequence lane declines \SeqDeclined{} of
-\GOneProcessed{} records. Finally, we report two defects the protocol found in
-our own instrumentation, including a headline rate we had overstated by ten
-percentage points; both had the failure shape the protocol targets, and
-neither was visible without a mechanical check.
+the cost as well: the sequence lane declines \SeqDeclined{} of
+\GOneProcessed{} records. We also report two defects the protocol found in our
+own instrumentation, including a rate we had overstated by ten percentage
+points. Neither was visible without a mechanical check.
 \end{abstract}
 
 \section{Introduction}
@@ -208,8 +203,9 @@ would emit; loud failures are excluded from the numerator.}
 \end{table}
 
 Table~\ref{tab:ablation} gives the headline result. Without G1, \GOneWrong{}
-of \GOneNaive{} emitted sequences are wrong: valid FASTA, real residues,
-accepted by any structure-prediction tool, describing a protein nobody has.
+of \GOneNaive{} emitted sequences are wrong. Each is valid FASTA built from
+real residues. A structure-prediction tool accepts it without complaint and
+returns a structure for a protein that does not exist.
 With G1, \GOneEmits{} sequences are emitted (\GOneMissense{} substitutions,
 \GOneTruncating{} truncations) and all \GOneEmits{} were verified
 position-by-position against their wild-type reference.
