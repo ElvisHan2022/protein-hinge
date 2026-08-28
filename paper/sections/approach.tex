@@ -2,15 +2,16 @@
 
 \subsection{One rule}
 
-The pipeline is built on a single constraint: \textbf{every stage must either
-verify its input against a stated precondition, or decline it}. Declining is
-not an empty result. It is an output, carrying a machine-readable reason, and
-it is counted in the same ledger as an admitted record.
+The pipeline rests on a single constraint: \textbf{every stage must either
+verify its input against a stated precondition, or decline it}. A decline is
+itself an output. It carries a machine-readable reason and enters the same
+ledger as an admitted record.
 
-This is a stronger commitment than it sounds. No stage may fall through,
-guess, or interpolate. A symbol that does not resolve is not approximately
-matched. A record whose numbering disagrees with its reference is not applied
-anyway. A source that a third party cannot re-query is not consulted at all.
+The commitment is stronger than it sounds, because it removes the fallback
+paths a pipeline usually relies on. A symbol that fails to resolve stays
+unresolved, with approximate matching disallowed. A record whose numbering
+disagrees with its reference is set aside. A source that a third party would
+be unable to re-query is left out of the system entirely.
 
 The input is a rare-disease name. The output is a set of (disease, target,
 drug-programme) rows. Each row carries a verdict in $\{\textsc{gap},
@@ -21,15 +22,15 @@ consumed.
 \subsection{Six types of evidence}
 
 We collect six kinds of evidence, each answering exactly one question
-(Table~\ref{tab:evidence}). The separation is deliberate. A source is
-consulted for the one thing it is authoritative about and for nothing else, so
-that a failure in one lane cannot silently substitute for another.
+(Table~\ref{tab:evidence}). The separation is deliberate. Each source is
+consulted for the one thing it is authoritative about, so that a failure in
+one lane stays confined to that lane.
 
 \begin{table}[h]
 \centering
 \small
-\caption{The six evidence types. Each source answers one question, and none is
-consulted outside its competence.}
+\caption{The six evidence types. Each source answers one question, and each is
+consulted only within its competence.}
 \label{tab:evidence}
 \begin{tabular}{lll}
 \toprule
@@ -46,14 +47,14 @@ Cell morphology     & does any compound move cells toward reference?    & phenot
 \end{tabular}
 \end{table}
 
-Two details matter for the evaluation that follows. First, trials retain
-\emph{status and phase}, not merely existence. A terminated Phase~3 is evidence
-against a pairing. A pipeline that records only that a trial exists converts a
-past failure into an apparent opportunity.
+Two details matter for the evaluation that follows. First, a trial retains its
+\emph{status and phase} alongside the fact of its existence. A terminated
+Phase~3 is evidence against a pairing, and a pipeline that records only
+existence converts that past failure into an apparent opportunity.
 
-Second, the canonical sequence is treated as evidence in its own right rather
-than as a lookup. It is the frame against which every variant record is
-checked, and the first guard we ablate is precisely a check against it.
+Second, the canonical sequence enters the system as evidence in its own right.
+It is the frame against which every variant record is checked, and the first
+guard we ablate is precisely a check against it.
 
 \subsection{The provenance framework}
 
@@ -63,24 +64,24 @@ beside the digest. Records carry one of two custody levels.
 \begin{itemize}
 \item \textbf{Recomputed.} We hold the bytes, and the digest can be re-derived
 from them locally.
-\item \textbf{Committed.} We hold a digest captured at origin but not the
-bytes. This is the honest level for a large third-party artifact we do not
-redistribute.
+\item \textbf{Committed.} We hold a digest captured at origin while the bytes
+stay with the publisher. This is the honest level for a large third-party
+artifact we decline to redistribute.
 \end{itemize}
 
-The distinction is rendered rather than hidden, because the two levels support
+The dashboard renders the distinction, because the two levels support
 different claims. Every record, at either level, is content-addressed and
 committed under a single Merkle root, using the audit-tree construction of
 Certificate Transparency \citep{rfc6962}. Verification re-derives the root in
 the reader's browser from the record bytes. A single-byte edit moves the root,
 and the first divergent node is named.
 
-Admissibility follows from this. A source whose responses a third party cannot
-re-obtain cannot be given a meaningful digest, and is therefore inadmissible.
-One candidate source is excluded on exactly this ground. We report it as
-excluded rather than omitting it quietly.
+Admissibility follows from this. A source whose responses a third party would
+be unable to re-obtain can carry no meaningful digest, which makes it
+inadmissible. One candidate source is excluded on exactly this ground, and we
+report the exclusion and its reason.
 
-\subsection{Dispositions: every record lands somewhere}
+\subsection{Every record lands somewhere}
 
 The provenance framework is half of what the evaluation needs. The other half
 is a \emph{closed disposition vocabulary}. Each stage assigns every record it
@@ -90,7 +91,8 @@ The variant lane admits a record, excludes it as a multi-gene copy-number
 event, or reports it unavailable from the source. The sequence lane emits a
 substitution or a truncation, or declines with one of six named reasons
 (Table~\ref{tab:decline}). The decision layer assigns one of five verdicts
-through nine first-match rules. No stage has an unlabelled path.
+through nine first-match rules. Every path through every stage ends at a
+label.
 
 Each stage then asserts its own arithmetic: records in must equal records out
 plus records declined. For the corpus used here, acquisition reconciles as
@@ -98,38 +100,40 @@ plus records declined. For the corpus used here, acquisition reconciles as
 excluded $+$ \CorpusUnavailable{} unavailable. The sequence lane reconciles as
 \GOneProcessed{} in $=$ \GOneEmits{} emitted $+$ \SeqDeclined{} declined.
 
-\subsection{Why provenance is a precondition, not an adjunct}
+\subsection{Provenance makes the ablation measurable}
 
-Custody is usually motivated by trust: a reader who does not trust the authors
-can check the evidence. That holds here, but it is not why the framework is
-load-bearing in this paper.
+Custody is usually motivated by trust: a sceptical reader can check the
+evidence for themselves. That holds here, and a second property is what makes
+the framework load-bearing in this paper.
 
 \textbf{The ablation is measurable only because the pipeline is fully
 accounted.} To report what an unguarded pipeline \emph{would have emitted}, we
-must know the complete set of records it would have seen and the disposition
-each one actually received. A pipeline that drops records on an unlabelled
-path cannot support that counterfactual. The denominator is unknown, and no
-amount of care in reading the code recovers it.
+need the complete set of records it would have seen and the disposition each
+one actually received. A pipeline that drops records on an unlabelled path
+leaves its own denominator unknown, and careful reading of the code recovers
+none of it.
 
-This is not hypothetical. Section~\ref{sec:audit} reports that our own
+We observed this directly. Section~\ref{sec:audit} reports that our own
 acquisition stage was discarding 100 records through an unlabelled branch. The
-per-gene counts looked entirely normal. The reconciliation assertion exposed
-the gap, and review had not. Until it was closed, every rate in this paper had
-an unknown denominator.
+per-gene counts looked entirely normal, and review had passed over the gap
+that the reconciliation assertion then exposed. Until it was closed, every
+rate in this paper had an unknown denominator.
 
 \subsection{Decision}
 
 Nine first-match rules assign the verdict. They cover unresolved symbols,
 absent targets, absent programmes, failed lookups, prior trials, and three
-grades of untried pairing. The rules are plain code and are read in order. No
-model output may set a verdict, resolve a symbol, or choose a threshold. A
-language model is used only to phrase rows whose verdict is already fixed.
+grades of untried pairing. The rules are plain code and are read in order.
+Setting a verdict, resolving a symbol, and choosing a threshold are all closed
+to model output. A language model is used only to phrase rows whose verdict is
+already fixed.
 
 Identity resolution deserves its own note, because it is where silent errors
-originate. Symbols resolve by exact match or an explicit alias table, and by
-nothing else. Collisions are real. One symbol in our corpus denotes two
-unrelated proteins, and a similarity match would return a valid gene, succeed
-at every downstream step, and answer a question about the wrong molecule.
+originate. Symbols resolve by exact match or by an explicit alias table, and
+those two paths are the only ones available. Collisions are real. One symbol
+in our corpus denotes two unrelated proteins, and a similarity match would
+return a valid gene, succeed at every downstream step, and answer a question
+about the wrong molecule.
 
 \subsection{The guards under test}
 \label{sec:guards}
@@ -139,10 +143,11 @@ Two guards carry the measurements in Section~\ref{sec:eval}.
 \textbf{G1, residue verification.} A variant record names a wild-type residue
 and a position. Before applying the substitution to the canonical sequence,
 the pipeline checks that the named residue is what the canonical sequence
-actually holds at that position. If it is not, the record is numbered against
-a different transcript, and the row declines.
+actually holds at that position. A disagreement means the record is numbered
+against a different transcript, and the row declines.
 
 \textbf{G2, copy-number exclusion.} A variant record is admitted as evidence
-about a gene only if it is gene-specific. Records typed as copy-number events,
-or spanning more than a small number of genes, are excluded. A deletion
-covering hundreds of genes is not evidence about any one of them.
+about a gene only when it is gene-specific. Records typed as copy-number
+events, or spanning more than a small number of genes, are excluded. A
+deletion covering hundreds of genes is evidence about the interval and silent
+about each gene inside it.

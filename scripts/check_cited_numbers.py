@@ -33,6 +33,7 @@ DOCS = [
     "docs/DEBRIEF_FOR_BYRON.md", "docs/HANDOFF_ELVIS_2026-08-24.md",
     "docs/SUBMISSION_CHECKLIST_0829.md", "docs/PITCH_DECK.md",
     "docs/VIDEO_SCRIPT.md", "docs/PLAIN_LANGUAGE_BRIEF.md",
+    "docs/PAPER_CONCERNS_FOR_BYRON.md",
 ]
 
 # Deliberate records of what the numbers used to be.

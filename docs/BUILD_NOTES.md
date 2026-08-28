@@ -243,3 +243,41 @@ not fired only because all eight genes happen to resolve. Latent, not absent.
 
 **Did:** counted as `gene_unresolved`, and the sequence lane now asserts its own
 balance: 364 in = 364 accounted.
+
+---
+
+### 16. The prose tic was measurable, so I measured it
+
+**Noticed:** Elvis said the writing still read like AI, specifically the
+"X, not Y" / "rather than" shape. That is a claim about text, so it can be
+counted instead of argued about. Scanned our paper and five pages of a
+reference paper in the same field for the same patterns.
+
+**Why it matters:** ours came in at **1.93 antithetical constructions per 100
+words against the reference's 0.27 — 7.1x**. The tic was real and it was
+concentrated in the places that carry the argument: section titles, the
+abstract, the contribution list.
+
+**Did:** rewrote `main.tex` and `sections/approach.tex` as flowing declarative
+prose. Re-measured: **0 per 100 words**. Also retitled the paper to plain
+subject-verb-object ("Enforced Abstention Prevents Silent Errors in Biomedical
+Evidence Pipelines") and renamed the worst offender of a section heading,
+"Why provenance is a precondition, not an adjunct" -> "Provenance makes the
+ablation measurable".
+
+---
+
+### 17. A new document escaped the number guard by existing
+
+**Noticed:** wrote `docs/PAPER_CONCERNS_FOR_BYRON.md`, full of figures, and
+`check_cited_numbers.py` still reported clean. It scans a hard-coded list of
+documents, and a file not on the list is not checked.
+
+**Why it matters:** the guard reads as "no stale number survives anywhere"
+while it actually means "no stale number survives in these twelve files". A
+guard that quietly narrows its own scope is the failure shape this project is
+named after.
+
+**Did:** added the new doc to the list. Still open: `paper/main.tex` is also
+outside the list, and it is the one document where a stale number does the most
+damage.

@@ -27,8 +27,8 @@
 % scripts/build_paper_tex.py. Nothing below is typed by hand.
 \input{generated/results}
 
-\title{Abstention as a First-Class Output:\\
-Measuring the Silent Errors an Evidence Pipeline Would Otherwise Ship}
+\title{Enforced Abstention Prevents Silent Errors in Biomedical Evidence
+Pipelines}
 
 \author{Anonymous Author(s)\\Affiliation withheld for review}
 
@@ -38,60 +38,60 @@ Measuring the Silent Errors an Evidence Pipeline Would Otherwise Ship}
 
 \begin{abstract}
 Pipelines that assemble public biomedical records into scientific claims are
-evaluated on what they emit, not on what they decline. We show that this
-misses the dominant failure mode. A \emph{silent error} is an output that is
-wrong, well-formed, raises no exception, and is indistinguishable downstream
-from a correct result. We introduce \emph{silent-error ablation}, a protocol
-that removes a pipeline's verification guards and counts what the unguarded
+evaluated on what they emit. We show that this measurement misses their
+dominant failure mode. A \emph{silent error} is an output that is wrong,
+well-formed, free of any exception, and indistinguishable downstream from a
+correct result. We introduce \emph{silent-error ablation}, a protocol that
+removes a pipeline's verification guards and counts what the unguarded
 pipeline then emits over identical inputs. We apply it to a rare-disease drug
-repurposing pipeline in which every stage must verify its input or decline it,
-and declining is a counted output. Over \CorpusFetched{} clinical variant
-records for \NumGenes{} genes, we find that removing residue verification
-makes \GOneWrong{} of \GOneNaive{} emitted protein sequences silently wrong
-(\GOneRate{}). Removing copy-number exclusion misattributes \GTwoWrong{} of
-\GTwoNaive{} records to genes they are not evidence about, moving
-\GTwoZeroed{} of \NumGenes{} genes from apparent support to zero. We report
-the cost as well: the sequence lane declines \SeqDeclined{} of
-\GOneProcessed{} records. We also report two defects the protocol found in our
-own instrumentation, including a rate we had overstated by ten percentage
-points. Neither was visible without a mechanical check.
+repurposing pipeline in which every stage verifies its input against a stated
+precondition or declines it, and every decline is counted as an output. Over
+\CorpusFetched{} clinical variant records for \NumGenes{} genes, removing
+residue verification makes \GOneWrong{} of \GOneNaive{} emitted protein
+sequences silently wrong (\GOneRate{}). Removing copy-number exclusion
+attributes \GTwoWrong{} of \GTwoNaive{} records to genes they say nothing
+about, moving \GTwoZeroed{} of \NumGenes{} genes from apparent support to
+zero. We report the cost alongside the benefit: the sequence lane declines
+\SeqDeclined{} of \GOneProcessed{} records. We also report two defects the
+protocol found in our own instrumentation, including a rate we had overstated
+by ten percentage points. Both had the failure shape the protocol targets, and
+a mechanical check was what exposed each one.
 \end{abstract}
 
 \section{Introduction}
 
 Computational drug repurposing produces rankings. Recent systems score
 millions of drug--disease pairs \citep{txgnn}, and commercial databases sell
-curated competitive landscapes. These systems are evaluated on the quality of
-what they emit. What they generally do not produce is a record of which
-evidence produced a score, or a principled way to report that the evidence
-was insufficient; a confident guess and an auditable finding are rendered
-identically.
+curated competitive landscapes. Evaluation of these systems concentrates on
+the quality of what they emit. They rarely record which evidence produced a
+given score, and they rarely offer a principled way to report that the
+evidence was insufficient, so a confident guess and an auditable finding reach
+the reader in the same form.
 
-This matters because the dominant failure mode in an evidence-assembling
-pipeline is not a crash or a mis-ranking. It is a \emph{silent error}: an
-output that is (i)~wrong, (ii)~syntactically well-formed, (iii)~raises no
-exception or warning, and (iv)~cannot be distinguished by a downstream
-consumer from a correct output. Silent errors are the non-statistical analogue
-of hallucination---plausible, confident, and undetectable at the point of use.
-They are also, by construction, invisible to any evaluation that scores only
-the outputs a pipeline chooses to produce.
+The consequence matters because of how these pipelines fail. Their dominant
+failure mode is the \emph{silent error}: an output that is (i)~wrong,
+(ii)~syntactically well-formed, (iii)~free of any exception or warning, and
+(iv)~indistinguishable by a downstream consumer from a correct output. Silent
+errors are the non-statistical analogue of hallucination, plausible and
+confident at the point of use. They are also invisible to any evaluation that
+scores only the outputs a pipeline chooses to produce, since by construction
+the pipeline believes them.
 
-We take a narrow position. We do not claim to rank better. We claim that a
-pipeline can be built so that each stage must either \emph{verify} its input
-against a stated precondition or \emph{decline} it, with declining recorded as
-a first-class, counted output, and that this discipline prevents a measurable
-class of silent error. Our contributions:
+Our claim concerns the refusals. A pipeline can be built so that each stage
+verifies its input against a stated precondition or declines it, with every
+decline counted and given a reason, and this discipline prevents a measurable
+class of silent error. We make three contributions.
 
 \begin{enumerate}
 \item \textbf{Silent-error ablation}, an evaluation protocol for evidence
-pipelines. Rather than scoring the pipeline's recommendations---which here
-would require wet-lab validation we have not performed---we score its
-\emph{refusals}, by removing each verification guard and counting what the
-resulting pipeline emits over identical inputs.
-\item A \textbf{verify-or-abstain architecture} in which the decision logic is
-a small set of readable rules, no model output may set a verdict, and every
-record is content-addressed under a single Merkle root that a reader
-re-derives client-side.
+pipelines. We score the pipeline's refusals by removing each verification
+guard and counting what the resulting pipeline emits over identical inputs.
+Scoring its recommendations instead would require wet-lab validation, which we
+have not performed.
+\item A \textbf{verify-or-abstain architecture} in which a small set of
+readable rules assigns every verdict, model output is excluded from those
+decisions, and every record is content-addressed under a single Merkle root
+that a reader re-derives client-side.
 \item \textbf{Measurements} on \CorpusFetched{} real public records, reported
 with their cost and their limits, including two defects the protocol exposed
 in our own instrumentation.
@@ -101,25 +101,25 @@ in our own instrumentation.
 
 \textbf{Repurposing at scale.} Graph-based models predict drug--disease
 associations across large biomedical knowledge graphs \citep{txgnn}. These
-target coverage and accuracy; provenance and calibrated refusal are not their
-objective, and the outputs are not designed to be independently re-derived.
+systems optimise coverage and accuracy. Provenance and calibrated refusal fall
+outside their objective, and their outputs are designed for use in place of
+independent re-derivation.
 
 \textbf{Selective prediction.} The option to abstain has a long history in
-classification, from the reject-option formulation \citep{chow} to selective
-classification with coverage guarantees \citep{elyaniv,geifman}. That
-literature abstains on the basis of model confidence. Our abstentions are not
-confidence-based: they are triggered by a failed precondition on the
-\emph{input record}, which is checkable, deterministic, and reportable with a
-reason.
+classification, from the reject-option formulation \citep{chow} through
+selective classification with coverage guarantees \citep{elyaniv,geifman}.
+That literature triggers abstention from model confidence. Our abstentions
+follow from a failed precondition on the input record, which makes them
+checkable, deterministic, and reportable with a reason.
 
 \textbf{Provenance and tamper-evidence.} We adopt the Merkle audit-tree
-construction of Certificate Transparency \citep{rfc6962}, which gives
-inclusion proofs and makes any post-hoc edit detectable.
+construction of Certificate Transparency \citep{rfc6962}, which supplies
+inclusion proofs and exposes any post-hoc edit.
 
-\textbf{Missing data.} Our own defect is best described in Rubin's taxonomy
-\citep{rubin}: the loss was \emph{missing not at random}, since the
-probability of a record being dropped was a function of its own size, which
-correlated with its class.
+\textbf{Missing data.} Rubin's taxonomy \citep{rubin} describes the defect we
+found in our own acquisition stage. The loss was \emph{missing not at random},
+since the probability of a record being dropped followed from its own size,
+which in turn followed from its class.
 
 \input{sections/approach}
 
@@ -128,20 +128,21 @@ correlated with its class.
 
 \subsection{Setup and metric}
 
-We compare two pipelines over identical inputs: \textbf{enforcement on}, the
-system as described, and \textbf{enforcement off}, the same pipeline with one
-guard removed. The off condition is not a strawman: it is the implementation
-obtained by following each source's documentation without anticipating the
-specific failure, and no guard other than the ablated one is disabled.
+We compare two pipelines over identical inputs. \textbf{Enforcement on} is the
+system as described. \textbf{Enforcement off} is the same system with one
+guard removed, which is the implementation obtained by following each source's
+documentation and anticipating no specific failure. Every other guard stays
+active in both conditions.
 
 We report the \emph{silent error rate}: the fraction of outputs the unguarded
-pipeline emits that are demonstrably wrong. Failures that are \emph{loud}---a
-crash, an out-of-range index---are excluded from the numerator, because a
-loud failure is not the problem being studied. Absolute counts accompany every
-rate; the denominators are small and hiding that would misrepresent them.
+pipeline emits that are demonstrably wrong. Loud failures, such as a crash or
+an out-of-range index, fall outside the numerator, since a downstream consumer
+sees them arrive. Absolute counts accompany every rate, because the
+denominators here are small enough that a percentage alone would misrepresent
+them.
 
-Corpus: pathogenic and likely-pathogenic clinical variant records for
-\NumGenes{} genes, captured \CorpusDate{}, subset digest
+The corpus consists of pathogenic and likely-pathogenic clinical variant
+records for \NumGenes{} genes, captured \CorpusDate{}, with subset digest
 \texttt{\CorpusDigest{}}. Acquisition reconciles: \CorpusFetched{} records
 fetched $=$ \CorpusKept{} admitted $+$ \CorpusExcluded{} excluded $+$
 \CorpusUnavailable{} unavailable.
@@ -151,144 +152,144 @@ fetched $=$ \CorpusKept{} admitted $+$ \CorpusExcluded{} excluded $+$
 \begin{table}[h]
 \centering
 \caption{Silent errors prevented. Rates are over what the unguarded pipeline
-would emit; loud failures are excluded from the numerator.}
+emits, with loud failures excluded from the numerator.}
 \label{tab:ablation}
 \AblationTable
 \end{table}
 
-Table~\ref{tab:ablation} gives the headline result. Without G1, \GOneWrong{}
-of \GOneNaive{} emitted sequences are wrong. Each is valid FASTA built from
-real residues. A structure-prediction tool accepts it without complaint and
-returns a structure for a protein that does not exist.
-With G1, \GOneEmits{} sequences are emitted (\GOneMissense{} substitutions,
-\GOneTruncating{} truncations) and all \GOneEmits{} were verified
-position-by-position against their wild-type reference.
+Table~\ref{tab:ablation} gives the headline result. Removing G1 makes
+\GOneWrong{} of \GOneNaive{} emitted sequences wrong. Each one is valid FASTA
+built from real residues, and a structure-prediction tool accepts it without
+complaint and returns a structure for a protein that has never existed. With
+G1 active the lane emits \GOneEmits{} sequences, \GOneMissense{} substitutions
+and \GOneTruncating{} truncations, and we verified all \GOneEmits{} of them
+position by position against their wild-type reference.
 
-Without G2, \GTwoWrong{} of \GTwoNaive{} records are credited to genes they
-are not evidence about. The per-gene effect (Table~\ref{tab:pergene}) is not
-uniform, and this is the more interesting result: \GTwoZeroed{} of
-\NumGenes{} genes (\GTwoZeroedNames{}) move from apparent evidentiary support
-to an honest zero. An unguarded pipeline reports them as supported, and the
-top-ranked ``evidence'' for one of them is a chromosomal deletion syndrome.
+Removing G2 attributes \GTwoWrong{} of \GTwoNaive{} records to genes they say
+nothing about. The per-gene effect (Table~\ref{tab:pergene}) varies sharply,
+and this variation carries the more interesting result. \GTwoZeroed{} of
+\NumGenes{} genes (\GTwoZeroedNames{}) fall from apparent evidentiary support
+to an honest zero. The unguarded pipeline reports all three as supported, and
+for one of them the top-ranked supporting evidence is a chromosomal deletion
+syndrome.
 
 \begin{table}[h]
 \centering
-\caption{Per-gene effect of G2. $^{*}$ genes reduced to zero.}
+\caption{Per-gene effect of G2. $^{*}$ marks genes reduced to zero.}
 \label{tab:pergene}
 \PerGeneTable
 \end{table}
 
 \subsection{The cost of abstention}
 
-A trivial policy---decline everything---also achieves a zero silent error rate
-and is useless. The guards must therefore be shown to decline
+A trivial policy that declines everything also achieves a zero silent error
+rate, and it is useless. The guards therefore have to decline
 \emph{selectively}. The sequence lane declines \SeqDeclined{} of
-\GOneProcessed{} records (Table~\ref{tab:decline}); most declines are records
-carrying no protein-level change or frameshifts that cannot be reconstructed
-from the record at all, neither of which any substituting pipeline could emit.
-Of the records that are genuinely substitution-eligible, the guard declines
-\GOneWrong{} and emits \GOneEmits{}, all verified correct.
+\GOneProcessed{} records (Table~\ref{tab:decline}). Most declines are records
+carrying no protein-level change, or frameshifts whose downstream sequence the
+record leaves undetermined, and a substituting pipeline would emit neither
+class. Among the records that are genuinely substitution-eligible, the guard
+declines \GOneWrong{} and emits \GOneEmits{}, all verified correct.
 
 \begin{table}[h]
 \centering
-\caption{Why the sequence lane declines. Only \emph{residue mismatch} reflects
-a record a substituting pipeline would otherwise have emitted.}
+\caption{Why the sequence lane declines. Only \emph{residue mismatch} covers
+records that a substituting pipeline would otherwise have emitted.}
 \label{tab:decline}
 \DeclineTable
 \end{table}
 
-\section{What the audit found}
+\section{Defects found in our own instrumentation}
 \label{sec:audit}
 
-We applied the protocol to our own instrumentation before submission. Two
-findings bear directly on the results above. We report them because omitting
-them would be an instance of the failure the paper describes.
+We applied the protocol to our own pipeline before submission. Two findings
+bear directly on the results above, and we report them here because leaving
+them out would reproduce the failure this paper describes.
 
-\textbf{The pipeline was discarding records without counting them.} A
-reconciliation check---fetched records must equal admitted plus excluded plus
-unavailable---revealed that 100 records had been dropped by a single
-unlogged branch. The cause was a hard upstream limit: the source refuses to
-serialise a response above a fixed size, and one record listing over a
-thousand genes pushed its batch past that limit. Our error handler read three
-possible error keys; the source reports this one under a fourth, so our own
-log recorded only a generic ``no result'' string. \emph{We had built a guard
-that detected the loss and destroyed the explanation.} The loss was
-\emph{missing not at random} \citep{rubin}---the records lost were lost
-because they were large, and they were large because they spanned many genes,
-which is precisely the class the guard exists to exclude. Left uncorrected, it
-biased our own headline G2 rate downward by roughly six percentage points.
+\textbf{The acquisition stage discarded records without counting them.} A
+reconciliation check requires fetched records to equal admitted plus excluded
+plus unavailable. That check revealed 100 records leaving through a single
+unlogged branch. The cause lay upstream: the source declines to serialise a
+response above a fixed size, and one record listing over a thousand genes
+carried its whole batch past that limit. Our error handler read three possible
+error keys, and the source reports this condition under a fourth, so our own
+log recorded a generic ``no result'' string. \emph{We had built a guard that
+detected the loss and discarded its explanation.} Under Rubin's taxonomy
+\citep{rubin} the loss was \emph{missing not at random}: the records we lost
+were large, their size followed from spanning many genes, and spanning many
+genes is exactly the class G2 exists to exclude. Left uncorrected it biased
+our own G2 rate downward by roughly six percentage points.
 
 \textbf{Our first reported rate was wrong by ten points.} An independent
-recount disagreed with the pipeline's own count of G1 rejections. The
-pipeline checked the residue precondition \emph{before} classifying the
-variant, so frameshift records that also mismatched were filed as residue
-mismatches---inflating the reported figure with records that no substituting
-pipeline could emit. The published rate was 24.6\%; the correct rate is
-\GOneRate{}. The emitted sequences were byte-identical before and after the
-fix: the guard had rejected exactly the same records, and only the reasons
-were wrong. This was a \emph{measurement} defect rather than a behavioural
-one, which is why nothing appeared broken and why only recounting exposed it.
+recount disagreed with the pipeline's own count of G1 rejections. The pipeline
+tested the residue precondition before classifying the variant, so frameshift
+records that also mismatched were filed as residue mismatches, which inflated
+the reported figure with records that a substituting pipeline could never
+emit. The published rate was 24.6\%, and the correct rate is \GOneRate{}. The
+emitted sequences were byte-identical before and after the fix, since the
+guard had rejected exactly the same records and only the reasons were wrong.
+The defect lay entirely in the measurement, which is why the system looked
+healthy and why recounting was the only thing that exposed it.
 
-We draw a narrow conclusion from both. Mechanical reconciliation---inputs
-equal outputs plus rejects, asserted at every boundary---caught defects that
-careful reading did not, including in the instrument that produces this
-paper's numbers.
+We draw one narrow conclusion. Mechanical reconciliation, asserted at every
+boundary, caught defects that careful reading missed, including defects in the
+instrument that produces this paper's numbers.
 
 \section{Limitations}
 
-\textbf{The G1 effect is one gene.} All \GOneWrong{} residue mismatches occur
-in a single gene; another gene contributing \GOneTruncating{}${+}$ emitted
-sequences produces zero. The measured G1 result therefore reflects one
-transcript-numbering convention, not \NumGenes{} independent observations.
-$n=1$, not $n=\NumGenes{}$.
+\textbf{The G1 effect comes from one gene.} All \GOneWrong{} residue
+mismatches occur in a single gene. A second gene contributes more emitted
+sequences than that one and produces zero. The measured G1 result therefore
+reflects one transcript-numbering convention, and $n=1$ describes it more
+honestly than $n=\NumGenes{}$.
 
-\textbf{The rejected records are recoverable, and we discard them.} Testing
-the failing records rather than the passing ones showed that a single constant
-offset of $+30$ residues reconciles all \GOneWrong{} exactly: they are
-correctly numbered against a longer transcript. They are silently wrong only
-when applied to the canonical sequence. Abstention is the safe response here,
-not the best one; a pipeline that detected the offset would recover them.
+\textbf{The declined records are recoverable, and we discard them.} We tested
+the failing records directly and found that a single constant offset of $+30$
+residues reconciles all \GOneWrong{} of them exactly. They are correctly
+numbered against a longer transcript, and they become wrong only on contact
+with the canonical sequence. Abstention is the safe response here. A pipeline
+that detected the offset would recover them, and ours throws them away.
 
-\textbf{Small denominators and a single corpus.} Rates are computed over
-hundreds, not thousands, of records, from one snapshot of one source. The
-source is live: two honest runs a day apart returned different totals, which
-is why we pin a capture date and publish the digest of the exact table used.
+\textbf{Small denominators and a single corpus.} The rates come from hundreds
+of records, drawn from one snapshot of one source. That source is live, and
+two honest runs a day apart returned different totals, which is why we pin a
+capture date and publish the digest of the exact table used.
 
-\textbf{We evaluate our own guards on data we selected.} The guards were
-designed by us, and the failures they catch are failures we anticipated. This
-measures the value of enforcement given a correct precondition; it does not
-measure how many preconditions we failed to think of. The audit above is
-evidence that this residual is not zero.
+\textbf{We evaluate our own guards on data we selected.} We designed the
+guards, and the failures they catch are failures we anticipated. This measures
+the value of enforcement given a correct precondition. It leaves open how many
+preconditions we failed to think of, and Section~\ref{sec:audit} shows that
+this residual exceeds zero.
 
-\textbf{We do not evaluate the science.} Whether any proposed pairing is
-biologically correct requires wet-lab validation not performed here. The
-system's claim ceiling is enforced in code and permits a repurposing
-hypothesis, never a therapeutic claim.
+\textbf{We do not evaluate the science.} Establishing whether any proposed
+pairing is biologically correct requires wet-lab validation we have not
+performed. The system's claim ceiling is enforced in code and permits a
+repurposing hypothesis, stopping short of any therapeutic claim.
 
 \section{Conclusion}
 
-Provenance and abstention are usually argued for on principle. We argue for
-them with a number: on real public records, removing two verification guards
-causes a pipeline to emit \GOneWrong{} of \GOneNaive{} sequences that are
-silently wrong and to misattribute \GTwoWrong{} of \GTwoNaive{} variant
-records. The intervention is architectural rather than statistical---verify or
-abstain, enforced in code---and so transfers to any pipeline that assembles
-evidence into claims, whether or not a language model is in the loop. The most
-persuasive evidence we can offer is that the discipline caught our own
-instrument twice, and that neither failure was visible without it.
+Provenance and abstention are usually argued from principle. We argue for them
+from a measurement: on real public records, removing two verification guards
+causes a pipeline to emit \GOneWrong{} of \GOneNaive{} silently wrong
+sequences and to misattribute \GTwoWrong{} of \GTwoNaive{} variant records.
+The intervention is architectural, so it transfers to any pipeline that
+assembles evidence into claims, whether or not a language model participates.
+The most persuasive evidence we can offer is that the discipline caught our
+own instrument twice, and that a mechanical check was what caught it each
+time.
 
-Future work: extending custody to the turn level of the model interactions
-that assist the pipeline, so that assistance itself carries receipts; and
-recovering rather than merely declining the transcript-offset records.
+Two directions follow. Custody can extend to the turn level of the model
+interactions that assist the pipeline, so that the assistance itself carries
+receipts. The transcript-offset records can be recovered in place of being
+declined.
 
 \section*{Reproducibility statement}
 
-Every figure in this paper is generated from the
-pipeline outputs by a script; no number is typed by hand. A second script
-refuses to let a superseded figure survive in the prose. An anonymised
-artifact containing the code, the captured corpus with digests, and a
-one-command regeneration of every table is available to reviewers
-[link withheld for anonymous review].
+Every figure in this paper is generated from the pipeline outputs by a script,
+and no number is typed by hand. A second script scans the prose for any figure
+that a later run has superseded. An anonymised artifact containing the code,
+the captured corpus with digests, and a one-command regeneration of every
+table is available to reviewers [link withheld for anonymous review].
 
 \bibliographystyle{plainnat}
 \bibliography{references}
